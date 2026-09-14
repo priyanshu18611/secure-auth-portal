@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Secure Access</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+</head>
+
+<body>
+
+    <!-- Animated Background -->
+    <div class="background">
+
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+
+    </div>
+
+
+    <!-- Particles -->
+    <div class="particles" id="particles"></div>
+
+
+    <!-- Login -->
+    <main class="login-wrapper">
+
+        <section class="login-card">
+
+            <div class="card-glow"></div>
+
+
+            <!-- Logo -->
+            <div class="logo">
+                <span>⚡</span>
+            </div>
+
+
+            <!-- Heading -->
+            <div class="heading">
+
+                <p class="welcome">
+                    WELCOME BACK
+                </p>
+
+                <h1>
+                    Secure
+                    <span>Access</span>
+                </h1>
+
+                <p class="subtitle">
+                    Sign in to continue to your account
+                </p>
+
+            </div>
+
+
+            <!-- Form -->
+            <form id="loginForm">
+
+
+                <!-- Email -->
+                <div class="input-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <div class="input-box">
+
+                        <span class="input-icon">
+                            ✉
+                        </span>
+
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="Enter your email"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Password -->
+                <div class="input-group">
+
+                    <div class="password-header">
+
+                        <label for="password">
+                            Password
+                        </label>
+
+                        <a href="#" id="forgotPassword">
+                            Forgot password?
+                        </a>
+
+                    </div>
+
+
+                    <div class="input-box">
+
+                        <span class="input-icon">
+                            🔒
+                        </span>
+
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            id="togglePassword"
+                        >
+                            👁
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Options -->
+                <div class="options">
+
+                    <label class="remember">
+
+                        <input
+                            type="checkbox"
+                            id="remember"
+                        >
+
+                        <span class="custom-check"></span>
+
+                        <span>
+                            Remember me
+                        </span>
+
+                    </label>
+
+
+                    <div class="secure-status">
+
+                        <span class="status-dot"></span>
+
+                        Secure
+
+                    </div>
+
+                </div>
+
+
+                <!-- Login -->
+                <button
+                    type="submit"
+                    class="login-btn"
+                    id="loginBtn"
+                >
+
+                    <span class="btn-text">
+                        Sign In
+                    </span>
+
+                    <span class="btn-arrow">
+                        →
+                    </span>
+
+                    <span class="loader"></span>
+
+                </button>
+
+            </form>
+
+
+            <!-- Divider -->
+            <div class="divider">
+                <span>OR</span>
+            </div>
+
+
+            <!-- Social -->
+            <div class="social-login">
+
+                <button
+                    type="button"
+                    class="social-btn"
+                >
+                    <span>G</span>
+                    Google
+                </button>
+
+
+                <button
+                    type="button"
+                    class="social-btn"
+                >
+                    <span>◉</span>
+                    GitHub
+                </button>
+
+            </div>
+
+
+            <!-- Register -->
+            <div class="register">
+
+                <span>
+                    Don't have an account?
+                </span>
+
+                <a
+                    href="#"
+                    id="registerLink"
+                >
+                    Create account
+                </a>
+
+            </div>
+
+
+            <!-- Security -->
+            <div class="security-note">
+
+                <span>🛡</span>
+
+                <div>
+
+                    <strong>
+                        Protected Connection
+                    </strong>
+
+                    <small>
+                        Your information is securely encrypted.
+                    </small>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- Toast -->
+    <div
+        class="toast"
+        id="toast"
+    >
+
+        <div class="toast-icon">
+            ✓
+        </div>
+
+        <div>
+
+            <strong id="toastTitle">
+                Success
+            </strong>
+
+            <p id="toastMessage">
+                Login successful
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
