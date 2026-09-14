@@ -1,14 +1,13 @@
 // =====================================================
 // PRIYANSHU SECURE PORTAL
-// Advanced Login UI Controller
+// Frontend Authentication Controller
 // =====================================================
 
+const loginForm =
+    document.getElementById("loginForm");
 
-// ================= ELEMENTS =================
-
-const loginForm = document.getElementById("loginForm");
-
-const emailInput = document.getElementById("email");
+const emailInput =
+    document.getElementById("email");
 
 const passwordInput =
     document.getElementById("password");
@@ -36,41 +35,46 @@ const card =
 
 
 // =====================================================
-// PASSWORD SHOW / HIDE
+// API CONFIGURATION
+// =====================================================
+
+// Local development
+const API_URL = "http://localhost:5000";
+
+
+// =====================================================
+// PASSWORD TOGGLE
 // =====================================================
 
 togglePassword.addEventListener("click", () => {
 
-    const isHidden =
+    const hidden =
         passwordInput.type === "password";
 
     passwordInput.type =
-        isHidden ? "text" : "password";
+        hidden ? "text" : "password";
 
     togglePassword.textContent =
-        isHidden ? "🙈" : "👁";
+        hidden ? "🙈" : "👁";
 
 });
 
 
 // =====================================================
-// CREATE PARTICLES
+// PARTICLES
 // =====================================================
 
 function createParticles() {
 
-    const totalParticles = 55;
+    const total = 55;
 
-    for (
-        let i = 0;
-        i < totalParticles;
-        i++
-    ) {
+    for (let i = 0; i < total; i++) {
 
         const particle =
             document.createElement("span");
 
-        particle.classList.add("particle");
+        particle.className =
+            "particle";
 
         particle.style.left =
             Math.random() * 100 + "%";
@@ -82,7 +86,7 @@ function createParticles() {
             Math.random() * 10 + "s";
 
         particle.style.opacity =
-            (0.15 + Math.random() * 0.55);
+            0.15 + Math.random() * 0.55;
 
         const size =
             1 + Math.random() * 3;
@@ -96,6 +100,7 @@ function createParticles() {
         particlesContainer.appendChild(
             particle
         );
+
     }
 }
 
@@ -103,7 +108,7 @@ createParticles();
 
 
 // =====================================================
-// TOAST SYSTEM
+// TOAST
 // =====================================================
 
 let toastTimer;
@@ -122,10 +127,10 @@ function showToast(
     toastMessage.textContent =
         message;
 
-
     const icon =
-        toast.querySelector(".toast-icon");
-
+        toast.querySelector(
+            ".toast-icon"
+        );
 
     if (type === "error") {
 
@@ -140,57 +145,20 @@ function showToast(
 
         icon.style.background =
             "#35e88b";
-    }
 
+    }
 
     toast.classList.add("show");
 
-
     toastTimer = setTimeout(() => {
 
-        toast.classList.remove("show");
+        toast.classList.remove(
+            "show"
+        );
 
     }, 3500);
 
 }
-
-
-// =====================================================
-// INPUT FOCUS EFFECT
-// =====================================================
-
-const inputs =
-    document.querySelectorAll(
-        ".input-box input"
-    );
-
-
-inputs.forEach(input => {
-
-    input.addEventListener(
-        "focus",
-        () => {
-
-            input
-                .closest(".input-box")
-                .classList.add("active");
-
-        }
-    );
-
-
-    input.addEventListener(
-        "blur",
-        () => {
-
-            input
-                .closest(".input-box")
-                .classList.remove("active");
-
-        }
-    );
-
-});
 
 
 // =====================================================
@@ -199,15 +167,14 @@ inputs.forEach(input => {
 
 function isValidEmail(email) {
 
-    const pattern =
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        .test(email);
 
-    return pattern.test(email);
 }
 
 
 // =====================================================
-// LOGIN FORM
+// LOGIN
 // =====================================================
 
 loginForm.addEventListener(
@@ -216,23 +183,22 @@ loginForm.addEventListener(
 
         event.preventDefault();
 
-
         const email =
             emailInput.value.trim();
 
         const password =
-            passwordInput.value.trim();
+            passwordInput.value;
 
 
-        // -----------------------------
-        // EMAIL CHECK
-        // -----------------------------
+        // -------------------------------
+        // VALIDATION
+        // -------------------------------
 
         if (!email) {
 
             showToast(
                 "Email Required",
-                "Please enter your email address.",
+                "Please enter your email.",
                 "error"
             );
 
@@ -246,7 +212,7 @@ loginForm.addEventListener(
 
             showToast(
                 "Invalid Email",
-                "Please enter a valid email address.",
+                "Please enter a valid email.",
                 "error"
             );
 
@@ -255,10 +221,6 @@ loginForm.addEventListener(
             return;
         }
 
-
-        // -----------------------------
-        // PASSWORD CHECK
-        // -----------------------------
 
         if (!password) {
 
@@ -274,23 +236,9 @@ loginForm.addEventListener(
         }
 
 
-        if (password.length < 6) {
-
-            showToast(
-                "Weak Password",
-                "Password must contain at least 6 characters.",
-                "error"
-            );
-
-            passwordInput.focus();
-
-            return;
-        }
-
-
-        // -----------------------------
+        // -------------------------------
         // LOADING
-        // -----------------------------
+        // -------------------------------
 
         loginBtn.classList.add(
             "loading"
@@ -299,53 +247,97 @@ loginForm.addEventListener(
         loginBtn.disabled = true;
 
 
-        /*
-         * BACKEND CONNECTION
-         *
-         * Part 5/6 mein yahan:
-         *
-         * fetch("/api/login", {
-         *
-         *     method: "POST",
-         *
-         *     headers: {
-         *         "Content-Type":
-         *             "application/json"
-         *     },
-         *
-         *     body: JSON.stringify({
-         *         email: email,
-         *         password: password
-         *     })
-         *
-         * });
-         *
-         */
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/api/login`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            email,
+
+                            password
+
+                        })
+                    }
+                );
 
 
-        // Temporary demo delay
+            const result =
+                await response.json();
 
-        await new Promise(resolve => {
 
-            setTimeout(
-                resolve,
-                1500
+            if (!response.ok) {
+
+                throw new Error(
+                    result.message ||
+                    "Login failed."
+                );
+
+            }
+
+
+            // -------------------------------
+            // SUCCESS
+            // -------------------------------
+
+            showToast(
+                "Login Successful",
+                `Welcome ${result.user.name || ""}!`
             );
 
-        });
+
+            // Save non-sensitive user info
+            sessionStorage.setItem(
+                "user",
+                JSON.stringify({
+                    id: result.user.id,
+                    name: result.user.name,
+                    email: result.user.email
+                })
+            );
 
 
-        loginBtn.classList.remove(
-            "loading"
-        );
-
-        loginBtn.disabled = false;
+            // Clear password
+            passwordInput.value = "";
 
 
-        showToast(
-            "Demo Login",
-            "Backend connection will be added next."
-        );
+        }
+
+        catch (error) {
+
+            console.error(
+                "Login error:",
+                error
+            );
+
+
+            showToast(
+                "Login Failed",
+                error.message ||
+                "Unable to connect to server.",
+                "error"
+            );
+
+        }
+
+        finally {
+
+            loginBtn.classList.remove(
+                "loading"
+            );
+
+            loginBtn.disabled = false;
+
+        }
 
     }
 );
@@ -355,107 +347,91 @@ loginForm.addEventListener(
 // FORGOT PASSWORD
 // =====================================================
 
-const forgotPassword =
-    document.getElementById(
-        "forgotPassword"
+document
+    .getElementById("forgotPassword")
+    .addEventListener(
+        "click",
+        (event) => {
+
+            event.preventDefault();
+
+            showToast(
+                "Password Recovery",
+                "Recovery will be added in a later step."
+            );
+
+        }
     );
 
 
-forgotPassword.addEventListener(
-    "click",
-    (event) => {
-
-        event.preventDefault();
-
-
-        showToast(
-            "Password Recovery",
-            "Recovery system will be connected later."
-        );
-
-    }
-);
-
-
 // =====================================================
-// REGISTER LINK
+// REGISTER
 // =====================================================
 
-const registerLink =
-    document.getElementById(
-        "registerLink"
+document
+    .getElementById("registerLink")
+    .addEventListener(
+        "click",
+        (event) => {
+
+            event.preventDefault();
+
+            showToast(
+                "Registration",
+                "Registration page will be added next."
+            );
+
+        }
     );
 
 
-registerLink.addEventListener(
-    "click",
-    (event) => {
-
-        event.preventDefault();
-
-
-        showToast(
-            "Create Account",
-            "Registration system will be added next."
-        );
-
-    }
-);
-
-
 // =====================================================
-// GOOGLE BUTTON
+// GOOGLE
 // =====================================================
 
-const googleLogin =
-    document.getElementById(
-        "googleLogin"
+document
+    .getElementById("googleLogin")
+    .addEventListener(
+        "click",
+        () => {
+
+            showToast(
+                "Google Login",
+                "OAuth will be configured later."
+            );
+
+        }
     );
 
 
-googleLogin.addEventListener(
-    "click",
-    () => {
-
-        showToast(
-            "Google Login",
-            "Google authentication will be configured later."
-        );
-
-    }
-);
-
-
 // =====================================================
-// GITHUB BUTTON
+// GITHUB
 // =====================================================
 
-const githubLogin =
-    document.getElementById(
-        "githubLogin"
+document
+    .getElementById("githubLogin")
+    .addEventListener(
+        "click",
+        () => {
+
+            showToast(
+                "GitHub Login",
+                "OAuth will be configured later."
+            );
+
+        }
     );
 
 
-githubLogin.addEventListener(
-    "click",
-    () => {
-
-        showToast(
-            "GitHub Login",
-            "GitHub authentication will be configured later."
-        );
-
-    }
-);
-
-
 // =====================================================
-// 3D CARD MOUSE EFFECT
+// 3D CARD EFFECT
 // =====================================================
 
-if (window.matchMedia(
-    "(pointer: fine)"
-).matches) {
+if (
+    window.matchMedia(
+        "(pointer: fine)"
+    ).matches
+) {
 
     card.addEventListener(
         "mousemove",
@@ -464,34 +440,27 @@ if (window.matchMedia(
             const rect =
                 card.getBoundingClientRect();
 
-
             const x =
                 event.clientX -
                 rect.left;
-
 
             const y =
                 event.clientY -
                 rect.top;
 
-
             const centerX =
                 rect.width / 2;
 
-
             const centerY =
                 rect.height / 2;
-
 
             const rotateY =
                 ((x - centerX) /
                 centerX) * 4;
 
-
             const rotateX =
                 ((centerY - y) /
                 centerY) * 4;
-
 
             card.style.transform =
                 `perspective(1200px)
@@ -520,97 +489,6 @@ if (window.matchMedia(
 
 
 // =====================================================
-// BUTTON RIPPLE EFFECT
-// =====================================================
-
-loginBtn.addEventListener(
-    "click",
-    (event) => {
-
-        const ripple =
-            document.createElement(
-                "span"
-            );
-
-
-        ripple.style.position =
-            "absolute";
-
-        ripple.style.width =
-            "10px";
-
-        ripple.style.height =
-            "10px";
-
-        ripple.style.borderRadius =
-            "50%";
-
-        ripple.style.background =
-            "rgba(255,255,255,0.35)";
-
-        ripple.style.left =
-            event.offsetX + "px";
-
-        ripple.style.top =
-            event.offsetY + "px";
-
-        ripple.style.transform =
-            "translate(-50%, -50%)";
-
-        ripple.style.pointerEvents =
-            "none";
-
-        ripple.style.animation =
-            "rippleEffect 0.7s ease-out";
-
-
-        loginBtn.appendChild(
-            ripple
-        );
-
-
-        setTimeout(
-            () => ripple.remove(),
-            700
-        );
-
-    }
-);
-
-
-// =====================================================
-// RIPPLE ANIMATION
-// =====================================================
-
-const rippleStyle =
-    document.createElement("style");
-
-rippleStyle.textContent = `
-
-@keyframes rippleEffect {
-
-    from {
-        width: 10px;
-        height: 10px;
-        opacity: 1;
-    }
-
-    to {
-        width: 500px;
-        height: 500px;
-        opacity: 0;
-    }
-
-}
-
-`;
-
-document.head.appendChild(
-    rippleStyle
-);
-
-
-// =====================================================
 // PAGE READY
 // =====================================================
 
@@ -618,17 +496,14 @@ window.addEventListener(
     "load",
     () => {
 
-        setTimeout(
-            () => {
+        setTimeout(() => {
 
-                showToast(
-                    "Welcome",
-                    "Priyanshu Secure Portal is ready."
-                );
+            showToast(
+                "Secure Portal",
+                "Priyanshu Secure Portal is ready."
+            );
 
-            },
-            900
-        );
+        }, 900);
 
     }
 );
