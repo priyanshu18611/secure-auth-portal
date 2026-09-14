@@ -1,0 +1,9 @@
+node_modules/
+.env
+.env.*
+*.log
+
+data/*.xlsx
+
+.DS_Store
+Thumbs.db
