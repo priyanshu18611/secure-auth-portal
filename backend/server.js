@@ -5,33 +5,39 @@ const XLSX = require("xlsx");
 const fs = require("fs");
 const path = require("path");
 
+const {
+    createUser,
+    findUserByEmail
+} = require("./database");
+
 const app = express();
 
 const PORT = process.env.PORT || 5000;
 
-// ===============================
+
+// =====================================================
 // MIDDLEWARE
-// ===============================
+// =====================================================
 
 app.use(cors());
+
 app.use(express.json());
 
 
-// ===============================
+// =====================================================
 // DATA DIRECTORY
-// ===============================
+// =====================================================
 
-const dataDir = path.join(__dirname, "../data");
+const dataDir =
+    path.join(__dirname, "../data");
 
-const excelFile = path.join(
-    dataDir,
-    "users.xlsx"
-);
+const excelFile =
+    path.join(dataDir, "login_activity.xlsx");
 
 
-// ===============================
-// CREATE DATA FOLDER
-// ===============================
+// =====================================================
+// CREATE DATA DIRECTORY
+// =====================================================
 
 if (!fs.existsSync(dataDir)) {
 
@@ -45,9 +51,9 @@ if (!fs.existsSync(dataDir)) {
 }
 
 
-// ===============================
-// CREATE EXCEL FILE
-// ===============================
+// =====================================================
+// CREATE EXCEL REPORT
+// =====================================================
 
 function createExcelFile() {
 
@@ -55,19 +61,8 @@ function createExcelFile() {
         return;
     }
 
-    const headers = [
-        {
-            ID: 1,
-            Name: "",
-            Email: "",
-            Action: "",
-            Date: "",
-            Time: ""
-        }
-    ];
-
     const worksheet =
-        XLSX.utils.json_to_sheet(headers);
+        XLSX.utils.json_to_sheet([]);
 
     const workbook =
         XLSX.utils.book_new();
@@ -75,7 +70,7 @@ function createExcelFile() {
     XLSX.utils.book_append_sheet(
         workbook,
         worksheet,
-        "Users"
+        "Activity"
     );
 
     XLSX.writeFile(
@@ -87,11 +82,11 @@ function createExcelFile() {
 createExcelFile();
 
 
-// ===============================
-// WRITE USER TO EXCEL
-// ===============================
+// =====================================================
+// SAVE ACTIVITY TO EXCEL
+// =====================================================
 
-function saveToExcel(
+function saveActivity(
     name,
     email,
     action
@@ -100,52 +95,53 @@ function saveToExcel(
     const workbook =
         XLSX.readFile(excelFile);
 
-    const worksheet =
-        workbook.Sheets["Users"];
+    let worksheet =
+        workbook.Sheets["Activity"];
 
-    const data =
+    let records =
         XLSX.utils.sheet_to_json(
             worksheet
         );
 
-    const nextId =
-        data.length + 1;
 
     const now =
         new Date();
 
-    const date =
-        now.toLocaleDateString("en-IN");
 
-    const time =
-        now.toLocaleTimeString("en-IN");
+    const record = {
+
+        ID:
+            records.length + 1,
+
+        Name:
+            name,
+
+        Email:
+            email,
+
+        Action:
+            action,
+
+        Date:
+            now.toLocaleDateString("en-IN"),
+
+        Time:
+            now.toLocaleTimeString("en-IN")
+
+    };
 
 
-    data.push({
-
-        ID: nextId,
-
-        Name: name,
-
-        Email: email,
-
-        Action: action,
-
-        Date: date,
-
-        Time: time
-
-    });
+    records.push(record);
 
 
-    const newWorksheet =
+    worksheet =
         XLSX.utils.json_to_sheet(
-            data
+            records
         );
 
 
-    workbook.Sheets["Users"] =
-        newWorksheet;
+    workbook.Sheets["Activity"] =
+        worksheet;
 
 
     XLSX.writeFile(
@@ -156,9 +152,9 @@ function saveToExcel(
 }
 
 
-// ===============================
+// =====================================================
 // HEALTH CHECK
-// ===============================
+// =====================================================
 
 app.get(
     "/",
@@ -166,10 +162,13 @@ app.get(
 
         res.json({
 
-            status: "online",
+            success: true,
 
             message:
-                "Priyanshu Secure Portal API is running."
+                "Priyanshu Secure Portal API is running.",
+
+            version:
+                "1.0.0"
 
         });
 
@@ -177,9 +176,9 @@ app.get(
 );
 
 
-// ===============================
-// REGISTER
-// ===============================
+// =====================================================
+// REGISTER API
+// =====================================================
 
 app.post(
     "/api/register",
@@ -194,6 +193,10 @@ app.post(
             } = req.body;
 
 
+            // -----------------------------------------
+            // VALIDATION
+            // -----------------------------------------
+
             if (
                 !name ||
                 !email ||
@@ -206,6 +209,20 @@ app.post(
 
                     message:
                         "Name, email and password are required."
+
+                });
+
+            }
+
+
+            if (name.trim().length < 2) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "Please enter a valid name."
 
                 });
 
@@ -226,24 +243,13 @@ app.post(
             }
 
 
-            const workbook =
-                XLSX.readFile(excelFile);
-
-            const worksheet =
-                workbook.Sheets["Users"];
-
-            const users =
-                XLSX.utils.sheet_to_json(
-                    worksheet
-                );
-
+            // -----------------------------------------
+            // CHECK EXISTING USER
+            // -----------------------------------------
 
             const existingUser =
-                users.find(
-                    user =>
-                        user.Email &&
-                        user.Email.toLowerCase() ===
-                        email.toLowerCase()
+                findUserByEmail(
+                    email.trim()
                 );
 
 
@@ -261,8 +267,9 @@ app.post(
             }
 
 
-            // Password is hashed.
-            // It is NOT stored in Excel.
+            // -----------------------------------------
+            // HASH PASSWORD
+            // -----------------------------------------
 
             const passwordHash =
                 await bcrypt.hash(
@@ -271,14 +278,33 @@ app.post(
                 );
 
 
-            // Future database storage
-            // will use passwordHash.
+            // -----------------------------------------
+            // SAVE USER
+            // -----------------------------------------
+
+            createUser(
+
+                name.trim(),
+
+                email.trim().toLowerCase(),
+
+                passwordHash
+
+            );
 
 
-            saveToExcel(
-                name,
-                email,
+            // -----------------------------------------
+            // EXCEL ACTIVITY
+            // -----------------------------------------
+
+            saveActivity(
+
+                name.trim(),
+
+                email.trim().toLowerCase(),
+
                 "REGISTER"
+
             );
 
 
@@ -291,8 +317,11 @@ app.post(
 
                 user: {
 
-                    name,
-                    email
+                    name:
+                        name.trim(),
+
+                    email:
+                        email.trim().toLowerCase()
 
                 }
 
@@ -303,16 +332,17 @@ app.post(
         catch (error) {
 
             console.error(
-                "Registration error:",
+                "REGISTER ERROR:",
                 error
             );
+
 
             return res.status(500).json({
 
                 success: false,
 
                 message:
-                    "Server error."
+                    "Unable to create account."
 
             });
 
@@ -322,9 +352,9 @@ app.post(
 );
 
 
-// ===============================
-// LOGIN
-// ===============================
+// =====================================================
+// LOGIN API
+// =====================================================
 
 app.post(
     "/api/login",
@@ -337,6 +367,10 @@ app.post(
                 password
             } = req.body;
 
+
+            // -----------------------------------------
+            // VALIDATION
+            // -----------------------------------------
 
             if (
                 !email ||
@@ -355,38 +389,14 @@ app.post(
             }
 
 
-            const workbook =
-                XLSX.readFile(excelFile);
-
-            const worksheet =
-                workbook.Sheets["Users"];
-
-            const users =
-                XLSX.utils.sheet_to_json(
-                    worksheet
-                );
-
+            // -----------------------------------------
+            // FIND USER
+            // -----------------------------------------
 
             const user =
-                users.find(
-                    item =>
-                        item.Email &&
-                        item.Email.toLowerCase() ===
-                        email.toLowerCase()
+                findUserByEmail(
+                    email.trim()
                 );
-
-
-            /*
-             * IMPORTANT:
-             *
-             * Excel currently stores
-             * registration/login records,
-             * not password hashes.
-             *
-             * A proper production database
-             * will be connected in the next
-             * backend step.
-             */
 
 
             if (!user) {
@@ -403,27 +413,67 @@ app.post(
             }
 
 
-            saveToExcel(
-                user.Name || "",
-                user.Email,
+            // -----------------------------------------
+            // COMPARE PASSWORD
+            // -----------------------------------------
+
+            const passwordValid =
+                await bcrypt.compare(
+                    password,
+                    user.password_hash
+                );
+
+
+            if (!passwordValid) {
+
+                return res.status(401).json({
+
+                    success: false,
+
+                    message:
+                        "Invalid email or password."
+
+                });
+
+            }
+
+
+            // -----------------------------------------
+            // SAVE LOGIN ACTIVITY
+            // -----------------------------------------
+
+            saveActivity(
+
+                user.name,
+
+                user.email,
+
                 "LOGIN"
+
             );
 
+
+            // -----------------------------------------
+            // SUCCESS
+            // -----------------------------------------
 
             return res.json({
 
                 success: true,
 
                 message:
-                    "Login recorded successfully.",
+                    "Login successful.",
 
                 user: {
 
+                    id:
+                        user.id,
+
                     name:
-                        user.Name || "",
+                        user.name,
 
                     email:
-                        user.Email
+                        user.email
 
                 }
 
@@ -434,16 +484,17 @@ app.post(
         catch (error) {
 
             console.error(
-                "Login error:",
+                "LOGIN ERROR:",
                 error
             );
+
 
             return res.status(500).json({
 
                 success: false,
 
                 message:
-                    "Server error."
+                    "Unable to process login."
 
             });
 
@@ -453,16 +504,36 @@ app.post(
 );
 
 
-// ===============================
-// SERVER
-// ===============================
+// =====================================================
+// 404 HANDLER
+// =====================================================
+
+app.use(
+    (req, res) => {
+
+        res.status(404).json({
+
+            success: false,
+
+            message:
+                "API endpoint not found."
+
+        });
+
+    }
+);
+
+
+// =====================================================
+// START SERVER
+// =====================================================
 
 app.listen(
     PORT,
     () => {
 
         console.log(
-            `Priyanshu Secure Portal running on port ${PORT}`
+            `Priyanshu Secure Portal API running on port ${PORT}`
         );
 
     }
