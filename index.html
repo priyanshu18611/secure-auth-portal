@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Secure Access</title>
+    <title>Priyanshu Secure Access</title>
 
     <link rel="stylesheet" href="style.css">
 
@@ -17,21 +16,19 @@
 
 <body>
 
-    <!-- Animated Background -->
-    <div class="background">
+    <!-- ================= BACKGROUND ================= -->
 
+    <div class="background">
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
         <div class="orb orb-3"></div>
-
     </div>
 
-
-    <!-- Particles -->
     <div class="particles" id="particles"></div>
 
 
-    <!-- Login -->
+    <!-- ================= MAIN ================= -->
+
     <main class="login-wrapper">
 
         <section class="login-card">
@@ -39,13 +36,24 @@
             <div class="card-glow"></div>
 
 
-            <!-- Logo -->
-            <div class="logo">
-                <span>⚡</span>
+            <!-- BRAND -->
+
+            <div class="brand">
+
+                <div class="logo">
+                    <span>PK</span>
+                </div>
+
+                <div class="brand-name">
+                    <strong>PRIYANSHU</strong>
+                    <small>SECURE PORTAL</small>
+                </div>
+
             </div>
 
 
-            <!-- Heading -->
+            <!-- HEADING -->
+
             <div class="heading">
 
                 <p class="welcome">
@@ -64,11 +72,13 @@
             </div>
 
 
-            <!-- Form -->
+            <!-- ================= LOGIN FORM ================= -->
+
             <form id="loginForm">
 
 
-                <!-- Email -->
+                <!-- EMAIL -->
+
                 <div class="input-group">
 
                     <label for="email">
@@ -84,6 +94,7 @@
                         <input
                             type="email"
                             id="email"
+                            name="email"
                             placeholder="Enter your email"
                             autocomplete="email"
                             required
@@ -94,7 +105,8 @@
                 </div>
 
 
-                <!-- Password -->
+                <!-- PASSWORD -->
+
                 <div class="input-group">
 
                     <div class="password-header">
@@ -109,7 +121,6 @@
 
                     </div>
 
-
                     <div class="input-box">
 
                         <span class="input-icon">
@@ -119,6 +130,7 @@
                         <input
                             type="password"
                             id="password"
+                            name="password"
                             placeholder="Enter your password"
                             autocomplete="current-password"
                             required
@@ -128,6 +140,7 @@
                             type="button"
                             class="password-toggle"
                             id="togglePassword"
+                            aria-label="Show password"
                         >
                             👁
                         </button>
@@ -137,7 +150,8 @@
                 </div>
 
 
-                <!-- Options -->
+                <!-- OPTIONS -->
+
                 <div class="options">
 
                     <label class="remember">
@@ -167,7 +181,8 @@
                 </div>
 
 
-                <!-- Login -->
+                <!-- LOGIN BUTTON -->
+
                 <button
                     type="submit"
                     class="login-btn"
@@ -189,36 +204,41 @@
             </form>
 
 
-            <!-- Divider -->
+            <!-- DIVIDER -->
+
             <div class="divider">
                 <span>OR</span>
             </div>
 
 
-            <!-- Social -->
+            <!-- SOCIAL LOGIN -->
+
             <div class="social-login">
 
                 <button
                     type="button"
                     class="social-btn"
+                    id="googleLogin"
                 >
                     <span>G</span>
-                    Google
+                    Continue with Google
                 </button>
 
 
                 <button
                     type="button"
                     class="social-btn"
+                    id="githubLogin"
                 >
                     <span>◉</span>
-                    GitHub
+                    Continue with GitHub
                 </button>
 
             </div>
 
 
-            <!-- Register -->
+            <!-- REGISTER -->
+
             <div class="register">
 
                 <span>
@@ -235,10 +255,11 @@
             </div>
 
 
-            <!-- Security -->
+            <!-- SECURITY -->
+
             <div class="security-note">
 
-                <span>🛡</span>
+                <span>🛡️</span>
 
                 <div>
 
@@ -254,12 +275,20 @@
 
             </div>
 
+
+            <!-- FOOTER BRAND -->
+
+            <div class="footer-brand">
+                © 2026 <strong>Priyanshu Kumar</strong>
+            </div>
+
         </section>
 
     </main>
 
 
-    <!-- Toast -->
+    <!-- ================= TOAST ================= -->
+
     <div
         class="toast"
         id="toast"
@@ -284,8 +313,9 @@
     </div>
 
 
+    <!-- JAVASCRIPT -->
+
     <script src="script.js"></script>
 
 </body>
-
 </html>
