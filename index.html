@@ -1,321 +1,773 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Priyanshu Secure Access</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <link rel="stylesheet" href="style.css">
+    <meta
+        name="description"
+        content="Priyanshu Secure Portal - Advanced Authentication System"
+    >
+
+    <title>
+        Priyanshu Secure Access
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet"
     >
+
 </head>
+
 
 <body>
 
-    <!-- ================= BACKGROUND ================= -->
 
-    <div class="background">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-    </div>
+<!-- =====================================================
+     ANIMATED BACKGROUND
+===================================================== -->
 
-    <div class="particles" id="particles"></div>
+<div class="background">
 
+    <div class="orb orb-1"></div>
 
-    <!-- ================= MAIN ================= -->
+    <div class="orb orb-2"></div>
 
-    <main class="login-wrapper">
+    <div class="orb orb-3"></div>
 
-        <section class="login-card">
+</div>
 
-            <div class="card-glow"></div>
 
+<div
+    class="particles"
+    id="particles"
+></div>
 
-            <!-- BRAND -->
 
-            <div class="brand">
 
-                <div class="logo">
-                    <span>PK</span>
-                </div>
+<!-- =====================================================
+     LOGIN PAGE
+===================================================== -->
 
-                <div class="brand-name">
-                    <strong>PRIYANSHU</strong>
-                    <small>SECURE PORTAL</small>
-                </div>
+<main class="login-wrapper">
 
-            </div>
+    <section class="login-card">
 
+        <div class="card-glow"></div>
 
-            <!-- HEADING -->
 
-            <div class="heading">
+        <!-- BRAND -->
 
-                <p class="welcome">
-                    WELCOME BACK
-                </p>
+        <div class="brand">
 
-                <h1>
-                    Secure
-                    <span>Access</span>
-                </h1>
-
-                <p class="subtitle">
-                    Sign in to continue to your account
-                </p>
-
-            </div>
-
-
-            <!-- ================= LOGIN FORM ================= -->
-
-            <form id="loginForm">
-
-
-                <!-- EMAIL -->
-
-                <div class="input-group">
-
-                    <label for="email">
-                        Email Address
-                    </label>
-
-                    <div class="input-box">
-
-                        <span class="input-icon">
-                            ✉
-                        </span>
-
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            placeholder="Enter your email"
-                            autocomplete="email"
-                            required
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <!-- PASSWORD -->
-
-                <div class="input-group">
-
-                    <div class="password-header">
-
-                        <label for="password">
-                            Password
-                        </label>
-
-                        <a href="#" id="forgotPassword">
-                            Forgot password?
-                        </a>
-
-                    </div>
-
-                    <div class="input-box">
-
-                        <span class="input-icon">
-                            🔒
-                        </span>
-
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Enter your password"
-                            autocomplete="current-password"
-                            required
-                        >
-
-                        <button
-                            type="button"
-                            class="password-toggle"
-                            id="togglePassword"
-                            aria-label="Show password"
-                        >
-                            👁
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <!-- OPTIONS -->
-
-                <div class="options">
-
-                    <label class="remember">
-
-                        <input
-                            type="checkbox"
-                            id="remember"
-                        >
-
-                        <span class="custom-check"></span>
-
-                        <span>
-                            Remember me
-                        </span>
-
-                    </label>
-
-
-                    <div class="secure-status">
-
-                        <span class="status-dot"></span>
-
-                        Secure
-
-                    </div>
-
-                </div>
-
-
-                <!-- LOGIN BUTTON -->
-
-                <button
-                    type="submit"
-                    class="login-btn"
-                    id="loginBtn"
-                >
-
-                    <span class="btn-text">
-                        Sign In
-                    </span>
-
-                    <span class="btn-arrow">
-                        →
-                    </span>
-
-                    <span class="loader"></span>
-
-                </button>
-
-            </form>
-
-
-            <!-- DIVIDER -->
-
-            <div class="divider">
-                <span>OR</span>
-            </div>
-
-
-            <!-- SOCIAL LOGIN -->
-
-            <div class="social-login">
-
-                <button
-                    type="button"
-                    class="social-btn"
-                    id="googleLogin"
-                >
-                    <span>G</span>
-                    Continue with Google
-                </button>
-
-
-                <button
-                    type="button"
-                    class="social-btn"
-                    id="githubLogin"
-                >
-                    <span>◉</span>
-                    Continue with GitHub
-                </button>
-
-            </div>
-
-
-            <!-- REGISTER -->
-
-            <div class="register">
+            <div class="logo">
 
                 <span>
-                    Don't have an account?
+                    PK
                 </span>
 
-                <a
-                    href="#"
-                    id="registerLink"
-                >
-                    Create account
-                </a>
-
             </div>
 
 
-            <!-- SECURITY -->
+            <div class="brand-name">
 
-            <div class="security-note">
+                <strong>
+                    PRIYANSHU
+                </strong>
 
-                <span>🛡️</span>
-
-                <div>
-
-                    <strong>
-                        Protected Connection
-                    </strong>
-
-                    <small>
-                        Your information is securely encrypted.
-                    </small>
-
-                </div>
+                <small>
+                    SECURE PORTAL
+                </small>
 
             </div>
 
-
-            <!-- FOOTER BRAND -->
-
-            <div class="footer-brand">
-                © 2026 <strong>Priyanshu Kumar</strong>
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <!-- ================= TOAST ================= -->
-
-    <div
-        class="toast"
-        id="toast"
-    >
-
-        <div class="toast-icon">
-            ✓
         </div>
 
-        <div>
 
-            <strong id="toastTitle">
-                Success
-            </strong>
 
-            <p id="toastMessage">
-                Login successful
+        <!-- HEADING -->
+
+        <div class="heading">
+
+            <p class="welcome">
+                WELCOME BACK
+            </p>
+
+
+            <h1>
+
+                Secure
+
+                <span>
+                    Access
+                </span>
+
+            </h1>
+
+
+            <p class="subtitle">
+                Sign in to continue to your account
             </p>
 
         </div>
 
+
+
+        <!-- =================================================
+             LOGIN FORM
+        ================================================= -->
+
+        <form
+            id="loginForm"
+            autocomplete="on"
+        >
+
+
+            <!-- EMAIL -->
+
+            <div class="input-group">
+
+                <label for="email">
+                    Email Address
+                </label>
+
+
+                <div class="input-box">
+
+                    <span class="input-icon">
+                        ✉
+                    </span>
+
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        autocomplete="email"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+
+            <!-- PASSWORD -->
+
+            <div class="input-group">
+
+
+                <div class="password-header">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+
+                    <a
+                        href="#"
+                        id="forgotPassword"
+                    >
+                        Forgot password?
+                    </a>
+
+                </div>
+
+
+                <div class="input-box">
+
+                    <span class="input-icon">
+                        🔒
+                    </span>
+
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        id="togglePassword"
+                        aria-label="Show password"
+                    >
+                        👁
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- OPTIONS -->
+
+            <div class="options">
+
+
+                <label class="remember">
+
+                    <input
+                        type="checkbox"
+                        id="remember"
+                    >
+
+
+                    <span class="custom-check"></span>
+
+
+                    <span>
+                        Remember me
+                    </span>
+
+                </label>
+
+
+
+                <div class="secure-status">
+
+                    <span class="status-dot"></span>
+
+                    Secure
+
+                </div>
+
+            </div>
+
+
+
+            <!-- LOGIN BUTTON -->
+
+            <button
+                type="submit"
+                class="login-btn"
+                id="loginBtn"
+            >
+
+                <span class="btn-text">
+                    Sign In
+                </span>
+
+
+                <span class="btn-arrow">
+                    →
+                </span>
+
+
+                <span class="loader"></span>
+
+            </button>
+
+        </form>
+
+
+
+        <!-- =================================================
+             DIVIDER
+        ================================================= -->
+
+        <div class="divider">
+
+            <span>
+                OR
+            </span>
+
+        </div>
+
+
+
+        <!-- SOCIAL LOGIN -->
+
+        <div class="social-login">
+
+
+            <button
+                type="button"
+                class="social-btn"
+                id="googleLogin"
+            >
+
+                <span>
+                    G
+                </span>
+
+                Continue with Google
+
+            </button>
+
+
+
+            <button
+                type="button"
+                class="social-btn"
+                id="githubLogin"
+            >
+
+                <span>
+                    ◉
+                </span>
+
+                Continue with GitHub
+
+            </button>
+
+        </div>
+
+
+
+        <!-- REGISTER -->
+
+        <div class="register">
+
+            <span>
+                Don't have an account?
+            </span>
+
+
+            <a
+                href="#"
+                id="registerLink"
+            >
+                Create account
+            </a>
+
+        </div>
+
+
+
+        <!-- SECURITY -->
+
+        <div class="security-note">
+
+            <span>
+                🛡️
+            </span>
+
+
+            <div>
+
+                <strong>
+                    Protected Connection
+                </strong>
+
+
+                <small>
+                    Your information is securely encrypted.
+                </small>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- FOOTER -->
+
+        <div class="footer-brand">
+
+            © 2026
+
+            <strong>
+                Priyanshu Kumar
+            </strong>
+
+        </div>
+
+
+    </section>
+
+</main>
+
+
+
+<!-- =====================================================
+     REGISTRATION MODAL
+===================================================== -->
+
+<div
+    class="register-modal"
+    id="registerModal"
+>
+
+
+    <div class="register-overlay"></div>
+
+
+    <div class="register-box">
+
+
+        <!-- CLOSE -->
+
+        <button
+            type="button"
+            class="register-close"
+            id="registerClose"
+            aria-label="Close registration"
+        >
+            ×
+        </button>
+
+
+
+        <!-- REGISTER LOGO -->
+
+        <div class="register-logo">
+
+            PK
+
+        </div>
+
+
+
+        <!-- REGISTER HEADING -->
+
+        <div class="register-heading">
+
+            <p>
+                JOIN THE PORTAL
+            </p>
+
+
+            <h2>
+
+                Create
+
+                <span>
+                    Account
+                </span>
+
+            </h2>
+
+
+            <small>
+                Create your secure Priyanshu Portal account.
+            </small>
+
+        </div>
+
+
+
+        <!-- =================================================
+             REGISTRATION FORM
+        ================================================= -->
+
+        <form
+            id="registerForm"
+            autocomplete="on"
+        >
+
+
+            <!-- NAME -->
+
+            <div class="input-group">
+
+                <label for="registerName">
+                    Full Name
+                </label>
+
+
+                <div class="input-box">
+
+                    <span class="input-icon">
+                        👤
+                    </span>
+
+
+                    <input
+                        type="text"
+                        id="registerName"
+                        name="name"
+                        placeholder="Enter your full name"
+                        autocomplete="name"
+                        minlength="2"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+
+            <!-- EMAIL -->
+
+            <div class="input-group">
+
+                <label for="registerEmail">
+                    Email Address
+                </label>
+
+
+                <div class="input-box">
+
+                    <span class="input-icon">
+                        ✉
+                    </span>
+
+
+                    <input
+                        type="email"
+                        id="registerEmail"
+                        name="email"
+                        placeholder="Enter your email"
+                        autocomplete="email"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+
+            <!-- PASSWORD -->
+
+            <div class="input-group">
+
+                <label for="registerPassword">
+                    Password
+                </label>
+
+
+                <div class="input-box">
+
+                    <span class="input-icon">
+                        🔒
+                    </span>
+
+
+                    <input
+                        type="password"
+                        id="registerPassword"
+                        name="password"
+                        placeholder="Create a password"
+                        autocomplete="new-password"
+                        minlength="6"
+                        required
+                    >
+
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        id="toggleRegisterPassword"
+                        aria-label="Show registration password"
+                    >
+                        👁
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- CONFIRM PASSWORD -->
+
+            <div class="input-group">
+
+                <label for="confirmPassword">
+                    Confirm Password
+                </label>
+
+
+                <div class="input-box">
+
+                    <span class="input-icon">
+                        🔐
+                    </span>
+
+
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        placeholder="Confirm your password"
+                        autocomplete="new-password"
+                        minlength="6"
+                        required
+                    >
+
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        id="toggleConfirmPassword"
+                        aria-label="Show confirmation password"
+                    >
+                        👁
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- PASSWORD STRENGTH -->
+
+            <div
+                class="password-strength"
+                id="passwordStrength"
+            >
+
+                <div class="strength-bar">
+
+                    <span></span>
+
+                </div>
+
+
+                <small>
+                    Password strength
+                </small>
+
+            </div>
+
+
+
+            <!-- TERMS -->
+
+            <label class="terms">
+
+                <input
+                    type="checkbox"
+                    id="acceptTerms"
+                    required
+                >
+
+
+                <span>
+
+                    I agree to the
+
+                    <a href="#">
+                        Terms & Privacy Policy
+                    </a>
+
+                </span>
+
+            </label>
+
+
+
+            <!-- REGISTER BUTTON -->
+
+            <button
+                type="submit"
+                class="register-btn"
+                id="registerBtn"
+            >
+
+                <span class="register-btn-text">
+                    Create Secure Account
+                </span>
+
+
+                <span class="register-loader"></span>
+
+            </button>
+
+
+        </form>
+
+
+
+        <!-- ALREADY ACCOUNT -->
+
+        <div class="already-account">
+
+            Already have an account?
+
+
+            <button
+                type="button"
+                id="backToLogin"
+            >
+                Sign In
+            </button>
+
+        </div>
+
+
+
+        <!-- SECURITY -->
+
+        <div class="register-security">
+
+            🛡️
+
+            <span>
+                Passwords are securely hashed.
+            </span>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     TOAST NOTIFICATION
+===================================================== -->
+
+<div
+    class="toast"
+    id="toast"
+>
+
+    <div class="toast-icon">
+        ✓
     </div>
 
 
-    <!-- JAVASCRIPT -->
+    <div>
 
-    <script src="script.js"></script>
+        <strong id="toastTitle">
+            Success
+        </strong>
+
+
+        <p id="toastMessage">
+            Operation completed.
+        </p>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script src="script.js"></script>
+
 
 </body>
+
 </html>
