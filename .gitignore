@@ -1,9 +1,19 @@
+# Node
 node_modules/
+
+# Environment / Secrets
 .env
 .env.*
 *.log
 
+# Authentication data
+data/*.db
+data/*.db-shm
+data/*.db-wal
+
+# Excel reports
 data/*.xlsx
 
+# OS files
 .DS_Store
 Thumbs.db
