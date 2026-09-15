@@ -1,12 +1,13 @@
 // ============================================================
 // PRIYANSHU SECURE PORTAL
 // Production Authentication Server
-// PostgreSQL + bcrypt + Helmet + Activity Logging
+// PostgreSQL + bcrypt + Helmet + Rate Limiting
 // ============================================================
 
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 const bcrypt = require("bcryptjs");
 const XLSX = require("xlsx");
 const fs = require("fs");
@@ -26,7 +27,6 @@ const {
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Hide Express technology fingerprint
 app.disable("x-powered-by");
 
 // ============================================================
@@ -61,6 +61,43 @@ app.use(
 );
 
 // ============================================================
+// GENERAL API RATE LIMIT
+// ============================================================
+
+const generalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 300,
+    standardHeaders: "draft-8",
+    legacyHeaders: false,
+    message: {
+        success: false,
+        message:
+            "Too many requests. Please try again later."
+    }
+});
+
+app.use(
+    "/api/",
+    generalLimiter
+);
+
+// ============================================================
+// AUTHENTICATION RATE LIMIT
+// ============================================================
+
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 10,
+    standardHeaders: "draft-8",
+    legacyHeaders: false,
+    message: {
+        success: false,
+        message:
+            "Too many authentication attempts. Please try again after 15 minutes."
+    }
+});
+
+// ============================================================
 // DATA / EXCEL CONFIGURATION
 // ============================================================
 
@@ -81,7 +118,7 @@ if (!fs.existsSync(dataDir)) {
 }
 
 // ============================================================
-// CREATE EXCEL FILE IF NOT EXISTS
+// CREATE EXCEL FILE
 // ============================================================
 
 function createExcelFile() {
@@ -122,8 +159,6 @@ createExcelFile();
 
 // ============================================================
 // ACTIVITY LOGGING
-// PostgreSQL = persistent source
-// Excel = local report copy
 // ============================================================
 
 async function saveActivity(
@@ -131,24 +166,7 @@ async function saveActivity(
     email,
     action
 ) {
-    // --------------------------------------------------------
-    // PostgreSQL activity log
-    // --------------------------------------------------------
-
     try {
-        await pool.query(
-            `
-            CREATE TABLE IF NOT EXISTS activity_logs (
-                id SERIAL PRIMARY KEY,
-                name TEXT NOT NULL,
-                email TEXT NOT NULL,
-                action TEXT NOT NULL,
-                created_at TIMESTAMPTZ
-                    DEFAULT CURRENT_TIMESTAMP
-            );
-            `
-        );
-
         await pool.query(
             `
             INSERT INTO activity_logs
@@ -181,10 +199,6 @@ async function saveActivity(
         );
     }
 
-    // --------------------------------------------------------
-    // Excel activity report
-    // --------------------------------------------------------
-
     try {
         const workbook =
             fs.existsSync(excelFile)
@@ -212,8 +226,7 @@ async function saveActivity(
             );
         }
 
-        const now =
-            new Date();
+        const now = new Date();
 
         records.push({
             ID:
@@ -251,10 +264,6 @@ async function saveActivity(
             workbook,
             excelFile
         );
-
-        console.log(
-            `Excel activity saved: ${action}`
-        );
     } catch (error) {
         console.error(
             "EXCEL ACTIVITY LOG ERROR:",
@@ -264,7 +273,7 @@ async function saveActivity(
 }
 
 // ============================================================
-// ROOT / API STATUS
+// ROOT
 // ============================================================
 
 app.get(
@@ -277,13 +286,13 @@ app.get(
                 "Priyanshu Secure Portal API is running.",
 
             version:
-                "2.1.0",
+                "2.2.0",
 
             database:
                 "PostgreSQL",
 
             security:
-                "Helmet enabled"
+                "Helmet + Rate Limiting"
         });
     }
 );
@@ -310,7 +319,7 @@ app.get(
                     "connected",
 
                 security:
-                    "helmet-enabled"
+                    "helmet + rate-limiting"
             });
         } catch (error) {
             console.error(
@@ -337,6 +346,7 @@ app.get(
 
 app.post(
     "/api/register",
+    authLimiter,
     async (req, res) => {
         try {
             const {
@@ -344,10 +354,6 @@ app.post(
                 email,
                 password
             } = req.body;
-
-            // ------------------------------------------------
-            // Required fields
-            // ------------------------------------------------
 
             if (
                 !name ||
@@ -362,10 +368,6 @@ app.post(
                 });
             }
 
-            // ------------------------------------------------
-            // Clean input
-            // ------------------------------------------------
-
             const cleanName =
                 String(name).trim();
 
@@ -373,10 +375,6 @@ app.post(
                 String(email)
                     .trim()
                     .toLowerCase();
-
-            // ------------------------------------------------
-            // Name validation
-            // ------------------------------------------------
 
             if (
                 cleanName.length < 2 ||
@@ -389,10 +387,6 @@ app.post(
                         "Please enter a valid name."
                 });
             }
-
-            // ------------------------------------------------
-            // Email validation
-            // ------------------------------------------------
 
             const emailPattern =
                 /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -409,10 +403,6 @@ app.post(
                         "Please enter a valid email address."
                 });
             }
-
-            // ------------------------------------------------
-            // Password validation
-            // ------------------------------------------------
 
             if (
                 password.length < 6
@@ -436,10 +426,6 @@ app.post(
                 });
             }
 
-            // ------------------------------------------------
-            // Check existing user
-            // ------------------------------------------------
-
             const existingUser =
                 await findUserByEmail(
                     cleanEmail
@@ -454,19 +440,11 @@ app.post(
                 });
             }
 
-            // ------------------------------------------------
-            // Hash password
-            // ------------------------------------------------
-
             const passwordHash =
                 await bcrypt.hash(
                     password,
                     12
                 );
-
-            // ------------------------------------------------
-            // Create PostgreSQL user
-            // ------------------------------------------------
 
             const newUser =
                 await createUser(
@@ -475,19 +453,11 @@ app.post(
                     passwordHash
                 );
 
-            // ------------------------------------------------
-            // Log registration
-            // ------------------------------------------------
-
             await saveActivity(
                 newUser.name,
                 newUser.email,
                 "REGISTER"
             );
-
-            // ------------------------------------------------
-            // Response
-            // ------------------------------------------------
 
             return res.status(201).json({
                 success: true,
@@ -513,7 +483,6 @@ app.post(
                 error
             );
 
-            // PostgreSQL duplicate email
             if (
                 error.code === "23505"
             ) {
@@ -541,16 +510,13 @@ app.post(
 
 app.post(
     "/api/login",
+    authLimiter,
     async (req, res) => {
         try {
             const {
                 email,
                 password
             } = req.body;
-
-            // ------------------------------------------------
-            // Required fields
-            // ------------------------------------------------
 
             if (
                 !email ||
@@ -564,18 +530,10 @@ app.post(
                 });
             }
 
-            // ------------------------------------------------
-            // Clean email
-            // ------------------------------------------------
-
             const cleanEmail =
                 String(email)
                     .trim()
                     .toLowerCase();
-
-            // ------------------------------------------------
-            // Find user
-            // ------------------------------------------------
 
             const user =
                 await findUserByEmail(
@@ -590,10 +548,6 @@ app.post(
                         "Invalid email or password."
                 });
             }
-
-            // ------------------------------------------------
-            // Verify password
-            // ------------------------------------------------
 
             const passwordValid =
                 await bcrypt.compare(
@@ -610,19 +564,11 @@ app.post(
                 });
             }
 
-            // ------------------------------------------------
-            // Log successful login
-            // ------------------------------------------------
-
             await saveActivity(
                 user.name,
                 user.email,
                 "LOGIN"
             );
-
-            // ------------------------------------------------
-            // Response
-            // ------------------------------------------------
 
             return res.json({
                 success: true,
@@ -706,7 +652,6 @@ async function startServer() {
     try {
         await initializeDatabase();
 
-        // Create activity table during startup
         await pool.query(
             `
             CREATE TABLE IF NOT EXISTS activity_logs (
@@ -721,11 +666,11 @@ async function startServer() {
         );
 
         console.log(
-            "✅ PostgreSQL users table is ready."
+            "PostgreSQL users table is ready."
         );
 
         console.log(
-            "✅ PostgreSQL activity_logs table is ready."
+            "PostgreSQL activity_logs table is ready."
         );
 
         app.listen(
@@ -742,6 +687,10 @@ async function startServer() {
                 console.log(
                     "Helmet security enabled."
                 );
+
+                console.log(
+                    "Rate limiting enabled."
+                );
             }
         );
 
@@ -754,9 +703,5 @@ async function startServer() {
         process.exit(1);
     }
 }
-
-// ============================================================
-// START APPLICATION
-// ============================================================
 
 startServer();
