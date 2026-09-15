@@ -1,7 +1,8 @@
 // ============================================================
 // PRIYANSHU SECURE PORTAL
 // Production Authentication Server
-// PostgreSQL + bcrypt + Helmet + Rate Limiting + Strict CORS
+// PostgreSQL + bcrypt + Helmet + Rate Limiting
+// Strict CORS + Input Validation
 // ============================================================
 
 const express = require("express");
@@ -49,11 +50,6 @@ const allowedOrigins = [
 
 const corsOptions = {
     origin: function (origin, callback) {
-
-        // Allow requests without an Origin header.
-        // Useful for direct API health checks and server-to-server
-        // requests. Browser requests from websites still require
-        // an allowed origin.
         if (!origin) {
             return callback(null, true);
         }
@@ -81,9 +77,7 @@ const corsOptions = {
     ]
 };
 
-app.use(
-    cors(corsOptions)
-);
+app.use(cors(corsOptions));
 
 // ============================================================
 // JSON BODY PARSER
@@ -91,7 +85,8 @@ app.use(
 
 app.use(
     express.json({
-        limit: "1mb"
+        limit: "1mb",
+        strict: true
     })
 );
 
@@ -110,7 +105,6 @@ const generalLimiter = rateLimit({
 
     message: {
         success: false,
-
         message:
             "Too many requests. Please try again later."
     }
@@ -136,7 +130,6 @@ const authLimiter = rateLimit({
 
     message: {
         success: false,
-
         message:
             "Too many authentication attempts. Please try again after 15 minutes."
     }
@@ -202,6 +195,133 @@ function createExcelFile() {
 }
 
 createExcelFile();
+
+// ============================================================
+// INPUT VALIDATION HELPERS
+// ============================================================
+
+function isPlainObject(value) {
+    return (
+        value !== null &&
+        typeof value === "object" &&
+        !Array.isArray(value)
+    );
+}
+
+// ------------------------------------------------------------
+// Name normalization
+// ------------------------------------------------------------
+
+function normalizeName(value) {
+    if (typeof value !== "string") {
+        return null;
+    }
+
+    return value
+        .normalize("NFKC")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+// ------------------------------------------------------------
+// Name validation
+// ------------------------------------------------------------
+
+function isValidName(name) {
+    if (
+        typeof name !== "string" ||
+        name.length < 2 ||
+        name.length > 100
+    ) {
+        return false;
+    }
+
+    // Allows Unicode letters, spaces, apostrophes,
+    // periods and hyphens.
+    return /^[\p{L}\p{M} .'-]+$/u.test(name);
+}
+
+// ------------------------------------------------------------
+// Email normalization
+// ------------------------------------------------------------
+
+function normalizeEmail(value) {
+    if (typeof value !== "string") {
+        return null;
+    }
+
+    return value
+        .normalize("NFKC")
+        .trim()
+        .toLowerCase();
+}
+
+// ------------------------------------------------------------
+// Email validation
+// ------------------------------------------------------------
+
+function isValidEmail(email) {
+    if (
+        typeof email !== "string" ||
+        email.length < 3 ||
+        email.length > 254
+    ) {
+        return false;
+    }
+
+    if (
+        /\s/.test(email)
+    ) {
+        return false;
+    }
+
+    const emailPattern =
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    return emailPattern.test(email);
+}
+
+// ------------------------------------------------------------
+// Password validation
+// ------------------------------------------------------------
+
+function isValidPassword(password) {
+    if (
+        typeof password !== "string"
+    ) {
+        return false;
+    }
+
+    if (
+        password.length < 6 ||
+        password.length > 128
+    ) {
+        return false;
+    }
+
+    return true;
+}
+
+// ------------------------------------------------------------
+// Reject unexpected fields
+// ------------------------------------------------------------
+
+function hasOnlyAllowedFields(
+    body,
+    allowedFields
+) {
+    if (!isPlainObject(body)) {
+        return false;
+    }
+
+    const receivedFields =
+        Object.keys(body);
+
+    return receivedFields.every(
+        field =>
+            allowedFields.includes(field)
+    );
+}
 
 // ============================================================
 // ACTIVITY LOGGING
@@ -343,13 +463,13 @@ app.get(
                 "Priyanshu Secure Portal API is running.",
 
             version:
-                "2.3.0",
+                "2.4.0",
 
             database:
                 "PostgreSQL",
 
             security:
-                "Helmet + Rate Limiting + Strict CORS"
+                "Helmet + Rate Limiting + Strict CORS + Input Validation"
         });
     }
 );
@@ -376,7 +496,7 @@ app.get(
                     "connected",
 
                 security:
-                    "helmet + rate-limiting + strict-cors"
+                    "helmet + rate-limiting + strict-cors + validation"
             });
 
         } catch (error) {
@@ -408,6 +528,39 @@ app.post(
     async (req, res) => {
 
         try {
+            // ------------------------------------------------
+            // Body validation
+            // ------------------------------------------------
+
+            if (
+                !isPlainObject(req.body)
+            ) {
+                return res.status(400).json({
+                    success: false,
+
+                    message:
+                        "Invalid request body."
+                });
+            }
+
+            if (
+                !hasOnlyAllowedFields(
+                    req.body,
+                    [
+                        "name",
+                        "email",
+                        "password"
+                    ]
+                )
+            ) {
+                return res.status(400).json({
+                    success: false,
+
+                    message:
+                        "Request contains unsupported fields."
+                });
+            }
+
             const {
                 name,
                 email,
@@ -419,9 +572,9 @@ app.post(
             // ------------------------------------------------
 
             if (
-                !name ||
-                !email ||
-                !password
+                typeof name !== "string" ||
+                typeof email !== "string" ||
+                typeof password !== "string"
             ) {
                 return res.status(400).json({
                     success: false,
@@ -432,24 +585,21 @@ app.post(
             }
 
             // ------------------------------------------------
-            // Clean input
+            // Normalize safe fields
             // ------------------------------------------------
 
             const cleanName =
-                String(name).trim();
+                normalizeName(name);
 
             const cleanEmail =
-                String(email)
-                    .trim()
-                    .toLowerCase();
+                normalizeEmail(email);
 
             // ------------------------------------------------
-            // Name validation
+            // Validate name
             // ------------------------------------------------
 
             if (
-                cleanName.length < 2 ||
-                cleanName.length > 100
+                !isValidName(cleanName)
             ) {
                 return res.status(400).json({
                     success: false,
@@ -460,16 +610,11 @@ app.post(
             }
 
             // ------------------------------------------------
-            // Email validation
+            // Validate email
             // ------------------------------------------------
 
-            const emailPattern =
-                /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
             if (
-                !emailPattern.test(
-                    cleanEmail
-                )
+                !isValidEmail(cleanEmail)
             ) {
                 return res.status(400).json({
                     success: false,
@@ -480,33 +625,22 @@ app.post(
             }
 
             // ------------------------------------------------
-            // Password validation
+            // Validate password
             // ------------------------------------------------
 
             if (
-                password.length < 6
+                !isValidPassword(password)
             ) {
                 return res.status(400).json({
                     success: false,
 
                     message:
-                        "Password must contain at least 6 characters."
-                });
-            }
-
-            if (
-                password.length > 128
-            ) {
-                return res.status(400).json({
-                    success: false,
-
-                    message:
-                        "Password is too long."
+                        "Password must contain 6 to 128 characters."
                 });
             }
 
             // ------------------------------------------------
-            // Existing user check
+            // Check existing user
             // ------------------------------------------------
 
             const existingUser =
@@ -524,7 +658,7 @@ app.post(
             }
 
             // ------------------------------------------------
-            // Password hashing
+            // Hash password
             // ------------------------------------------------
 
             const passwordHash =
@@ -534,7 +668,7 @@ app.post(
                 );
 
             // ------------------------------------------------
-            // Create user
+            // Create PostgreSQL user
             // ------------------------------------------------
 
             const newUser =
@@ -594,20 +728,6 @@ app.post(
                 });
             }
 
-            if (
-                error.message &&
-                error.message.includes(
-                    "CORS policy"
-                )
-            ) {
-                return res.status(403).json({
-                    success: false,
-
-                    message:
-                        "Request origin is not allowed."
-                });
-            }
-
             return res.status(500).json({
                 success: false,
 
@@ -628,6 +748,38 @@ app.post(
     async (req, res) => {
 
         try {
+            // ------------------------------------------------
+            // Body validation
+            // ------------------------------------------------
+
+            if (
+                !isPlainObject(req.body)
+            ) {
+                return res.status(400).json({
+                    success: false,
+
+                    message:
+                        "Invalid request body."
+                });
+            }
+
+            if (
+                !hasOnlyAllowedFields(
+                    req.body,
+                    [
+                        "email",
+                        "password"
+                    ]
+                )
+            ) {
+                return res.status(400).json({
+                    success: false,
+
+                    message:
+                        "Request contains unsupported fields."
+                });
+            }
+
             const {
                 email,
                 password
@@ -638,8 +790,8 @@ app.post(
             // ------------------------------------------------
 
             if (
-                !email ||
-                !password
+                typeof email !== "string" ||
+                typeof password !== "string"
             ) {
                 return res.status(400).json({
                     success: false,
@@ -650,13 +802,41 @@ app.post(
             }
 
             // ------------------------------------------------
-            // Clean email
+            // Normalize email
             // ------------------------------------------------
 
             const cleanEmail =
-                String(email)
-                    .trim()
-                    .toLowerCase();
+                normalizeEmail(email);
+
+            // ------------------------------------------------
+            // Validate email
+            // ------------------------------------------------
+
+            if (
+                !isValidEmail(cleanEmail)
+            ) {
+                return res.status(400).json({
+                    success: false,
+
+                    message:
+                        "Please enter a valid email address."
+                });
+            }
+
+            // ------------------------------------------------
+            // Validate password
+            // ------------------------------------------------
+
+            if (
+                !isValidPassword(password)
+            ) {
+                return res.status(400).json({
+                    success: false,
+
+                    message:
+                        "Invalid email or password."
+                });
+            }
 
             // ------------------------------------------------
             // Find user
@@ -677,7 +857,7 @@ app.post(
             }
 
             // ------------------------------------------------
-            // Password verification
+            // Verify password
             // ------------------------------------------------
 
             const passwordValid =
@@ -734,20 +914,6 @@ app.post(
                 error
             );
 
-            if (
-                error.message &&
-                error.message.includes(
-                    "CORS policy"
-                )
-            ) {
-                return res.status(403).json({
-                    success: false,
-
-                    message:
-                        "Request origin is not allowed."
-                });
-            }
-
             return res.status(500).json({
                 success: false,
 
@@ -790,7 +956,36 @@ app.use(
             error
         );
 
-        res.status(500).json({
+        // CORS errors
+        if (
+            error.message &&
+            error.message.includes(
+                "CORS policy"
+            )
+        ) {
+            return res.status(403).json({
+                success: false,
+
+                message:
+                    "Request origin is not allowed."
+            });
+        }
+
+        // Invalid JSON
+        if (
+            error instanceof SyntaxError &&
+            error.status === 400 &&
+            "body" in error
+        ) {
+            return res.status(400).json({
+                success: false,
+
+                message:
+                    "Invalid JSON request body."
+            });
+        }
+
+        return res.status(500).json({
             success: false,
 
             message:
@@ -852,6 +1047,10 @@ async function startServer() {
 
                 console.log(
                     "Strict CORS enabled."
+                );
+
+                console.log(
+                    "Input validation enabled."
                 );
             }
         );
