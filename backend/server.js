@@ -2237,3 +2237,270 @@ app.use(
 
     }
 );
+// ============================================================
+// SERVER STARTUP
+// ============================================================
+
+async function startServer() {
+
+    try {
+
+        console.log(
+            "============================================================"
+        );
+
+        console.log(
+            "PRIYANSHU SECURE PORTAL"
+        );
+
+        console.log(
+            "Production Authentication Backend"
+        );
+
+        console.log(
+            "Version: 2.8.1"
+        );
+
+        console.log(
+            "============================================================"
+        );
+
+
+        // ----------------------------------------------------
+        // PostgreSQL
+        // ----------------------------------------------------
+
+        console.log(
+            "Connecting to PostgreSQL..."
+        );
+
+        await pool.query(
+            "SELECT 1"
+        );
+
+        console.log(
+            "PostgreSQL CONNECTED"
+        );
+
+
+        // ----------------------------------------------------
+        // Database initialization
+        // ----------------------------------------------------
+
+        await initializeDatabase();
+
+        console.log(
+            "PostgreSQL users table is ready."
+        );
+
+
+        // ----------------------------------------------------
+        // Activity logging table
+        // ----------------------------------------------------
+
+        await initializeActivityLogs();
+
+
+        // ----------------------------------------------------
+        // Remove expired / used reset tokens
+        // ----------------------------------------------------
+
+        await deleteExpiredResetTokens();
+
+        console.log(
+            "Expired password reset tokens cleaned."
+        );
+
+
+        // ----------------------------------------------------
+        // Security status
+        // ----------------------------------------------------
+
+        console.log(
+            "JWT ACTIVE"
+        );
+
+        console.log(
+            "bcrypt ACTIVE"
+        );
+
+        console.log(
+            "Helmet ACTIVE"
+        );
+
+        console.log(
+            "CORS ACTIVE"
+        );
+
+        console.log(
+            "Rate Limiting ACTIVE"
+        );
+
+        console.log(
+            "Password Recovery ACTIVE"
+        );
+
+        console.log(
+            "Resend Email:",
+            RESEND_API_KEY
+                ? "CONFIGURED"
+                : "NOT CONFIGURED"
+        );
+
+
+        // ----------------------------------------------------
+        // Start HTTP server
+        // ----------------------------------------------------
+
+        const server =
+            app.listen(
+                PORT,
+                () => {
+
+                    console.log(
+                        "============================================================"
+                    );
+
+                    console.log(
+                        `SERVER LIVE ON PORT ${PORT}`
+                    );
+
+                    console.log(
+                        `Environment: ${NODE_ENV}`
+                    );
+
+                    console.log(
+                        `Frontend: ${FRONTEND_URL}`
+                    );
+
+                    console.log(
+                        "API Status: ONLINE"
+                    );
+
+                    console.log(
+                        "============================================================"
+                    );
+
+                }
+            );
+
+
+        // ----------------------------------------------------
+        // Graceful shutdown
+        // ----------------------------------------------------
+
+        const shutdown =
+            async (
+                signal
+            ) => {
+
+                console.log(
+                    `Received ${signal}. Shutting down...`
+                );
+
+                server.close(
+                    async () => {
+
+                        console.log(
+                            "HTTP server closed."
+                        );
+
+                        try {
+
+                            await closeDatabase();
+
+                            console.log(
+                                "PostgreSQL connection pool closed."
+                            );
+
+                            process.exit(
+                                0
+                            );
+
+                        } catch (
+                            error
+                        ) {
+
+                            console.error(
+                                "Database shutdown error:",
+                                error.message
+                            );
+
+                            process.exit(
+                                1
+                            );
+
+                        }
+
+                    }
+                );
+
+            };
+
+
+        process.once(
+            "SIGTERM",
+            () => {
+                shutdown(
+                    "SIGTERM"
+                );
+            }
+        );
+
+        process.once(
+            "SIGINT",
+            () => {
+                shutdown(
+                    "SIGINT"
+                );
+            }
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "============================================================"
+        );
+
+        console.error(
+            "SERVER STARTUP FAILED"
+        );
+
+        console.error(
+            error
+        );
+
+        console.error(
+            "============================================================"
+        );
+
+        try {
+
+            await closeDatabase();
+
+        } catch (
+            shutdownError
+        ) {
+
+            console.error(
+                "Database cleanup error:",
+                shutdownError.message
+            );
+
+        }
+
+        process.exit(
+            1
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// START APPLICATION
+// ============================================================
+
+startServer();
