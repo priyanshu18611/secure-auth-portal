@@ -1,13 +1,13 @@
 // ============================================================
 // PRIYANSHU SECURE PORTAL
 // PostgreSQL Database Layer
+// Version 2.7.0
 // ============================================================
 
 const { Pool } = require("pg");
 
-
 // ============================================================
-// DATABASE CONNECTION
+// DATABASE CONFIGURATION
 // ============================================================
 
 if (!process.env.DATABASE_URL) {
@@ -17,7 +17,8 @@ if (!process.env.DATABASE_URL) {
 }
 
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
+    connectionString:
+        process.env.DATABASE_URL,
 
     ssl: {
         rejectUnauthorized: false
@@ -30,21 +31,22 @@ const pool = new Pool({
     connectionTimeoutMillis: 10000
 });
 
-
 // ============================================================
 // INITIALIZE DATABASE
 // ============================================================
 
 async function initializeDatabase() {
-
     const client =
         await pool.connect();
 
     try {
 
+        // ----------------------------------------------------
+        // USERS TABLE
+        // ----------------------------------------------------
+
         await client.query(`
             CREATE TABLE IF NOT EXISTS users (
-
                 id SERIAL PRIMARY KEY,
 
                 name TEXT NOT NULL,
@@ -55,20 +57,64 @@ async function initializeDatabase() {
 
                 created_at TIMESTAMPTZ
                     DEFAULT CURRENT_TIMESTAMP
-
             );
         `);
 
         console.log(
-            "✅ PostgreSQL users table is ready."
+            "PostgreSQL users table is ready."
         );
+
+
+        // ----------------------------------------------------
+        // PASSWORD RESET TOKENS TABLE
+        // ----------------------------------------------------
+
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS password_reset_tokens (
+                id SERIAL PRIMARY KEY,
+
+                user_id INTEGER NOT NULL
+                    REFERENCES users(id)
+                    ON DELETE CASCADE,
+
+                token_hash TEXT NOT NULL UNIQUE,
+
+                expires_at TIMESTAMPTZ NOT NULL,
+
+                used_at TIMESTAMPTZ,
+
+                created_at TIMESTAMPTZ
+                    DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
+        console.log(
+            "PostgreSQL password_reset_tokens table is ready."
+        );
+
+
+        // ----------------------------------------------------
+        // INDEXES
+        // ----------------------------------------------------
+
+        await client.query(`
+            CREATE INDEX IF NOT EXISTS
+            idx_password_reset_tokens_user_id
+            ON password_reset_tokens(user_id);
+        `);
+
+        await client.query(`
+            CREATE INDEX IF NOT EXISTS
+            idx_password_reset_tokens_expires_at
+            ON password_reset_tokens(expires_at);
+        `);
 
     } finally {
 
         client.release();
+
     }
 }
-
 
 // ============================================================
 // CREATE USER
@@ -111,7 +157,6 @@ async function createUser(
     return result.rows[0];
 }
 
-
 // ============================================================
 // FIND USER BY EMAIL
 // ============================================================
@@ -130,17 +175,183 @@ async function findUserByEmail(
                 password_hash,
                 created_at
             FROM users
-            WHERE LOWER(email) = LOWER($1)
+            WHERE LOWER(email)
+                = LOWER($1)
             LIMIT 1
             `,
+            [email]
+        );
+
+    return result.rows[0];
+}
+
+// ============================================================
+// FIND USER BY ID
+// ============================================================
+
+async function findUserById(
+    userId
+) {
+
+    const result =
+        await pool.query(
+            `
+            SELECT
+                id,
+                name,
+                email,
+                created_at
+            FROM users
+            WHERE id = $1
+            LIMIT 1
+            `,
+            [userId]
+        );
+
+    return result.rows[0];
+}
+
+// ============================================================
+// CREATE PASSWORD RESET TOKEN
+// ============================================================
+
+async function createPasswordResetToken(
+    userId,
+    tokenHash,
+    expiresAt
+) {
+
+    // Remove previous unused tokens
+    await pool.query(
+        `
+        DELETE FROM password_reset_tokens
+        WHERE user_id = $1
+        AND used_at IS NULL
+        `,
+        [userId]
+    );
+
+    const result =
+        await pool.query(
+            `
+            INSERT INTO password_reset_tokens
+            (
+                user_id,
+                token_hash,
+                expires_at
+            )
+            VALUES
+            (
+                $1,
+                $2,
+                $3
+            )
+            RETURNING
+                id,
+                user_id,
+                expires_at,
+                created_at
+            `,
             [
-                email
+                userId,
+                tokenHash,
+                expiresAt
             ]
         );
 
     return result.rows[0];
 }
 
+// ============================================================
+// FIND VALID PASSWORD RESET TOKEN
+// ============================================================
+
+async function findValidPasswordResetToken(
+    tokenHash
+) {
+
+    const result =
+        await pool.query(
+            `
+            SELECT
+                id,
+                user_id,
+                expires_at,
+                used_at
+            FROM password_reset_tokens
+            WHERE token_hash = $1
+            AND used_at IS NULL
+            AND expires_at > CURRENT_TIMESTAMP
+            LIMIT 1
+            `,
+            [tokenHash]
+        );
+
+    return result.rows[0];
+}
+
+// ============================================================
+// MARK PASSWORD RESET TOKEN AS USED
+// ============================================================
+
+async function markPasswordResetTokenUsed(
+    tokenId
+) {
+
+    await pool.query(
+        `
+        UPDATE password_reset_tokens
+        SET used_at = CURRENT_TIMESTAMP
+        WHERE id = $1
+        `,
+        [tokenId]
+    );
+}
+
+// ============================================================
+// UPDATE USER PASSWORD
+// ============================================================
+
+async function updateUserPassword(
+    userId,
+    passwordHash
+) {
+
+    const result =
+        await pool.query(
+            `
+            UPDATE users
+            SET password_hash = $1
+            WHERE id = $2
+            RETURNING
+                id,
+                name,
+                email,
+                created_at
+            `,
+            [
+                passwordHash,
+                userId
+            ]
+        );
+
+    return result.rows[0];
+}
+
+// ============================================================
+// DELETE EXPIRED RESET TOKENS
+// ============================================================
+
+async function deleteExpiredResetTokens() {
+
+    await pool.query(
+        `
+        DELETE FROM password_reset_tokens
+        WHERE expires_at <= CURRENT_TIMESTAMP
+        OR used_at IS NOT NULL
+        `
+    );
+}
 
 // ============================================================
 // CLOSE DATABASE
@@ -152,9 +363,8 @@ async function closeDatabase() {
 
 }
 
-
 // ============================================================
-// EXPORT
+// EXPORTS
 // ============================================================
 
 module.exports = {
@@ -166,6 +376,18 @@ module.exports = {
     createUser,
 
     findUserByEmail,
+
+    findUserById,
+
+    createPasswordResetToken,
+
+    findValidPasswordResetToken,
+
+    markPasswordResetTokenUsed,
+
+    updateUserPassword,
+
+    deleteExpiredResetTokens,
 
     closeDatabase
 
