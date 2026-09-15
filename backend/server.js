@@ -1,7 +1,7 @@
 // ============================================================
 // PRIYANSHU SECURE PORTAL
 // Production Authentication Server
-// PostgreSQL + bcrypt + Helmet + Rate Limiting
+// PostgreSQL + bcrypt + Helmet + Rate Limiting + Strict CORS
 // ============================================================
 
 const express = require("express");
@@ -40,14 +40,49 @@ app.use(
 );
 
 // ============================================================
-// CORS
+// STRICT CORS
 // ============================================================
 
+const allowedOrigins = [
+    "https://priyanshu18611.github.io"
+];
+
+const corsOptions = {
+    origin: function (origin, callback) {
+
+        // Allow requests without an Origin header.
+        // Useful for direct API health checks and server-to-server
+        // requests. Browser requests from websites still require
+        // an allowed origin.
+        if (!origin) {
+            return callback(null, true);
+        }
+
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+
+        return callback(
+            new Error("CORS policy: Origin not allowed.")
+        );
+    },
+
+    credentials: true,
+
+    methods: [
+        "GET",
+        "POST",
+        "OPTIONS"
+    ],
+
+    allowedHeaders: [
+        "Content-Type",
+        "Authorization"
+    ]
+};
+
 app.use(
-    cors({
-        origin: true,
-        credentials: true
-    })
+    cors(corsOptions)
 );
 
 // ============================================================
@@ -66,11 +101,16 @@ app.use(
 
 const generalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
+
     limit: 300,
+
     standardHeaders: "draft-8",
+
     legacyHeaders: false,
+
     message: {
         success: false,
+
         message:
             "Too many requests. Please try again later."
     }
@@ -87,11 +127,16 @@ app.use(
 
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
+
     limit: 10,
+
     standardHeaders: "draft-8",
+
     legacyHeaders: false,
+
     message: {
         success: false,
+
         message:
             "Too many authentication attempts. Please try again after 15 minutes."
     }
@@ -147,6 +192,7 @@ function createExcelFile() {
         console.log(
             "Excel activity file initialized."
         );
+
     } catch (error) {
         console.error(
             "EXCEL INITIALIZATION ERROR:",
@@ -166,6 +212,10 @@ async function saveActivity(
     email,
     action
 ) {
+    // --------------------------------------------------------
+    // PostgreSQL activity log
+    // --------------------------------------------------------
+
     try {
         await pool.query(
             `
@@ -192,12 +242,17 @@ async function saveActivity(
         console.log(
             `Activity logged: ${action} - ${email}`
         );
+
     } catch (error) {
         console.error(
             "POSTGRES ACTIVITY LOG ERROR:",
             error.message
         );
     }
+
+    // --------------------------------------------------------
+    // Excel activity report
+    // --------------------------------------------------------
 
     try {
         const workbook =
@@ -226,7 +281,8 @@ async function saveActivity(
             );
         }
 
-        const now = new Date();
+        const now =
+            new Date();
 
         records.push({
             ID:
@@ -264,6 +320,7 @@ async function saveActivity(
             workbook,
             excelFile
         );
+
     } catch (error) {
         console.error(
             "EXCEL ACTIVITY LOG ERROR:",
@@ -273,7 +330,7 @@ async function saveActivity(
 }
 
 // ============================================================
-// ROOT
+// ROOT API
 // ============================================================
 
 app.get(
@@ -286,13 +343,13 @@ app.get(
                 "Priyanshu Secure Portal API is running.",
 
             version:
-                "2.2.0",
+                "2.3.0",
 
             database:
                 "PostgreSQL",
 
             security:
-                "Helmet + Rate Limiting"
+                "Helmet + Rate Limiting + Strict CORS"
         });
     }
 );
@@ -319,8 +376,9 @@ app.get(
                     "connected",
 
                 security:
-                    "helmet + rate-limiting"
+                    "helmet + rate-limiting + strict-cors"
             });
+
         } catch (error) {
             console.error(
                 "HEALTH CHECK ERROR:",
@@ -348,12 +406,17 @@ app.post(
     "/api/register",
     authLimiter,
     async (req, res) => {
+
         try {
             const {
                 name,
                 email,
                 password
             } = req.body;
+
+            // ------------------------------------------------
+            // Required fields
+            // ------------------------------------------------
 
             if (
                 !name ||
@@ -368,6 +431,10 @@ app.post(
                 });
             }
 
+            // ------------------------------------------------
+            // Clean input
+            // ------------------------------------------------
+
             const cleanName =
                 String(name).trim();
 
@@ -375,6 +442,10 @@ app.post(
                 String(email)
                     .trim()
                     .toLowerCase();
+
+            // ------------------------------------------------
+            // Name validation
+            // ------------------------------------------------
 
             if (
                 cleanName.length < 2 ||
@@ -387,6 +458,10 @@ app.post(
                         "Please enter a valid name."
                 });
             }
+
+            // ------------------------------------------------
+            // Email validation
+            // ------------------------------------------------
 
             const emailPattern =
                 /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -403,6 +478,10 @@ app.post(
                         "Please enter a valid email address."
                 });
             }
+
+            // ------------------------------------------------
+            // Password validation
+            // ------------------------------------------------
 
             if (
                 password.length < 6
@@ -426,6 +505,10 @@ app.post(
                 });
             }
 
+            // ------------------------------------------------
+            // Existing user check
+            // ------------------------------------------------
+
             const existingUser =
                 await findUserByEmail(
                     cleanEmail
@@ -440,11 +523,19 @@ app.post(
                 });
             }
 
+            // ------------------------------------------------
+            // Password hashing
+            // ------------------------------------------------
+
             const passwordHash =
                 await bcrypt.hash(
                     password,
                     12
                 );
+
+            // ------------------------------------------------
+            // Create user
+            // ------------------------------------------------
 
             const newUser =
                 await createUser(
@@ -453,11 +544,19 @@ app.post(
                     passwordHash
                 );
 
+            // ------------------------------------------------
+            // Activity log
+            // ------------------------------------------------
+
             await saveActivity(
                 newUser.name,
                 newUser.email,
                 "REGISTER"
             );
+
+            // ------------------------------------------------
+            // Response
+            // ------------------------------------------------
 
             return res.status(201).json({
                 success: true,
@@ -478,6 +577,7 @@ app.post(
             });
 
         } catch (error) {
+
             console.error(
                 "REGISTER ERROR:",
                 error
@@ -491,6 +591,20 @@ app.post(
 
                     message:
                         "An account with this email already exists."
+                });
+            }
+
+            if (
+                error.message &&
+                error.message.includes(
+                    "CORS policy"
+                )
+            ) {
+                return res.status(403).json({
+                    success: false,
+
+                    message:
+                        "Request origin is not allowed."
                 });
             }
 
@@ -512,11 +626,16 @@ app.post(
     "/api/login",
     authLimiter,
     async (req, res) => {
+
         try {
             const {
                 email,
                 password
             } = req.body;
+
+            // ------------------------------------------------
+            // Required fields
+            // ------------------------------------------------
 
             if (
                 !email ||
@@ -530,10 +649,18 @@ app.post(
                 });
             }
 
+            // ------------------------------------------------
+            // Clean email
+            // ------------------------------------------------
+
             const cleanEmail =
                 String(email)
                     .trim()
                     .toLowerCase();
+
+            // ------------------------------------------------
+            // Find user
+            // ------------------------------------------------
 
             const user =
                 await findUserByEmail(
@@ -548,6 +675,10 @@ app.post(
                         "Invalid email or password."
                 });
             }
+
+            // ------------------------------------------------
+            // Password verification
+            // ------------------------------------------------
 
             const passwordValid =
                 await bcrypt.compare(
@@ -564,11 +695,19 @@ app.post(
                 });
             }
 
+            // ------------------------------------------------
+            // Activity log
+            // ------------------------------------------------
+
             await saveActivity(
                 user.name,
                 user.email,
                 "LOGIN"
             );
+
+            // ------------------------------------------------
+            // Response
+            // ------------------------------------------------
 
             return res.json({
                 success: true,
@@ -589,10 +728,25 @@ app.post(
             });
 
         } catch (error) {
+
             console.error(
                 "LOGIN ERROR:",
                 error
             );
+
+            if (
+                error.message &&
+                error.message.includes(
+                    "CORS policy"
+                )
+            ) {
+                return res.status(403).json({
+                    success: false,
+
+                    message:
+                        "Request origin is not allowed."
+                });
+            }
 
             return res.status(500).json({
                 success: false,
@@ -630,6 +784,7 @@ app.use(
         res,
         next
     ) => {
+
         console.error(
             "GLOBAL ERROR:",
             error
@@ -649,7 +804,9 @@ app.use(
 // ============================================================
 
 async function startServer() {
+
     try {
+
         await initializeDatabase();
 
         await pool.query(
@@ -676,6 +833,7 @@ async function startServer() {
         app.listen(
             PORT,
             () => {
+
                 console.log(
                     `Priyanshu Secure Portal API running on port ${PORT}`
                 );
@@ -691,10 +849,15 @@ async function startServer() {
                 console.log(
                     "Rate limiting enabled."
                 );
+
+                console.log(
+                    "Strict CORS enabled."
+                );
             }
         );
 
     } catch (error) {
+
         console.error(
             "DATABASE INITIALIZATION FAILED:",
             error
@@ -703,5 +866,9 @@ async function startServer() {
         process.exit(1);
     }
 }
+
+// ============================================================
+// START APPLICATION
+// ============================================================
 
 startServer();
