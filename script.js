@@ -1,355 +1,1001 @@
-// =====================================================
+// ============================================================
 // PRIYANSHU SECURE PORTAL
-// Frontend Authentication Controller
-// =====================================================
+// Advanced Authentication Frontend
+// ============================================================
 
-const loginForm =
-    document.getElementById("loginForm");
+// ============================================================
+// LIVE BACKEND API
+// ============================================================
 
-const emailInput =
-    document.getElementById("email");
-
-const passwordInput =
-    document.getElementById("password");
-
-const togglePassword =
-    document.getElementById("togglePassword");
-
-const loginBtn =
-    document.getElementById("loginBtn");
-
-const particlesContainer =
-    document.getElementById("particles");
-
-const toast =
-    document.getElementById("toast");
-
-const toastTitle =
-    document.getElementById("toastTitle");
-
-const toastMessage =
-    document.getElementById("toastMessage");
-
-const card =
-    document.querySelector(".login-card");
+const API_URL = "https://priyanshu-secure-auth.onrender.com";
 
 
-// =====================================================
-// API CONFIGURATION
-// =====================================================
+// ============================================================
+// DOM ELEMENTS — LOGIN
+// ============================================================
 
-// Local development
-const API_URL = "http://localhost:5000";
-
-
-// =====================================================
-// PASSWORD TOGGLE
-// =====================================================
-
-togglePassword.addEventListener("click", () => {
-
-    const hidden =
-        passwordInput.type === "password";
-
-    passwordInput.type =
-        hidden ? "text" : "password";
-
-    togglePassword.textContent =
-        hidden ? "🙈" : "👁";
-
-});
+const loginForm = document.getElementById("loginForm");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const togglePassword = document.getElementById("togglePassword");
+const forgotPassword = document.getElementById("forgotPassword");
+const rememberCheckbox = document.getElementById("remember");
+const loginBtn = document.getElementById("loginBtn");
 
 
-// =====================================================
-// PARTICLES
-// =====================================================
+// ============================================================
+// DOM ELEMENTS — REGISTRATION
+// ============================================================
 
-function createParticles() {
+const registerModal = document.getElementById("registerModal");
+const registerOverlay = document.getElementById("registerOverlay");
+const registerBox = document.getElementById("registerBox");
+const registerClose = document.getElementById("registerClose");
+const registerLink = document.getElementById("registerLink");
 
-    const total = 55;
+const registerForm = document.getElementById("registerForm");
+const registerName = document.getElementById("registerName");
+const registerEmail = document.getElementById("registerEmail");
+const registerPassword = document.getElementById("registerPassword");
+const confirmPassword = document.getElementById("confirmPassword");
 
-    for (let i = 0; i < total; i++) {
+const toggleRegisterPassword =
+    document.getElementById("toggleRegisterPassword");
 
-        const particle =
-            document.createElement("span");
+const toggleConfirmPassword =
+    document.getElementById("toggleConfirmPassword");
 
-        particle.className =
-            "particle";
+const passwordStrength =
+    document.getElementById("passwordStrength");
 
-        particle.style.left =
-            Math.random() * 100 + "%";
+const acceptTerms =
+    document.getElementById("acceptTerms");
 
-        particle.style.animationDuration =
-            (6 + Math.random() * 12) + "s";
+const registerBtn =
+    document.getElementById("registerBtn");
 
-        particle.style.animationDelay =
-            Math.random() * 10 + "s";
+const backToLogin =
+    document.getElementById("backToLogin");
 
-        particle.style.opacity =
-            0.15 + Math.random() * 0.55;
 
-        const size =
-            1 + Math.random() * 3;
+// ============================================================
+// DOM ELEMENTS — TOAST
+// ============================================================
 
-        particle.style.width =
-            size + "px";
+const toast = document.getElementById("toast");
+const toastTitle = document.getElementById("toastTitle");
+const toastMessage = document.getElementById("toastMessage");
 
-        particle.style.height =
-            size + "px";
 
-        particlesContainer.appendChild(
-            particle
-        );
+// ============================================================
+// HELPER — SAFE ELEMENT CHECK
+// ============================================================
 
-    }
+function exists(element) {
+    return element !== null && element !== undefined;
 }
 
-createParticles();
 
+// ============================================================
+// TOAST SYSTEM
+// ============================================================
 
-// =====================================================
-// TOAST
-// =====================================================
-
-let toastTimer;
+let toastTimer = null;
 
 function showToast(
     title,
     message,
     type = "success"
 ) {
+    if (!exists(toast)) {
+        alert(`${title}\n${message}`);
+        return;
+    }
+
+    if (exists(toastTitle)) {
+        toastTitle.textContent = title;
+    }
+
+    if (exists(toastMessage)) {
+        toastMessage.textContent = message;
+    }
+
+    toast.classList.remove(
+        "success",
+        "error",
+        "warning",
+        "show"
+    );
+
+    toast.classList.add(type);
+
+    requestAnimationFrame(() => {
+        toast.classList.add("show");
+    });
 
     clearTimeout(toastTimer);
 
-    toastTitle.textContent =
-        title;
+    toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+    }, 4000);
+}
 
-    toastMessage.textContent =
-        message;
 
-    const icon =
-        toast.querySelector(
-            ".toast-icon"
-        );
+// ============================================================
+// PASSWORD VISIBILITY TOGGLE
+// ============================================================
 
-    if (type === "error") {
-
-        icon.textContent = "×";
-
-        icon.style.background =
-            "#ff5577";
-
-    } else {
-
-        icon.textContent = "✓";
-
-        icon.style.background =
-            "#35e88b";
-
+function setupPasswordToggle(
+    button,
+    input
+) {
+    if (!exists(button) || !exists(input)) {
+        return;
     }
 
-    toast.classList.add("show");
+    button.addEventListener(
+        "click",
+        () => {
+            const isPassword =
+                input.type === "password";
 
-    toastTimer = setTimeout(() => {
+            input.type =
+                isPassword
+                    ? "text"
+                    : "password";
 
-        toast.classList.remove(
-            "show"
-        );
+            button.textContent =
+                isPassword
+                    ? "🙈"
+                    : "👁";
 
-    }, 3500);
-
+            button.setAttribute(
+                "aria-label",
+                isPassword
+                    ? "Hide password"
+                    : "Show password"
+            );
+        }
+    );
 }
 
+setupPasswordToggle(
+    togglePassword,
+    passwordInput
+);
 
-// =====================================================
+setupPasswordToggle(
+    toggleRegisterPassword,
+    registerPassword
+);
+
+setupPasswordToggle(
+    toggleConfirmPassword,
+    confirmPassword
+);
+
+
+// ============================================================
 // EMAIL VALIDATION
-// =====================================================
+// ============================================================
 
 function isValidEmail(email) {
-
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        .test(email);
-
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+        email
+    );
 }
 
 
-// =====================================================
-// LOGIN
-// =====================================================
+// ============================================================
+// PASSWORD STRENGTH
+// ============================================================
 
-loginForm.addEventListener(
-    "submit",
-    async (event) => {
+function calculatePasswordStrength(password) {
 
-        event.preventDefault();
+    if (!password) {
+        return {
+            score: 0,
+            text: "Password strength"
+        };
+    }
 
-        const email =
-            emailInput.value.trim();
+    let score = 0;
 
-        const password =
-            passwordInput.value;
+    if (password.length >= 6) {
+        score++;
+    }
 
+    if (password.length >= 10) {
+        score++;
+    }
 
-        // -------------------------------
-        // VALIDATION
-        // -------------------------------
+    if (/[a-z]/.test(password)) {
+        score++;
+    }
 
-        if (!email) {
+    if (/[A-Z]/.test(password)) {
+        score++;
+    }
 
-            showToast(
-                "Email Required",
-                "Please enter your email.",
-                "error"
-            );
+    if (/[0-9]/.test(password)) {
+        score++;
+    }
 
-            emailInput.focus();
+    if (/[^A-Za-z0-9]/.test(password)) {
+        score++;
+    }
 
-            return;
-        }
+    if (score <= 2) {
+        return {
+            score: 1,
+            text: "Weak password"
+        };
+    }
 
+    if (score <= 4) {
+        return {
+            score: 2,
+            text: "Medium password"
+        };
+    }
 
-        if (!isValidEmail(email)) {
-
-            showToast(
-                "Invalid Email",
-                "Please enter a valid email.",
-                "error"
-            );
-
-            emailInput.focus();
-
-            return;
-        }
-
-
-        if (!password) {
-
-            showToast(
-                "Password Required",
-                "Please enter your password.",
-                "error"
-            );
-
-            passwordInput.focus();
-
-            return;
-        }
+    return {
+        score: 3,
+        text: "Strong password"
+    };
+}
 
 
-        // -------------------------------
-        // LOADING
-        // -------------------------------
+function updatePasswordStrength() {
 
-        loginBtn.classList.add(
-            "loading"
+    if (
+        !exists(registerPassword) ||
+        !exists(passwordStrength)
+    ) {
+        return;
+    }
+
+    const result =
+        calculatePasswordStrength(
+            registerPassword.value
         );
 
-        loginBtn.disabled = true;
+    const bar =
+        passwordStrength.querySelector(
+            ".strength-bar span"
+        );
 
+    const label =
+        passwordStrength.querySelector(
+            "small"
+        );
 
-        try {
+    if (bar) {
 
-            const response =
-                await fetch(
-                    `${API_URL}/api/login`,
-                    {
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body: JSON.stringify({
-
-                            email,
-
-                            password
-
-                        })
-                    }
-                );
-
-
-            const result =
-                await response.json();
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    result.message ||
-                    "Login failed."
-                );
-
-            }
-
-
-            // -------------------------------
-            // SUCCESS
-            // -------------------------------
-
-            showToast(
-                "Login Successful",
-                `Welcome ${result.user.name || ""}!`
-            );
-
-
-            // Save non-sensitive user info
-            sessionStorage.setItem(
-                "user",
-                JSON.stringify({
-                    id: result.user.id,
-                    name: result.user.name,
-                    email: result.user.email
-                })
-            );
-
-
-            // Clear password
-            passwordInput.value = "";
-
-
+        if (result.score === 0) {
+            bar.style.width = "0%";
         }
 
-        catch (error) {
-
-            console.error(
-                "Login error:",
-                error
-            );
-
-
-            showToast(
-                "Login Failed",
-                error.message ||
-                "Unable to connect to server.",
-                "error"
-            );
-
+        if (result.score === 1) {
+            bar.style.width = "33%";
         }
 
-        finally {
-
-            loginBtn.classList.remove(
-                "loading"
-            );
-
-            loginBtn.disabled = false;
-
+        if (result.score === 2) {
+            bar.style.width = "66%";
         }
 
+        if (result.score === 3) {
+            bar.style.width = "100%";
+        }
+    }
+
+    if (label) {
+        label.textContent =
+            result.text;
+    }
+
+    passwordStrength.dataset.strength =
+        result.score;
+}
+
+
+if (exists(registerPassword)) {
+
+    registerPassword.addEventListener(
+        "input",
+        updatePasswordStrength
+    );
+}
+
+
+// ============================================================
+// REGISTRATION MODAL
+// ============================================================
+
+function openRegisterModal() {
+
+    if (!exists(registerModal)) {
+        return;
+    }
+
+    registerModal.classList.add("active");
+
+    document.body.classList.add(
+        "modal-open"
+    );
+
+    setTimeout(() => {
+
+        if (exists(registerName)) {
+            registerName.focus();
+        }
+
+    }, 200);
+}
+
+
+function closeRegisterModal() {
+
+    if (!exists(registerModal)) {
+        return;
+    }
+
+    registerModal.classList.remove("active");
+
+    document.body.classList.remove(
+        "modal-open"
+    );
+}
+
+
+if (exists(registerLink)) {
+
+    registerLink.addEventListener(
+        "click",
+        (event) => {
+
+            event.preventDefault();
+
+            openRegisterModal();
+        }
+    );
+}
+
+
+if (exists(registerClose)) {
+
+    registerClose.addEventListener(
+        "click",
+        closeRegisterModal
+    );
+}
+
+
+if (exists(registerOverlay)) {
+
+    registerOverlay.addEventListener(
+        "click",
+        closeRegisterModal
+    );
+}
+
+
+if (exists(backToLogin)) {
+
+    backToLogin.addEventListener(
+        "click",
+        closeRegisterModal
+    );
+}
+
+
+document.addEventListener(
+    "keydown",
+    (event) => {
+
+        if (
+            event.key === "Escape" &&
+            exists(registerModal) &&
+            registerModal.classList.contains(
+                "active"
+            )
+        ) {
+            closeRegisterModal();
+        }
     }
 );
 
 
-// =====================================================
-// FORGOT PASSWORD
-// =====================================================
+// ============================================================
+// CONFIRM PASSWORD LIVE CHECK
+// ============================================================
 
-document
-    .getElementById("forgotPassword")
-    .addEventListener(
+function validatePasswordMatch() {
+
+    if (
+        !exists(registerPassword) ||
+        !exists(confirmPassword)
+    ) {
+        return true;
+    }
+
+    if (!confirmPassword.value) {
+        confirmPassword.setCustomValidity("");
+        return true;
+    }
+
+    if (
+        registerPassword.value !==
+        confirmPassword.value
+    ) {
+
+        confirmPassword.setCustomValidity(
+            "Passwords do not match."
+        );
+
+        return false;
+    }
+
+    confirmPassword.setCustomValidity("");
+
+    return true;
+}
+
+
+if (exists(confirmPassword)) {
+
+    confirmPassword.addEventListener(
+        "input",
+        validatePasswordMatch
+    );
+}
+
+
+if (exists(registerPassword)) {
+
+    registerPassword.addEventListener(
+        "input",
+        () => {
+            validatePasswordMatch();
+            updatePasswordStrength();
+        }
+    );
+}
+
+
+// ============================================================
+// BUTTON LOADING — LOGIN
+// ============================================================
+
+function setLoginLoading(isLoading) {
+
+    if (!exists(loginBtn)) {
+        return;
+    }
+
+    loginBtn.disabled =
+        isLoading;
+
+    loginBtn.classList.toggle(
+        "loading",
+        isLoading
+    );
+
+    const text =
+        loginBtn.querySelector(
+            ".btn-text"
+        );
+
+    if (text) {
+
+        text.textContent =
+            isLoading
+                ? "Signing In..."
+                : "Sign In";
+    }
+}
+
+
+// ============================================================
+// BUTTON LOADING — REGISTER
+// ============================================================
+
+function setRegisterLoading(
+    isLoading
+) {
+
+    if (!exists(registerBtn)) {
+        return;
+    }
+
+    registerBtn.disabled =
+        isLoading;
+
+    registerBtn.classList.toggle(
+        "loading",
+        isLoading
+    );
+
+    const text =
+        registerBtn.querySelector(
+            ".register-btn-text"
+        );
+
+    if (text) {
+
+        text.textContent =
+            isLoading
+                ? "Creating Account..."
+                : "Create Secure Account";
+    }
+}
+
+
+// ============================================================
+// REMEMBER EMAIL
+// ============================================================
+
+function loadRememberedEmail() {
+
+    try {
+
+        const savedEmail =
+            localStorage.getItem(
+                "priynashu_remember_email"
+            );
+
+        if (
+            savedEmail &&
+            exists(emailInput)
+        ) {
+
+            emailInput.value =
+                savedEmail;
+
+            if (exists(rememberCheckbox)) {
+                rememberCheckbox.checked =
+                    true;
+            }
+        }
+
+    } catch (error) {
+
+        console.warn(
+            "Unable to read remembered email.",
+            error
+        );
+    }
+}
+
+
+function saveRememberedEmail() {
+
+    try {
+
+        if (
+            exists(rememberCheckbox) &&
+            rememberCheckbox.checked &&
+            exists(emailInput)
+        ) {
+
+            localStorage.setItem(
+                "priynashu_remember_email",
+                emailInput.value.trim()
+            );
+
+        } else {
+
+            localStorage.removeItem(
+                "priynashu_remember_email"
+            );
+        }
+
+    } catch (error) {
+
+        console.warn(
+            "Unable to save remembered email.",
+            error
+        );
+    }
+}
+
+
+loadRememberedEmail();
+
+
+// ============================================================
+// LOGIN
+// ============================================================
+
+if (exists(loginForm)) {
+
+    loginForm.addEventListener(
+        "submit",
+        async (event) => {
+
+            event.preventDefault();
+
+            const email =
+                emailInput.value
+                    .trim()
+                    .toLowerCase();
+
+            const password =
+                passwordInput.value;
+
+            if (!email) {
+
+                showToast(
+                    "Email Required",
+                    "Please enter your email address.",
+                    "warning"
+                );
+
+                emailInput.focus();
+
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+
+                showToast(
+                    "Invalid Email",
+                    "Please enter a valid email address.",
+                    "warning"
+                );
+
+                emailInput.focus();
+
+                return;
+            }
+
+            if (!password) {
+
+                showToast(
+                    "Password Required",
+                    "Please enter your password.",
+                    "warning"
+                );
+
+                passwordInput.focus();
+
+                return;
+            }
+
+            setLoginLoading(true);
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_URL}/api/login`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                email,
+                                password
+                            })
+                        }
+                    );
+
+                const data =
+                    await response.json();
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        "Login failed."
+                    );
+                }
+
+
+                // Store only non-sensitive
+                // user information.
+                sessionStorage.setItem(
+                    "priynashu_user",
+                    JSON.stringify(
+                        data.user
+                    )
+                );
+
+
+                saveRememberedEmail();
+
+
+                showToast(
+                    "Login Successful",
+                    `Welcome back, ${data.user.name}!`,
+                    "success"
+                );
+
+
+                // Clear password from memory
+                passwordInput.value = "";
+
+
+                // Small delay for premium UX
+                setTimeout(
+                    () => {
+
+                        console.log(
+                            "Authenticated user:",
+                            data.user
+                        );
+
+                    },
+                    500
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "LOGIN ERROR:",
+                    error
+                );
+
+                showToast(
+                    "Login Failed",
+                    error.message ||
+                    "Unable to connect to the authentication server.",
+                    "error"
+                );
+
+            } finally {
+
+                setLoginLoading(false);
+            }
+        }
+    );
+}
+
+
+// ============================================================
+// REGISTRATION
+// ============================================================
+
+if (exists(registerForm)) {
+
+    registerForm.addEventListener(
+        "submit",
+        async (event) => {
+
+            event.preventDefault();
+
+
+            const name =
+                registerName.value.trim();
+
+            const email =
+                registerEmail.value
+                    .trim()
+                    .toLowerCase();
+
+            const password =
+                registerPassword.value;
+
+            const confirm =
+                confirmPassword.value;
+
+
+            // --------------------------------------------
+            // NAME VALIDATION
+            // --------------------------------------------
+
+            if (name.length < 2) {
+
+                showToast(
+                    "Invalid Name",
+                    "Please enter your full name.",
+                    "warning"
+                );
+
+                registerName.focus();
+
+                return;
+            }
+
+
+            // --------------------------------------------
+            // EMAIL VALIDATION
+            // --------------------------------------------
+
+            if (!isValidEmail(email)) {
+
+                showToast(
+                    "Invalid Email",
+                    "Please enter a valid email address.",
+                    "warning"
+                );
+
+                registerEmail.focus();
+
+                return;
+            }
+
+
+            // --------------------------------------------
+            // PASSWORD VALIDATION
+            // --------------------------------------------
+
+            if (password.length < 6) {
+
+                showToast(
+                    "Weak Password",
+                    "Password must contain at least 6 characters.",
+                    "warning"
+                );
+
+                registerPassword.focus();
+
+                return;
+            }
+
+
+            // --------------------------------------------
+            // CONFIRM PASSWORD
+            // --------------------------------------------
+
+            if (password !== confirm) {
+
+                showToast(
+                    "Password Mismatch",
+                    "Password and confirm password must match.",
+                    "error"
+                );
+
+                confirmPassword.focus();
+
+                return;
+            }
+
+
+            // --------------------------------------------
+            // TERMS
+            // --------------------------------------------
+
+            if (
+                exists(acceptTerms) &&
+                !acceptTerms.checked
+            ) {
+
+                showToast(
+                    "Terms Required",
+                    "Please accept the Terms & Privacy Policy.",
+                    "warning"
+                );
+
+                return;
+            }
+
+
+            setRegisterLoading(true);
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_URL}/api/register`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                name,
+                                email,
+                                password
+                            })
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        "Registration failed."
+                    );
+                }
+
+
+                // ----------------------------------------
+                // SUCCESS
+                // ----------------------------------------
+
+                showToast(
+                    "Account Created",
+                    "Your secure account has been created successfully.",
+                    "success"
+                );
+
+
+                // Put registered email
+                // into login form.
+                if (exists(emailInput)) {
+                    emailInput.value =
+                        data.user.email;
+                }
+
+
+                // Clear registration fields.
+                registerName.value = "";
+                registerEmail.value = "";
+                registerPassword.value = "";
+                confirmPassword.value = "";
+
+
+                if (exists(acceptTerms)) {
+                    acceptTerms.checked = false;
+                }
+
+
+                updatePasswordStrength();
+
+
+                // Close registration modal.
+                closeRegisterModal();
+
+
+                // Focus login password.
+                setTimeout(
+                    () => {
+
+                        if (
+                            exists(passwordInput)
+                        ) {
+                            passwordInput.focus();
+                        }
+
+                    },
+                    300
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "REGISTER ERROR:",
+                    error
+                );
+
+                showToast(
+                    "Registration Failed",
+                    error.message ||
+                    "Unable to create your account.",
+                    "error"
+                );
+
+            } finally {
+
+                setRegisterLoading(false);
+            }
+        }
+    );
+}
+
+
+// ============================================================
+// FORGOT PASSWORD
+// ============================================================
+
+if (exists(forgotPassword)) {
+
+    forgotPassword.addEventListener(
         "click",
         (event) => {
 
@@ -357,88 +1003,168 @@ document
 
             showToast(
                 "Password Recovery",
-                "Recovery will be added in a later step."
+                "Password recovery will be added in the next security module.",
+                "warning"
             );
-
         }
     );
+}
 
 
-// =====================================================
-// REGISTER
-// =====================================================
+// ============================================================
+// GOOGLE LOGIN
+// ============================================================
 
-document
-    .getElementById("registerLink")
-    .addEventListener(
-        "click",
-        (event) => {
-
-            event.preventDefault();
-
-            showToast(
-                "Registration",
-                "Registration page will be added next."
-            );
-
-        }
+const googleLogin =
+    document.getElementById(
+        "googleLogin"
     );
 
+if (exists(googleLogin)) {
 
-// =====================================================
-// GOOGLE
-// =====================================================
-
-document
-    .getElementById("googleLogin")
-    .addEventListener(
+    googleLogin.addEventListener(
         "click",
         () => {
 
             showToast(
-                "Google Login",
-                "OAuth will be configured later."
+                "Google Authentication",
+                "Google OAuth will be connected in the next authentication upgrade.",
+                "warning"
             );
-
         }
     );
+}
 
 
-// =====================================================
-// GITHUB
-// =====================================================
+// ============================================================
+// GITHUB LOGIN
+// ============================================================
 
-document
-    .getElementById("githubLogin")
-    .addEventListener(
+const githubLogin =
+    document.getElementById(
+        "githubLogin"
+    );
+
+if (exists(githubLogin)) {
+
+    githubLogin.addEventListener(
         "click",
         () => {
 
             showToast(
-                "GitHub Login",
-                "OAuth will be configured later."
+                "GitHub Authentication",
+                "GitHub OAuth will be connected in the next authentication upgrade.",
+                "warning"
             );
-
         }
+    );
+}
+
+
+// ============================================================
+// PARTICLE SYSTEM
+// ============================================================
+
+const particlesContainer =
+    document.getElementById(
+        "particles"
     );
 
 
-// =====================================================
-// 3D CARD EFFECT
-// =====================================================
+function createParticles() {
+
+    if (!exists(particlesContainer)) {
+        return;
+    }
+
+    const particleCount =
+        window.innerWidth < 600
+            ? 18
+            : 35;
+
+    particlesContainer.innerHTML = "";
+
+
+    for (
+        let i = 0;
+        i < particleCount;
+        i++
+    ) {
+
+        const particle =
+            document.createElement(
+                "span"
+            );
+
+        particle.className =
+            "particle";
+
+
+        const size =
+            Math.random() * 4 + 1;
+
+        particle.style.width =
+            `${size}px`;
+
+        particle.style.height =
+            `${size}px`;
+
+        particle.style.left =
+            `${Math.random() * 100}%`;
+
+        particle.style.top =
+            `${Math.random() * 100}%`;
+
+        particle.style.animationDelay =
+            `${Math.random() * 8}s`;
+
+        particle.style.animationDuration =
+            `${5 + Math.random() * 8}s`;
+
+
+        particlesContainer.appendChild(
+            particle
+        );
+    }
+}
+
+
+createParticles();
+
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        createParticles();
+
+    }
+);
+
+
+// ============================================================
+// 3D LOGIN CARD EFFECT
+// ============================================================
+
+const loginCard =
+    document.querySelector(
+        ".login-card"
+    );
+
 
 if (
+    exists(loginCard) &&
     window.matchMedia(
-        "(pointer: fine)"
+        "(pointer:fine)"
     ).matches
 ) {
 
-    card.addEventListener(
+    loginCard.addEventListener(
         "mousemove",
         (event) => {
 
             const rect =
-                card.getBoundingClientRect();
+                loginCard.getBoundingClientRect();
 
             const x =
                 event.clientX -
@@ -454,56 +1180,151 @@ if (
             const centerY =
                 rect.height / 2;
 
+            const rotateX =
+                ((y - centerY) /
+                    centerY) *
+                -2;
+
             const rotateY =
                 ((x - centerX) /
-                centerX) * 4;
+                    centerX) *
+                2;
 
-            const rotateX =
-                ((centerY - y) /
-                centerY) * 4;
-
-            card.style.transform =
-                `perspective(1200px)
-                 rotateX(${rotateX}deg)
-                 rotateY(${rotateY}deg)
-                 translateY(-2px)`;
-
+            loginCard.style.transform =
+                `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-3px)`;
         }
     );
 
 
-    card.addEventListener(
+    loginCard.addEventListener(
         "mouseleave",
         () => {
 
-            card.style.transform =
-                `perspective(1200px)
-                 rotateX(0deg)
-                 rotateY(0deg)
-                 translateY(0)`;
-
+            loginCard.style.transform =
+                "";
         }
     );
-
 }
 
 
-// =====================================================
+// ============================================================
+// BUTTON RIPPLE EFFECT
+// ============================================================
+
+document.addEventListener(
+    "click",
+    (event) => {
+
+        const button =
+            event.target.closest(
+                "button"
+            );
+
+        if (!button) {
+            return;
+        }
+
+        const ripple =
+            document.createElement(
+                "span"
+            );
+
+        ripple.className =
+            "click-ripple";
+
+
+        const rect =
+            button.getBoundingClientRect();
+
+
+        ripple.style.left =
+            `${event.clientX - rect.left}px`;
+
+        ripple.style.top =
+            `${event.clientY - rect.top}px`;
+
+
+        button.appendChild(
+            ripple
+        );
+
+
+        setTimeout(
+            () => {
+                ripple.remove();
+            },
+            700
+        );
+    }
+);
+
+
+// ============================================================
+// API CONNECTION CHECK
+// ============================================================
+
+async function checkAPIConnection() {
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL,
+                {
+                    method: "GET"
+                }
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                "API unavailable"
+            );
+        }
+
+        const data =
+            await response.json();
+
+        console.log(
+            "✅ Secure Portal API connected:",
+            data.message
+        );
+
+    } catch (error) {
+
+        console.warn(
+            "⚠️ Secure Portal API connection unavailable.",
+            error
+        );
+    }
+}
+
+
+// Run connection check.
+checkAPIConnection();
+
+
+// ============================================================
 // PAGE READY
-// =====================================================
+// ============================================================
 
 window.addEventListener(
     "load",
     () => {
 
-        setTimeout(() => {
+        setTimeout(
+            () => {
 
-            showToast(
-                "Secure Portal",
-                "Priyanshu Secure Portal is ready."
-            );
+                console.log(
+                    "🔐 Priyanshu Secure Portal initialized."
+                );
 
-        }, 900);
+                console.log(
+                    "🚀 Backend:",
+                    API_URL
+                );
 
+            },
+            300
+        );
     }
 );
