@@ -1,17 +1,12 @@
 // ============================================================
 // PRIYANSHU SECURE PORTAL
-// Advanced Authentication Frontend
-// ============================================================
-
-// ============================================================
-// LIVE BACKEND API
+// Advanced JWT Authentication Frontend
 // ============================================================
 
 const API_URL = "https://priyanshu-secure-auth.onrender.com";
 
-
 // ============================================================
-// DOM ELEMENTS — LOGIN
+// DOM ELEMENTS
 // ============================================================
 
 const loginForm = document.getElementById("loginForm");
@@ -21,11 +16,6 @@ const togglePassword = document.getElementById("togglePassword");
 const forgotPassword = document.getElementById("forgotPassword");
 const rememberCheckbox = document.getElementById("remember");
 const loginBtn = document.getElementById("loginBtn");
-
-
-// ============================================================
-// DOM ELEMENTS — REGISTRATION
-// ============================================================
 
 const registerModal = document.getElementById("registerModal");
 const registerOverlay = document.getElementById("registerOverlay");
@@ -38,46 +28,39 @@ const registerName = document.getElementById("registerName");
 const registerEmail = document.getElementById("registerEmail");
 const registerPassword = document.getElementById("registerPassword");
 const confirmPassword = document.getElementById("confirmPassword");
-
 const toggleRegisterPassword =
     document.getElementById("toggleRegisterPassword");
-
 const toggleConfirmPassword =
     document.getElementById("toggleConfirmPassword");
-
 const passwordStrength =
     document.getElementById("passwordStrength");
-
 const acceptTerms =
     document.getElementById("acceptTerms");
-
 const registerBtn =
     document.getElementById("registerBtn");
-
 const backToLogin =
     document.getElementById("backToLogin");
 
+const toast =
+    document.getElementById("toast");
+const toastTitle =
+    document.getElementById("toastTitle");
+const toastMessage =
+    document.getElementById("toastMessage");
 
 // ============================================================
-// DOM ELEMENTS — TOAST
-// ============================================================
-
-const toast = document.getElementById("toast");
-const toastTitle = document.getElementById("toastTitle");
-const toastMessage = document.getElementById("toastMessage");
-
-
-// ============================================================
-// HELPER — SAFE ELEMENT CHECK
+// HELPERS
 // ============================================================
 
 function exists(element) {
-    return element !== null && element !== undefined;
+    return (
+        element !== null &&
+        element !== undefined
+    );
 }
 
-
 // ============================================================
-// TOAST SYSTEM
+// TOAST
 // ============================================================
 
 let toastTimer = null;
@@ -120,16 +103,18 @@ function showToast(
     }, 4000);
 }
 
-
 // ============================================================
-// PASSWORD VISIBILITY TOGGLE
+// PASSWORD TOGGLE
 // ============================================================
 
 function setupPasswordToggle(
     button,
     input
 ) {
-    if (!exists(button) || !exists(input)) {
+    if (
+        !exists(button) ||
+        !exists(input)
+    ) {
         return;
     }
 
@@ -174,9 +159,8 @@ setupPasswordToggle(
     confirmPassword
 );
 
-
 // ============================================================
-// EMAIL VALIDATION
+// VALIDATION
 // ============================================================
 
 function isValidEmail(email) {
@@ -185,13 +169,9 @@ function isValidEmail(email) {
     );
 }
 
-
-// ============================================================
-// PASSWORD STRENGTH
-// ============================================================
-
-function calculatePasswordStrength(password) {
-
+function calculatePasswordStrength(
+    password
+) {
     if (!password) {
         return {
             score: 0,
@@ -245,9 +225,7 @@ function calculatePasswordStrength(password) {
     };
 }
 
-
 function updatePasswordStrength() {
-
     if (
         !exists(registerPassword) ||
         !exists(passwordStrength)
@@ -271,7 +249,6 @@ function updatePasswordStrength() {
         );
 
     if (bar) {
-
         if (result.score === 0) {
             bar.style.width = "0%";
         }
@@ -298,120 +275,11 @@ function updatePasswordStrength() {
         result.score;
 }
 
-
-if (exists(registerPassword)) {
-
-    registerPassword.addEventListener(
-        "input",
-        updatePasswordStrength
-    );
-}
-
-
 // ============================================================
-// REGISTRATION MODAL
-// ============================================================
-
-function openRegisterModal() {
-
-    if (!exists(registerModal)) {
-        return;
-    }
-
-    registerModal.classList.add("active");
-
-    document.body.classList.add(
-        "modal-open"
-    );
-
-    setTimeout(() => {
-
-        if (exists(registerName)) {
-            registerName.focus();
-        }
-
-    }, 200);
-}
-
-
-function closeRegisterModal() {
-
-    if (!exists(registerModal)) {
-        return;
-    }
-
-    registerModal.classList.remove("active");
-
-    document.body.classList.remove(
-        "modal-open"
-    );
-}
-
-
-if (exists(registerLink)) {
-
-    registerLink.addEventListener(
-        "click",
-        (event) => {
-
-            event.preventDefault();
-
-            openRegisterModal();
-        }
-    );
-}
-
-
-if (exists(registerClose)) {
-
-    registerClose.addEventListener(
-        "click",
-        closeRegisterModal
-    );
-}
-
-
-if (exists(registerOverlay)) {
-
-    registerOverlay.addEventListener(
-        "click",
-        closeRegisterModal
-    );
-}
-
-
-if (exists(backToLogin)) {
-
-    backToLogin.addEventListener(
-        "click",
-        closeRegisterModal
-    );
-}
-
-
-document.addEventListener(
-    "keydown",
-    (event) => {
-
-        if (
-            event.key === "Escape" &&
-            exists(registerModal) &&
-            registerModal.classList.contains(
-                "active"
-            )
-        ) {
-            closeRegisterModal();
-        }
-    }
-);
-
-
-// ============================================================
-// CONFIRM PASSWORD LIVE CHECK
+// PASSWORD MATCH
 // ============================================================
 
 function validatePasswordMatch() {
-
     if (
         !exists(registerPassword) ||
         !exists(confirmPassword)
@@ -428,7 +296,6 @@ function validatePasswordMatch() {
         registerPassword.value !==
         confirmPassword.value
     ) {
-
         confirmPassword.setCustomValidity(
             "Passwords do not match."
         );
@@ -441,18 +308,7 @@ function validatePasswordMatch() {
     return true;
 }
 
-
-if (exists(confirmPassword)) {
-
-    confirmPassword.addEventListener(
-        "input",
-        validatePasswordMatch
-    );
-}
-
-
 if (exists(registerPassword)) {
-
     registerPassword.addEventListener(
         "input",
         () => {
@@ -462,19 +318,109 @@ if (exists(registerPassword)) {
     );
 }
 
+if (exists(confirmPassword)) {
+    confirmPassword.addEventListener(
+        "input",
+        validatePasswordMatch
+    );
+}
 
 // ============================================================
-// BUTTON LOADING — LOGIN
+// REGISTER MODAL
 // ============================================================
 
-function setLoginLoading(isLoading) {
+function openRegisterModal() {
+    if (!exists(registerModal)) {
+        return;
+    }
 
+    registerModal.classList.add(
+        "active"
+    );
+
+    document.body.classList.add(
+        "modal-open"
+    );
+
+    setTimeout(() => {
+        if (exists(registerName)) {
+            registerName.focus();
+        }
+    }, 200);
+}
+
+function closeRegisterModal() {
+    if (!exists(registerModal)) {
+        return;
+    }
+
+    registerModal.classList.remove(
+        "active"
+    );
+
+    document.body.classList.remove(
+        "modal-open"
+    );
+}
+
+if (exists(registerLink)) {
+    registerLink.addEventListener(
+        "click",
+        event => {
+            event.preventDefault();
+            openRegisterModal();
+        }
+    );
+}
+
+if (exists(registerClose)) {
+    registerClose.addEventListener(
+        "click",
+        closeRegisterModal
+    );
+}
+
+if (exists(registerOverlay)) {
+    registerOverlay.addEventListener(
+        "click",
+        closeRegisterModal
+    );
+}
+
+if (exists(backToLogin)) {
+    backToLogin.addEventListener(
+        "click",
+        closeRegisterModal
+    );
+}
+
+document.addEventListener(
+    "keydown",
+    event => {
+        if (
+            event.key === "Escape" &&
+            exists(registerModal) &&
+            registerModal.classList.contains(
+                "active"
+            )
+        ) {
+            closeRegisterModal();
+        }
+    }
+);
+
+// ============================================================
+// BUTTON LOADING
+// ============================================================
+
+function setLoginLoading(
+    isLoading
+) {
     if (!exists(loginBtn)) {
         return;
     }
 
-    loginBtn.disabled =
-        isLoading;
+    loginBtn.disabled = isLoading;
 
     loginBtn.classList.toggle(
         "loading",
@@ -487,7 +433,6 @@ function setLoginLoading(isLoading) {
         );
 
     if (text) {
-
         text.textContent =
             isLoading
                 ? "Signing In..."
@@ -495,15 +440,9 @@ function setLoginLoading(isLoading) {
     }
 }
 
-
-// ============================================================
-// BUTTON LOADING — REGISTER
-// ============================================================
-
 function setRegisterLoading(
     isLoading
 ) {
-
     if (!exists(registerBtn)) {
         return;
     }
@@ -522,7 +461,6 @@ function setRegisterLoading(
         );
 
     if (text) {
-
         text.textContent =
             isLoading
                 ? "Creating Account..."
@@ -530,15 +468,12 @@ function setRegisterLoading(
     }
 }
 
-
 // ============================================================
 // REMEMBER EMAIL
 // ============================================================
 
 function loadRememberedEmail() {
-
     try {
-
         const savedEmail =
             localStorage.getItem(
                 "priynashu_remember_email"
@@ -548,18 +483,19 @@ function loadRememberedEmail() {
             savedEmail &&
             exists(emailInput)
         ) {
-
             emailInput.value =
                 savedEmail;
 
-            if (exists(rememberCheckbox)) {
+            if (
+                exists(
+                    rememberCheckbox
+                )
+            ) {
                 rememberCheckbox.checked =
                     true;
             }
         }
-
     } catch (error) {
-
         console.warn(
             "Unable to read remembered email.",
             error
@@ -567,31 +503,25 @@ function loadRememberedEmail() {
     }
 }
 
-
 function saveRememberedEmail() {
-
     try {
-
         if (
-            exists(rememberCheckbox) &&
+            exists(
+                rememberCheckbox
+            ) &&
             rememberCheckbox.checked &&
             exists(emailInput)
         ) {
-
             localStorage.setItem(
                 "priynashu_remember_email",
                 emailInput.value.trim()
             );
-
         } else {
-
             localStorage.removeItem(
                 "priynashu_remember_email"
             );
         }
-
     } catch (error) {
-
         console.warn(
             "Unable to save remembered email.",
             error
@@ -599,20 +529,120 @@ function saveRememberedEmail() {
     }
 }
 
-
 loadRememberedEmail();
 
+// ============================================================
+// JWT AUTHENTICATION
+// ============================================================
+
+function saveAuthToken(token) {
+    if (!token) {
+        return;
+    }
+
+    try {
+        sessionStorage.setItem(
+            "priynashu_access_token",
+            token
+        );
+    } catch (error) {
+        console.error(
+            "Unable to save authentication token.",
+            error
+        );
+    }
+}
+
+function getAuthToken() {
+    try {
+        return sessionStorage.getItem(
+            "priynashu_access_token"
+        );
+    } catch (error) {
+        console.error(
+            "Unable to read authentication token.",
+            error
+        );
+
+        return null;
+    }
+}
+
+function clearAuthSession() {
+    try {
+        sessionStorage.removeItem(
+            "priynashu_access_token"
+        );
+
+        sessionStorage.removeItem(
+            "priynashu_user"
+        );
+    } catch (error) {
+        console.error(
+            "Unable to clear authentication session.",
+            error
+        );
+    }
+}
+
+async function getAuthenticatedUser() {
+    const token =
+        getAuthToken();
+
+    if (!token) {
+        return null;
+    }
+
+    try {
+        const response =
+            await fetch(
+                `${API_URL}/api/me`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Authorization":
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+            clearAuthSession();
+            return null;
+        }
+
+        if (data.user) {
+            sessionStorage.setItem(
+                "priynashu_user",
+                JSON.stringify(
+                    data.user
+                )
+            );
+        }
+
+        return data.user;
+
+    } catch (error) {
+        console.error(
+            "AUTHENTICATED USER ERROR:",
+            error
+        );
+
+        return null;
+    }
+}
 
 // ============================================================
 // LOGIN
 // ============================================================
 
 if (exists(loginForm)) {
-
     loginForm.addEventListener(
         "submit",
-        async (event) => {
-
+        async event => {
             event.preventDefault();
 
             const email =
@@ -624,7 +654,6 @@ if (exists(loginForm)) {
                 passwordInput.value;
 
             if (!email) {
-
                 showToast(
                     "Email Required",
                     "Please enter your email address.",
@@ -637,7 +666,6 @@ if (exists(loginForm)) {
             }
 
             if (!isValidEmail(email)) {
-
                 showToast(
                     "Invalid Email",
                     "Please enter a valid email address.",
@@ -650,7 +678,6 @@ if (exists(loginForm)) {
             }
 
             if (!password) {
-
                 showToast(
                     "Password Required",
                     "Please enter your password.",
@@ -665,18 +692,15 @@ if (exists(loginForm)) {
             setLoginLoading(true);
 
             try {
-
                 const response =
                     await fetch(
                         `${API_URL}/api/login`,
                         {
                             method: "POST",
-
                             headers: {
                                 "Content-Type":
                                     "application/json"
                             },
-
                             body: JSON.stringify({
                                 email,
                                 password
@@ -688,16 +712,30 @@ if (exists(loginForm)) {
                     await response.json();
 
                 if (!response.ok) {
-
                     throw new Error(
                         data.message ||
                         "Login failed."
                     );
                 }
 
+                // ====================================================
+                // SAVE JWT TOKEN
+                // ====================================================
 
-                // Store only non-sensitive
-                // user information.
+                if (!data.token) {
+                    throw new Error(
+                        "Authentication token was not received from the server."
+                    );
+                }
+
+                saveAuthToken(
+                    data.token
+                );
+
+                // ====================================================
+                // SAVE SAFE USER DATA
+                // ====================================================
+
                 sessionStorage.setItem(
                     "priynashu_user",
                     JSON.stringify(
@@ -705,9 +743,7 @@ if (exists(loginForm)) {
                     )
                 );
 
-
                 saveRememberedEmail();
-
 
                 showToast(
                     "Login Successful",
@@ -715,30 +751,39 @@ if (exists(loginForm)) {
                     "success"
                 );
 
-
-                // Clear password from memory
                 passwordInput.value = "";
 
-
-                // Small delay for premium UX
-                setTimeout(
-                    () => {
-
-                        console.log(
-                            "Authenticated user:",
-                            data.user
-                        );
-
-                    },
-                    500
+                console.log(
+                    "🔐 JWT authentication successful."
                 );
 
-            } catch (error) {
+                console.log(
+                    "👤 Authenticated user:",
+                    data.user
+                );
 
+                console.log(
+                    "⏱️ Token expiry:",
+                    data.expiresIn
+                );
+
+                // Verify token with protected endpoint
+                const verifiedUser =
+                    await getAuthenticatedUser();
+
+                if (verifiedUser) {
+                    console.log(
+                        "✅ Protected /api/me verification successful."
+                    );
+                }
+
+            } catch (error) {
                 console.error(
                     "LOGIN ERROR:",
                     error
                 );
+
+                clearAuthSession();
 
                 showToast(
                     "Login Failed",
@@ -748,26 +793,21 @@ if (exists(loginForm)) {
                 );
 
             } finally {
-
                 setLoginLoading(false);
             }
         }
     );
 }
 
-
 // ============================================================
 // REGISTRATION
 // ============================================================
 
 if (exists(registerForm)) {
-
     registerForm.addEventListener(
         "submit",
-        async (event) => {
-
+        async event => {
             event.preventDefault();
-
 
             const name =
                 registerName.value.trim();
@@ -783,13 +823,7 @@ if (exists(registerForm)) {
             const confirm =
                 confirmPassword.value;
 
-
-            // --------------------------------------------
-            // NAME VALIDATION
-            // --------------------------------------------
-
             if (name.length < 2) {
-
                 showToast(
                     "Invalid Name",
                     "Please enter your full name.",
@@ -801,13 +835,7 @@ if (exists(registerForm)) {
                 return;
             }
 
-
-            // --------------------------------------------
-            // EMAIL VALIDATION
-            // --------------------------------------------
-
             if (!isValidEmail(email)) {
-
                 showToast(
                     "Invalid Email",
                     "Please enter a valid email address.",
@@ -819,13 +847,7 @@ if (exists(registerForm)) {
                 return;
             }
 
-
-            // --------------------------------------------
-            // PASSWORD VALIDATION
-            // --------------------------------------------
-
             if (password.length < 6) {
-
                 showToast(
                     "Weak Password",
                     "Password must contain at least 6 characters.",
@@ -837,13 +859,7 @@ if (exists(registerForm)) {
                 return;
             }
 
-
-            // --------------------------------------------
-            // CONFIRM PASSWORD
-            // --------------------------------------------
-
             if (password !== confirm) {
-
                 showToast(
                     "Password Mismatch",
                     "Password and confirm password must match.",
@@ -855,16 +871,10 @@ if (exists(registerForm)) {
                 return;
             }
 
-
-            // --------------------------------------------
-            // TERMS
-            // --------------------------------------------
-
             if (
                 exists(acceptTerms) &&
                 !acceptTerms.checked
             ) {
-
                 showToast(
                     "Terms Required",
                     "Please accept the Terms & Privacy Policy.",
@@ -874,23 +884,18 @@ if (exists(registerForm)) {
                 return;
             }
 
-
             setRegisterLoading(true);
 
-
             try {
-
                 const response =
                     await fetch(
                         `${API_URL}/api/register`,
                         {
                             method: "POST",
-
                             headers: {
                                 "Content-Type":
                                     "application/json"
                             },
-
                             body: JSON.stringify({
                                 name,
                                 email,
@@ -899,23 +904,15 @@ if (exists(registerForm)) {
                         }
                     );
 
-
                 const data =
                     await response.json();
 
-
                 if (!response.ok) {
-
                     throw new Error(
                         data.message ||
                         "Registration failed."
                     );
                 }
-
-
-                // ----------------------------------------
-                // SUCCESS
-                // ----------------------------------------
 
                 showToast(
                     "Account Created",
@@ -923,51 +920,38 @@ if (exists(registerForm)) {
                     "success"
                 );
 
-
-                // Put registered email
-                // into login form.
-                if (exists(emailInput)) {
+                if (
+                    exists(emailInput)
+                ) {
                     emailInput.value =
                         data.user.email;
                 }
 
-
-                // Clear registration fields.
                 registerName.value = "";
                 registerEmail.value = "";
                 registerPassword.value = "";
                 confirmPassword.value = "";
 
-
-                if (exists(acceptTerms)) {
-                    acceptTerms.checked = false;
+                if (
+                    exists(acceptTerms)
+                ) {
+                    acceptTerms.checked =
+                        false;
                 }
-
 
                 updatePasswordStrength();
 
-
-                // Close registration modal.
                 closeRegisterModal();
 
-
-                // Focus login password.
-                setTimeout(
-                    () => {
-
-                        if (
-                            exists(passwordInput)
-                        ) {
-                            passwordInput.focus();
-                        }
-
-                    },
-                    300
-                );
-
+                setTimeout(() => {
+                    if (
+                        exists(passwordInput)
+                    ) {
+                        passwordInput.focus();
+                    }
+                }, 300);
 
             } catch (error) {
-
                 console.error(
                     "REGISTER ERROR:",
                     error
@@ -981,24 +965,22 @@ if (exists(registerForm)) {
                 );
 
             } finally {
-
-                setRegisterLoading(false);
+                setRegisterLoading(
+                    false
+                );
             }
         }
     );
 }
-
 
 // ============================================================
 // FORGOT PASSWORD
 // ============================================================
 
 if (exists(forgotPassword)) {
-
     forgotPassword.addEventListener(
         "click",
-        (event) => {
-
+        event => {
             event.preventDefault();
 
             showToast(
@@ -1010,9 +992,8 @@ if (exists(forgotPassword)) {
     );
 }
 
-
 // ============================================================
-// GOOGLE LOGIN
+// GOOGLE AUTHENTICATION
 // ============================================================
 
 const googleLogin =
@@ -1021,11 +1002,9 @@ const googleLogin =
     );
 
 if (exists(googleLogin)) {
-
     googleLogin.addEventListener(
         "click",
         () => {
-
             showToast(
                 "Google Authentication",
                 "Google OAuth will be connected in the next authentication upgrade.",
@@ -1035,9 +1014,8 @@ if (exists(googleLogin)) {
     );
 }
 
-
 // ============================================================
-// GITHUB LOGIN
+// GITHUB AUTHENTICATION
 // ============================================================
 
 const githubLogin =
@@ -1046,11 +1024,9 @@ const githubLogin =
     );
 
 if (exists(githubLogin)) {
-
     githubLogin.addEventListener(
         "click",
         () => {
-
             showToast(
                 "GitHub Authentication",
                 "GitHub OAuth will be connected in the next authentication upgrade.",
@@ -1060,9 +1036,8 @@ if (exists(githubLogin)) {
     );
 }
 
-
 // ============================================================
-// PARTICLE SYSTEM
+// PARTICLES
 // ============================================================
 
 const particlesContainer =
@@ -1070,10 +1045,12 @@ const particlesContainer =
         "particles"
     );
 
-
 function createParticles() {
-
-    if (!exists(particlesContainer)) {
+    if (
+        !exists(
+            particlesContainer
+        )
+    ) {
         return;
     }
 
@@ -1082,15 +1059,14 @@ function createParticles() {
             ? 18
             : 35;
 
-    particlesContainer.innerHTML = "";
-
+    particlesContainer.innerHTML =
+        "";
 
     for (
         let i = 0;
         i < particleCount;
         i++
     ) {
-
         const particle =
             document.createElement(
                 "span"
@@ -1098,7 +1074,6 @@ function createParticles() {
 
         particle.className =
             "particle";
-
 
         const size =
             Math.random() * 4 + 1;
@@ -1121,29 +1096,21 @@ function createParticles() {
         particle.style.animationDuration =
             `${5 + Math.random() * 8}s`;
 
-
         particlesContainer.appendChild(
             particle
         );
     }
 }
 
-
 createParticles();
-
 
 window.addEventListener(
     "resize",
-    () => {
-
-        createParticles();
-
-    }
+    createParticles
 );
 
-
 // ============================================================
-// 3D LOGIN CARD EFFECT
+// 3D LOGIN CARD
 // ============================================================
 
 const loginCard =
@@ -1151,18 +1118,15 @@ const loginCard =
         ".login-card"
     );
 
-
 if (
     exists(loginCard) &&
     window.matchMedia(
         "(pointer:fine)"
     ).matches
 ) {
-
     loginCard.addEventListener(
         "mousemove",
-        (event) => {
-
+        event => {
             const rect =
                 loginCard.getBoundingClientRect();
 
@@ -1195,26 +1159,22 @@ if (
         }
     );
 
-
     loginCard.addEventListener(
         "mouseleave",
         () => {
-
             loginCard.style.transform =
                 "";
         }
     );
 }
 
-
 // ============================================================
-// BUTTON RIPPLE EFFECT
+// BUTTON RIPPLE
 // ============================================================
 
 document.addEventListener(
     "click",
-    (event) => {
-
+    event => {
         const button =
             event.target.closest(
                 "button"
@@ -1232,10 +1192,8 @@ document.addEventListener(
         ripple.className =
             "click-ripple";
 
-
         const rect =
             button.getBoundingClientRect();
-
 
         ripple.style.left =
             `${event.clientX - rect.left}px`;
@@ -1243,33 +1201,25 @@ document.addEventListener(
         ripple.style.top =
             `${event.clientY - rect.top}px`;
 
-
         button.appendChild(
             ripple
         );
 
-
-        setTimeout(
-            () => {
-                ripple.remove();
-            },
-            700
-        );
+        setTimeout(() => {
+            ripple.remove();
+        }, 700);
     }
 );
-
 
 // ============================================================
 // API CONNECTION CHECK
 // ============================================================
 
 async function checkAPIConnection() {
-
     try {
-
         const response =
             await fetch(
-                API_URL,
+                `${API_URL}/api/health`,
                 {
                     method: "GET"
                 }
@@ -1286,11 +1236,10 @@ async function checkAPIConnection() {
 
         console.log(
             "✅ Secure Portal API connected:",
-            data.message
+            data
         );
 
     } catch (error) {
-
         console.warn(
             "⚠️ Secure Portal API connection unavailable.",
             error
@@ -1298,10 +1247,36 @@ async function checkAPIConnection() {
     }
 }
 
-
-// Run connection check.
 checkAPIConnection();
 
+// ============================================================
+// EXISTING SESSION CHECK
+// ============================================================
+
+async function restoreAuthenticatedSession() {
+    const token =
+        getAuthToken();
+
+    if (!token) {
+        return;
+    }
+
+    const user =
+        await getAuthenticatedUser();
+
+    if (user) {
+        console.log(
+            "🔓 Existing authenticated session restored:",
+            user
+        );
+    } else {
+        console.log(
+            "🔒 Existing authentication session expired or invalid."
+        );
+    }
+}
+
+restoreAuthenticatedSession();
 
 // ============================================================
 // PAGE READY
@@ -1310,21 +1285,20 @@ checkAPIConnection();
 window.addEventListener(
     "load",
     () => {
+        setTimeout(() => {
+            console.log(
+                "🔐 Priyanshu Secure Portal initialized."
+            );
 
-        setTimeout(
-            () => {
+            console.log(
+                "🚀 Backend:",
+                API_URL
+            );
 
-                console.log(
-                    "🔐 Priyanshu Secure Portal initialized."
-                );
+            console.log(
+                "🛡️ JWT authentication: ACTIVE"
+            );
 
-                console.log(
-                    "🚀 Backend:",
-                    API_URL
-                );
-
-            },
-            300
-        );
+        }, 300);
     }
 );
