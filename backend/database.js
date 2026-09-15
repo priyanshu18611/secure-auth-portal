@@ -1,123 +1,172 @@
-const Database = require("better-sqlite3");
-const path = require("path");
-const fs = require("fs");
+// ============================================================
+// PRIYANSHU SECURE PORTAL
+// PostgreSQL Database Layer
+// ============================================================
 
-// ==========================================
-// DATABASE LOCATION
-// ==========================================
+const { Pool } = require("pg");
 
-const dataDir = path.join(__dirname, "../data");
 
-if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, {
-        recursive: true
-    });
+// ============================================================
+// DATABASE CONNECTION
+// ============================================================
+
+if (!process.env.DATABASE_URL) {
+    throw new Error(
+        "DATABASE_URL environment variable is not configured."
+    );
 }
 
-const databasePath =
-    path.join(dataDir, "users.db");
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+
+    ssl: {
+        rejectUnauthorized: false
+    },
+
+    max: 10,
+
+    idleTimeoutMillis: 30000,
+
+    connectionTimeoutMillis: 10000
+});
 
 
-// ==========================================
-// DATABASE CONNECTION
-// ==========================================
+// ============================================================
+// INITIALIZE DATABASE
+// ============================================================
 
-const db = new Database(databasePath);
+async function initializeDatabase() {
+
+    const client =
+        await pool.connect();
+
+    try {
+
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS users (
+
+                id SERIAL PRIMARY KEY,
+
+                name TEXT NOT NULL,
+
+                email TEXT NOT NULL UNIQUE,
+
+                password_hash TEXT NOT NULL,
+
+                created_at TIMESTAMPTZ
+                    DEFAULT CURRENT_TIMESTAMP
+
+            );
+        `);
+
+        console.log(
+            "✅ PostgreSQL users table is ready."
+        );
+
+    } finally {
+
+        client.release();
+    }
+}
 
 
-// ==========================================
-// PERFORMANCE / SAFETY
-// ==========================================
-
-db.pragma("journal_mode = WAL");
-
-
-// ==========================================
-// USERS TABLE
-// ==========================================
-
-db.exec(`
-    CREATE TABLE IF NOT EXISTS users (
-
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-        name TEXT NOT NULL,
-
-        email TEXT NOT NULL UNIQUE,
-
-        password_hash TEXT NOT NULL,
-
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-
-    );
-`);
-
-
-// ==========================================
+// ============================================================
 // CREATE USER
-// ==========================================
+// ============================================================
 
-function createUser(
+async function createUser(
     name,
     email,
     passwordHash
 ) {
 
-    const statement = db.prepare(`
-        INSERT INTO users
-        (
-            name,
-            email,
-            password_hash
-        )
-        VALUES
-        (
-            ?,
-            ?,
-            ?
-        )
-    `);
+    const result =
+        await pool.query(
+            `
+            INSERT INTO users
+            (
+                name,
+                email,
+                password_hash
+            )
+            VALUES
+            (
+                $1,
+                $2,
+                $3
+            )
+            RETURNING
+                id,
+                name,
+                email,
+                created_at
+            `,
+            [
+                name,
+                email,
+                passwordHash
+            ]
+        );
 
-    return statement.run(
-        name,
-        email,
-        passwordHash
-    );
+    return result.rows[0];
 }
 
 
-// ==========================================
+// ============================================================
 // FIND USER BY EMAIL
-// ==========================================
+// ============================================================
 
-function findUserByEmail(email) {
+async function findUserByEmail(
+    email
+) {
 
-    const statement = db.prepare(`
-        SELECT
-            id,
-            name,
-            email,
-            password_hash,
-            created_at
-        FROM users
-        WHERE LOWER(email) = LOWER(?)
-        LIMIT 1
-    `);
+    const result =
+        await pool.query(
+            `
+            SELECT
+                id,
+                name,
+                email,
+                password_hash,
+                created_at
+            FROM users
+            WHERE LOWER(email) = LOWER($1)
+            LIMIT 1
+            `,
+            [
+                email
+            ]
+        );
 
-    return statement.get(email);
+    return result.rows[0];
 }
 
 
-// ==========================================
+// ============================================================
+// CLOSE DATABASE
+// ============================================================
+
+async function closeDatabase() {
+
+    await pool.end();
+
+}
+
+
+// ============================================================
 // EXPORT
-// ==========================================
+// ============================================================
 
 module.exports = {
 
-    db,
+    pool,
+
+    initializeDatabase,
 
     createUser,
 
-    findUserByEmail
+    findUserByEmail,
+
+    closeDatabase
 
 };
