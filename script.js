@@ -1,7 +1,8 @@
 // ============================================================
 // PRIYANSHU SECURE PORTAL
-// Advanced JWT Authentication Frontend
-// Version 2.6.2
+// Advanced Authentication Frontend
+// Version 2.7.1
+// JWT + Forgot Password
 // ============================================================
 
 const API_URL =
@@ -600,9 +601,8 @@ loadRememberedEmail();
 // ============================================================
 
 function saveAuthToken(token) {
-    if (!token) {
+    if (!token)
         return false;
-    }
 
     try {
         sessionStorage.setItem(
@@ -613,6 +613,7 @@ function saveAuthToken(token) {
         return true;
 
     } catch (error) {
+
         console.error(
             "Unable to save authentication token.",
             error
@@ -628,6 +629,7 @@ function getAuthToken() {
             TOKEN_KEY
         );
     } catch (error) {
+
         console.error(
             "Unable to read authentication token.",
             error
@@ -649,15 +651,18 @@ function saveAuthenticatedUser(
             JSON.stringify(user)
         );
     } catch (error) {
+
         console.error(
             "Unable to save authenticated user.",
             error
         );
+
     }
 }
 
 function clearAuthSession() {
     try {
+
         sessionStorage.removeItem(
             TOKEN_KEY
         );
@@ -665,19 +670,23 @@ function clearAuthSession() {
         sessionStorage.removeItem(
             USER_KEY
         );
+
     } catch (error) {
+
         console.error(
             "Unable to clear authentication session.",
             error
         );
+
     }
 }
 
 // ============================================================
-// VERIFY JWT WITH BACKEND
+// VERIFY JWT
 // ============================================================
 
 async function verifyAuthenticatedUser() {
+
     const token =
         getAuthToken();
 
@@ -686,6 +695,7 @@ async function verifyAuthenticatedUser() {
     }
 
     try {
+
         const response =
             await fetch(
                 `${API_URL}/api/me`,
@@ -703,19 +713,24 @@ async function verifyAuthenticatedUser() {
             await response.json();
 
         if (!response.ok) {
+
             clearAuthSession();
+
             return null;
         }
 
         if (data.user) {
+
             saveAuthenticatedUser(
                 data.user
             );
+
         }
 
         return data.user;
 
     } catch (error) {
+
         console.error(
             "JWT verification error:",
             error
@@ -726,12 +741,14 @@ async function verifyAuthenticatedUser() {
 }
 
 // ============================================================
-// REDIRECT TO DASHBOARD
+// DASHBOARD REDIRECT
 // ============================================================
 
 function redirectToDashboard() {
+
     window.location.href =
         "dashboard.html";
+
 }
 
 // ============================================================
@@ -755,6 +772,7 @@ if (exists(loginForm)) {
                 passwordInput.value;
 
             if (!email) {
+
                 showToast(
                     "Email Required",
                     "Please enter your email address.",
@@ -762,10 +780,12 @@ if (exists(loginForm)) {
                 );
 
                 emailInput.focus();
+
                 return;
             }
 
             if (!isValidEmail(email)) {
+
                 showToast(
                     "Invalid Email",
                     "Please enter a valid email address.",
@@ -773,10 +793,12 @@ if (exists(loginForm)) {
                 );
 
                 emailInput.focus();
+
                 return;
             }
 
             if (!password) {
+
                 showToast(
                     "Password Required",
                     "Please enter your password.",
@@ -784,6 +806,7 @@ if (exists(loginForm)) {
                 );
 
                 passwordInput.focus();
+
                 return;
             }
 
@@ -814,25 +837,21 @@ if (exists(loginForm)) {
                     await response.json();
 
                 if (!response.ok) {
+
                     throw new Error(
                         data.message ||
                         "Login failed."
                     );
+
                 }
 
-                // --------------------------------------------
-                // JWT MUST EXIST
-                // --------------------------------------------
-
                 if (!data.token) {
+
                     throw new Error(
                         "Authentication token was not received from the server."
                     );
-                }
 
-                // --------------------------------------------
-                // SAVE JWT
-                // --------------------------------------------
+                }
 
                 const tokenSaved =
                     saveAuthToken(
@@ -840,14 +859,12 @@ if (exists(loginForm)) {
                     );
 
                 if (!tokenSaved) {
+
                     throw new Error(
                         "Unable to create secure session."
                     );
-                }
 
-                // --------------------------------------------
-                // SAVE USER
-                // --------------------------------------------
+                }
 
                 saveAuthenticatedUser(
                     data.user
@@ -855,22 +872,16 @@ if (exists(loginForm)) {
 
                 saveRememberedEmail();
 
-                // --------------------------------------------
-                // VERIFY JWT
-                // --------------------------------------------
-
                 const verifiedUser =
                     await verifyAuthenticatedUser();
 
                 if (!verifiedUser) {
+
                     throw new Error(
                         "Secure session verification failed."
                     );
-                }
 
-                // --------------------------------------------
-                // SUCCESS
-                // --------------------------------------------
+                }
 
                 showToast(
                     "Login Successful",
@@ -894,16 +905,10 @@ if (exists(loginForm)) {
                     data.expiresIn
                 );
 
-                console.log(
-                    "🛡️ Protected session verified."
-                );
-
-                // --------------------------------------------
-                // REDIRECT
-                // --------------------------------------------
-
                 setTimeout(() => {
+
                     redirectToDashboard();
+
                 }, 700);
 
             } catch (error) {
@@ -924,9 +929,12 @@ if (exists(loginForm)) {
 
             } finally {
 
-                setLoginLoading(false);
+                setLoginLoading(
+                    false
+                );
 
             }
+
         }
     );
 }
@@ -966,6 +974,7 @@ if (exists(registerForm)) {
                 );
 
                 registerName.focus();
+
                 return;
             }
 
@@ -978,6 +987,7 @@ if (exists(registerForm)) {
                 );
 
                 registerEmail.focus();
+
                 return;
             }
 
@@ -990,6 +1000,7 @@ if (exists(registerForm)) {
                 );
 
                 registerPassword.focus();
+
                 return;
             }
 
@@ -1002,6 +1013,7 @@ if (exists(registerForm)) {
                 );
 
                 confirmPassword.focus();
+
                 return;
             }
 
@@ -1019,7 +1031,9 @@ if (exists(registerForm)) {
                 return;
             }
 
-            setRegisterLoading(true);
+            setRegisterLoading(
+                true
+            );
 
             try {
 
@@ -1047,10 +1061,12 @@ if (exists(registerForm)) {
                     await response.json();
 
                 if (!response.ok) {
+
                     throw new Error(
                         data.message ||
                         "Registration failed."
                     );
+
                 }
 
                 showToast(
@@ -1060,8 +1076,10 @@ if (exists(registerForm)) {
                 );
 
                 if (exists(emailInput)) {
+
                     emailInput.value =
                         data.user.email;
+
                 }
 
                 registerName.value = "";
@@ -1069,9 +1087,13 @@ if (exists(registerForm)) {
                 registerPassword.value = "";
                 confirmPassword.value = "";
 
-                if (exists(acceptTerms)) {
+                if (
+                    exists(acceptTerms)
+                ) {
+
                     acceptTerms.checked =
                         false;
+
                 }
 
                 updatePasswordStrength();
@@ -1079,13 +1101,17 @@ if (exists(registerForm)) {
                 closeRegisterModal();
 
                 setTimeout(() => {
+
                     if (
                         exists(
                             passwordInput
                         )
                     ) {
+
                         passwordInput.focus();
+
                     }
+
                 }, 300);
 
             } catch (error) {
@@ -1109,6 +1135,7 @@ if (exists(registerForm)) {
                 );
 
             }
+
         }
     );
 }
@@ -1121,15 +1148,127 @@ if (exists(forgotPassword)) {
 
     forgotPassword.addEventListener(
         "click",
-        event => {
+        async event => {
 
             event.preventDefault();
 
-            showToast(
-                "Password Recovery",
-                "Password recovery will be added in the next security module.",
-                "warning"
-            );
+            let email = "";
+
+            if (exists(emailInput)) {
+
+                email =
+                    emailInput.value
+                        .trim()
+                        .toLowerCase();
+
+            }
+
+            if (!email) {
+
+                showToast(
+                    "Email Required",
+                    "Enter your email address first, then click Forgot Password.",
+                    "warning"
+                );
+
+                if (exists(emailInput)) {
+                    emailInput.focus();
+                }
+
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+
+                showToast(
+                    "Invalid Email",
+                    "Please enter a valid email address.",
+                    "warning"
+                );
+
+                if (exists(emailInput)) {
+                    emailInput.focus();
+                }
+
+                return;
+            }
+
+            forgotPassword.style.pointerEvents =
+                "none";
+
+            forgotPassword.style.opacity =
+                "0.6";
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_URL}/api/forgot-password`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    email
+                                })
+                        }
+                    );
+
+                const data =
+                    await response.json();
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        "Unable to process password recovery."
+                    );
+
+                }
+
+                showToast(
+                    "Recovery Request Sent",
+                    data.message ||
+                    "If an account exists, password recovery instructions will be sent.",
+                    "success"
+                );
+
+                console.log(
+                    "🔐 Password recovery request completed."
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "FORGOT PASSWORD ERROR:",
+                    error
+                );
+
+                showToast(
+                    "Recovery Error",
+                    error.message ||
+                    "Unable to process password recovery request.",
+                    "error"
+                );
+
+            } finally {
+
+                setTimeout(() => {
+
+                    forgotPassword.style.pointerEvents =
+                        "";
+
+                    forgotPassword.style.opacity =
+                        "";
+
+                }, 1500);
+
+            }
 
         }
     );
@@ -1196,9 +1335,11 @@ const particlesContainer =
 
 function createParticles() {
 
-    if (!exists(
-        particlesContainer
-    )) {
+    if (
+        !exists(
+            particlesContainer
+        )
+    ) {
         return;
     }
 
@@ -1248,6 +1389,7 @@ function createParticles() {
         particlesContainer.appendChild(
             particle
         );
+
     }
 }
 
@@ -1314,10 +1456,13 @@ if (
     loginCard.addEventListener(
         "mouseleave",
         () => {
+
             loginCard.style.transform =
                 "";
+
         }
     );
+
 }
 
 // ============================================================
@@ -1359,7 +1504,9 @@ document.addEventListener(
         );
 
         setTimeout(() => {
+
             ripple.remove();
+
         }, 700);
 
     }
@@ -1382,9 +1529,11 @@ async function checkAPIConnection() {
             );
 
         if (!response.ok) {
+
             throw new Error(
                 "API unavailable"
             );
+
         }
 
         const data =
@@ -1408,7 +1557,7 @@ async function checkAPIConnection() {
 checkAPIConnection();
 
 // ============================================================
-// PREVENT LOGIN PAGE ACCESS WITH VALID SESSION
+// EXISTING JWT SESSION
 // ============================================================
 
 async function checkExistingSession() {
@@ -1427,10 +1576,6 @@ async function checkExistingSession() {
 
         console.log(
             "🔓 Existing valid JWT session found."
-        );
-
-        console.log(
-            "➡️ Redirecting to dashboard..."
         );
 
         redirectToDashboard();
@@ -1465,7 +1610,7 @@ window.addEventListener(
             );
 
             console.log(
-                "📊 Protected dashboard redirect: ACTIVE"
+                "🔑 Password recovery: ACTIVE"
             );
 
         }, 300);
