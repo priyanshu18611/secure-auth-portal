@@ -2,7 +2,7 @@
 // PRIYANSHU SECURE PORTAL
 // Production Authentication Server
 // PostgreSQL + bcrypt + Helmet + Rate Limiting
-// Strict CORS + Input Validation
+// Strict CORS + Input Validation + Secure Error Handling
 // ============================================================
 
 const express = require("express");
@@ -26,8 +26,22 @@ const {
 // ============================================================
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
+const PORT =
+    process.env.PORT || 5000;
+
+const NODE_ENV =
+    process.env.NODE_ENV || "production";
+
+const IS_PRODUCTION =
+    NODE_ENV === "production";
+
+// Render runs behind a proxy.
+// This allows Express to correctly identify client IPs
+// for rate limiting.
+app.set("trust proxy", 1);
+
+// Hide Express technology fingerprint.
 app.disable("x-powered-by");
 
 // ============================================================
@@ -50,16 +64,23 @@ const allowedOrigins = [
 
 const corsOptions = {
     origin: function (origin, callback) {
+
+        // Direct requests without Origin header are allowed.
+        // Example: health checks/server-to-server requests.
         if (!origin) {
             return callback(null, true);
         }
 
-        if (allowedOrigins.includes(origin)) {
+        if (
+            allowedOrigins.includes(origin)
+        ) {
             return callback(null, true);
         }
 
         return callback(
-            new Error("CORS policy: Origin not allowed.")
+            new Error(
+                "CORS policy: Origin not allowed."
+            )
         );
     },
 
@@ -77,7 +98,9 @@ const corsOptions = {
     ]
 };
 
-app.use(cors(corsOptions));
+app.use(
+    cors(corsOptions)
+);
 
 // ============================================================
 // JSON BODY PARSER
@@ -94,21 +117,26 @@ app.use(
 // GENERAL API RATE LIMIT
 // ============================================================
 
-const generalLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
+const generalLimiter =
+    rateLimit({
+        windowMs:
+            15 * 60 * 1000,
 
-    limit: 300,
+        limit: 300,
 
-    standardHeaders: "draft-8",
+        standardHeaders:
+            "draft-8",
 
-    legacyHeaders: false,
+        legacyHeaders:
+            false,
 
-    message: {
-        success: false,
-        message:
-            "Too many requests. Please try again later."
-    }
-});
+        message: {
+            success: false,
+
+            message:
+                "Too many requests. Please try again later."
+        }
+    });
 
 app.use(
     "/api/",
@@ -119,40 +147,52 @@ app.use(
 // AUTHENTICATION RATE LIMIT
 // ============================================================
 
-const authLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
+const authLimiter =
+    rateLimit({
+        windowMs:
+            15 * 60 * 1000,
 
-    limit: 10,
+        limit: 10,
 
-    standardHeaders: "draft-8",
+        standardHeaders:
+            "draft-8",
 
-    legacyHeaders: false,
+        legacyHeaders:
+            false,
 
-    message: {
-        success: false,
-        message:
-            "Too many authentication attempts. Please try again after 15 minutes."
-    }
-});
+        message: {
+            success: false,
+
+            message:
+                "Too many authentication attempts. Please try again after 15 minutes."
+        }
+    });
 
 // ============================================================
 // DATA / EXCEL CONFIGURATION
 // ============================================================
 
-const dataDir = path.join(
-    __dirname,
-    "../data"
-);
+const dataDir =
+    path.join(
+        __dirname,
+        "../data"
+    );
 
-const excelFile = path.join(
-    dataDir,
-    "login_activity.xlsx"
-);
+const excelFile =
+    path.join(
+        dataDir,
+        "login_activity.xlsx"
+    );
 
-if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, {
-        recursive: true
-    });
+if (
+    !fs.existsSync(dataDir)
+) {
+    fs.mkdirSync(
+        dataDir,
+        {
+            recursive: true
+        }
+    );
 }
 
 // ============================================================
@@ -160,13 +200,21 @@ if (!fs.existsSync(dataDir)) {
 // ============================================================
 
 function createExcelFile() {
+
     try {
-        if (fs.existsSync(excelFile)) {
+
+        if (
+            fs.existsSync(
+                excelFile
+            )
+        ) {
             return;
         }
 
         const worksheet =
-            XLSX.utils.json_to_sheet([]);
+            XLSX.utils.json_to_sheet(
+                []
+            );
 
         const workbook =
             XLSX.utils.book_new();
@@ -187,6 +235,7 @@ function createExcelFile() {
         );
 
     } catch (error) {
+
         console.error(
             "EXCEL INITIALIZATION ERROR:",
             error.message
@@ -200,7 +249,10 @@ createExcelFile();
 // INPUT VALIDATION HELPERS
 // ============================================================
 
-function isPlainObject(value) {
+function isPlainObject(
+    value
+) {
+
     return (
         value !== null &&
         typeof value === "object" &&
@@ -212,8 +264,13 @@ function isPlainObject(value) {
 // Name normalization
 // ------------------------------------------------------------
 
-function normalizeName(value) {
-    if (typeof value !== "string") {
+function normalizeName(
+    value
+) {
+
+    if (
+        typeof value !== "string"
+    ) {
         return null;
     }
 
@@ -227,7 +284,10 @@ function normalizeName(value) {
 // Name validation
 // ------------------------------------------------------------
 
-function isValidName(name) {
+function isValidName(
+    name
+) {
+
     if (
         typeof name !== "string" ||
         name.length < 2 ||
@@ -236,17 +296,22 @@ function isValidName(name) {
         return false;
     }
 
-    // Allows Unicode letters, spaces, apostrophes,
-    // periods and hyphens.
-    return /^[\p{L}\p{M} .'-]+$/u.test(name);
+    return /^[\p{L}\p{M} .'-]+$/u.test(
+        name
+    );
 }
 
 // ------------------------------------------------------------
 // Email normalization
 // ------------------------------------------------------------
 
-function normalizeEmail(value) {
-    if (typeof value !== "string") {
+function normalizeEmail(
+    value
+) {
+
+    if (
+        typeof value !== "string"
+    ) {
         return null;
     }
 
@@ -260,7 +325,10 @@ function normalizeEmail(value) {
 // Email validation
 // ------------------------------------------------------------
 
-function isValidEmail(email) {
+function isValidEmail(
+    email
+) {
+
     if (
         typeof email !== "string" ||
         email.length < 3 ||
@@ -275,51 +343,51 @@ function isValidEmail(email) {
         return false;
     }
 
-    const emailPattern =
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    return emailPattern.test(email);
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+        email
+    );
 }
 
 // ------------------------------------------------------------
 // Password validation
 // ------------------------------------------------------------
 
-function isValidPassword(password) {
+function isValidPassword(
+    password
+) {
+
     if (
         typeof password !== "string"
     ) {
         return false;
     }
 
-    if (
-        password.length < 6 ||
-        password.length > 128
-    ) {
-        return false;
-    }
-
-    return true;
+    return (
+        password.length >= 6 &&
+        password.length <= 128
+    );
 }
 
 // ------------------------------------------------------------
-// Reject unexpected fields
+// Allowed fields validation
 // ------------------------------------------------------------
 
 function hasOnlyAllowedFields(
     body,
     allowedFields
 ) {
-    if (!isPlainObject(body)) {
+
+    if (
+        !isPlainObject(body)
+    ) {
         return false;
     }
 
-    const receivedFields =
-        Object.keys(body);
-
-    return receivedFields.every(
+    return Object.keys(body).every(
         field =>
-            allowedFields.includes(field)
+            allowedFields.includes(
+                field
+            )
     );
 }
 
@@ -332,11 +400,13 @@ async function saveActivity(
     email,
     action
 ) {
+
     // --------------------------------------------------------
-    // PostgreSQL activity log
+    // PostgreSQL
     // --------------------------------------------------------
 
     try {
+
         await pool.query(
             `
             INSERT INTO activity_logs
@@ -364,6 +434,7 @@ async function saveActivity(
         );
 
     } catch (error) {
+
         console.error(
             "POSTGRES ACTIVITY LOG ERROR:",
             error.message
@@ -371,28 +442,40 @@ async function saveActivity(
     }
 
     // --------------------------------------------------------
-    // Excel activity report
+    // Excel
     // --------------------------------------------------------
 
     try {
+
         const workbook =
-            fs.existsSync(excelFile)
-                ? XLSX.readFile(excelFile)
+            fs.existsSync(
+                excelFile
+            )
+                ? XLSX.readFile(
+                    excelFile
+                )
                 : XLSX.utils.book_new();
 
         let worksheet =
-            workbook.Sheets["Activity"];
+            workbook.Sheets[
+                "Activity"
+            ];
 
         let records = [];
 
         if (worksheet) {
+
             records =
                 XLSX.utils.sheet_to_json(
                     worksheet
                 );
+
         } else {
+
             worksheet =
-                XLSX.utils.json_to_sheet([]);
+                XLSX.utils.json_to_sheet(
+                    []
+                );
 
             XLSX.utils.book_append_sheet(
                 workbook,
@@ -433,8 +516,9 @@ async function saveActivity(
                 records
             );
 
-        workbook.Sheets["Activity"] =
-            worksheet;
+        workbook.Sheets[
+            "Activity"
+        ] = worksheet;
 
         XLSX.writeFile(
             workbook,
@@ -442,6 +526,7 @@ async function saveActivity(
         );
 
     } catch (error) {
+
         console.error(
             "EXCEL ACTIVITY LOG ERROR:",
             error.message
@@ -456,6 +541,7 @@ async function saveActivity(
 app.get(
     "/",
     (req, res) => {
+
         res.json({
             success: true,
 
@@ -463,7 +549,12 @@ app.get(
                 "Priyanshu Secure Portal API is running.",
 
             version:
-                "2.4.0",
+                "2.5.0",
+
+            environment:
+                IS_PRODUCTION
+                    ? "production"
+                    : "development",
 
             database:
                 "PostgreSQL",
@@ -481,7 +572,9 @@ app.get(
 app.get(
     "/api/health",
     async (req, res) => {
+
         try {
+
             await pool.query(
                 "SELECT 1"
             );
@@ -495,17 +588,25 @@ app.get(
                 database:
                     "connected",
 
+                environment:
+                    IS_PRODUCTION
+                        ? "production"
+                        : "development",
+
                 security:
-                    "helmet + rate-limiting + strict-cors + validation"
+                    "enabled"
             });
 
         } catch (error) {
+
             console.error(
                 "HEALTH CHECK ERROR:",
                 error.message
             );
 
-            return res.status(500).json({
+            return res.status(
+                503
+            ).json({
                 success: false,
 
                 api:
@@ -528,20 +629,30 @@ app.post(
     async (req, res) => {
 
         try {
+
             // ------------------------------------------------
-            // Body validation
+            // Request body
             // ------------------------------------------------
 
             if (
-                !isPlainObject(req.body)
+                !isPlainObject(
+                    req.body
+                )
             ) {
-                return res.status(400).json({
+
+                return res.status(
+                    400
+                ).json({
                     success: false,
 
                     message:
                         "Invalid request body."
                 });
             }
+
+            // ------------------------------------------------
+            // Allowed fields
+            // ------------------------------------------------
 
             if (
                 !hasOnlyAllowedFields(
@@ -553,7 +664,10 @@ app.post(
                     ]
                 )
             ) {
-                return res.status(400).json({
+
+                return res.status(
+                    400
+                ).json({
                     success: false,
 
                     message:
@@ -568,7 +682,7 @@ app.post(
             } = req.body;
 
             // ------------------------------------------------
-            // Required fields
+            // Type validation
             // ------------------------------------------------
 
             if (
@@ -576,7 +690,10 @@ app.post(
                 typeof email !== "string" ||
                 typeof password !== "string"
             ) {
-                return res.status(400).json({
+
+                return res.status(
+                    400
+                ).json({
                     success: false,
 
                     message:
@@ -585,23 +702,32 @@ app.post(
             }
 
             // ------------------------------------------------
-            // Normalize safe fields
+            // Normalize
             // ------------------------------------------------
 
             const cleanName =
-                normalizeName(name);
+                normalizeName(
+                    name
+                );
 
             const cleanEmail =
-                normalizeEmail(email);
+                normalizeEmail(
+                    email
+                );
 
             // ------------------------------------------------
-            // Validate name
+            // Name
             // ------------------------------------------------
 
             if (
-                !isValidName(cleanName)
+                !isValidName(
+                    cleanName
+                )
             ) {
-                return res.status(400).json({
+
+                return res.status(
+                    400
+                ).json({
                     success: false,
 
                     message:
@@ -610,13 +736,18 @@ app.post(
             }
 
             // ------------------------------------------------
-            // Validate email
+            // Email
             // ------------------------------------------------
 
             if (
-                !isValidEmail(cleanEmail)
+                !isValidEmail(
+                    cleanEmail
+                )
             ) {
-                return res.status(400).json({
+
+                return res.status(
+                    400
+                ).json({
                     success: false,
 
                     message:
@@ -625,13 +756,18 @@ app.post(
             }
 
             // ------------------------------------------------
-            // Validate password
+            // Password
             // ------------------------------------------------
 
             if (
-                !isValidPassword(password)
+                !isValidPassword(
+                    password
+                )
             ) {
-                return res.status(400).json({
+
+                return res.status(
+                    400
+                ).json({
                     success: false,
 
                     message:
@@ -640,7 +776,7 @@ app.post(
             }
 
             // ------------------------------------------------
-            // Check existing user
+            // Existing account
             // ------------------------------------------------
 
             const existingUser =
@@ -648,8 +784,13 @@ app.post(
                     cleanEmail
                 );
 
-            if (existingUser) {
-                return res.status(409).json({
+            if (
+                existingUser
+            ) {
+
+                return res.status(
+                    409
+                ).json({
                     success: false,
 
                     message:
@@ -668,7 +809,7 @@ app.post(
                 );
 
             // ------------------------------------------------
-            // Create PostgreSQL user
+            // Create user
             // ------------------------------------------------
 
             const newUser =
@@ -679,7 +820,7 @@ app.post(
                 );
 
             // ------------------------------------------------
-            // Activity log
+            // Activity
             // ------------------------------------------------
 
             await saveActivity(
@@ -689,10 +830,13 @@ app.post(
             );
 
             // ------------------------------------------------
-            // Response
+            // Safe response
             // ------------------------------------------------
 
-            return res.status(201).json({
+            return res.status(
+                201
+            ).json({
+
                 success: true,
 
                 message:
@@ -714,13 +858,16 @@ app.post(
 
             console.error(
                 "REGISTER ERROR:",
-                error
+                error.message
             );
 
             if (
                 error.code === "23505"
             ) {
-                return res.status(409).json({
+
+                return res.status(
+                    409
+                ).json({
                     success: false,
 
                     message:
@@ -728,11 +875,13 @@ app.post(
                 });
             }
 
-            return res.status(500).json({
+            return res.status(
+                500
+            ).json({
                 success: false,
 
                 message:
-                    "Unable to create account."
+                    "Unable to create account. Please try again later."
             });
         }
     }
@@ -748,20 +897,30 @@ app.post(
     async (req, res) => {
 
         try {
+
             // ------------------------------------------------
-            // Body validation
+            // Request body
             // ------------------------------------------------
 
             if (
-                !isPlainObject(req.body)
+                !isPlainObject(
+                    req.body
+                )
             ) {
-                return res.status(400).json({
+
+                return res.status(
+                    400
+                ).json({
                     success: false,
 
                     message:
                         "Invalid request body."
                 });
             }
+
+            // ------------------------------------------------
+            // Allowed fields
+            // ------------------------------------------------
 
             if (
                 !hasOnlyAllowedFields(
@@ -772,7 +931,10 @@ app.post(
                     ]
                 )
             ) {
-                return res.status(400).json({
+
+                return res.status(
+                    400
+                ).json({
                     success: false,
 
                     message:
@@ -786,14 +948,17 @@ app.post(
             } = req.body;
 
             // ------------------------------------------------
-            // Required fields
+            // Type validation
             // ------------------------------------------------
 
             if (
                 typeof email !== "string" ||
                 typeof password !== "string"
             ) {
-                return res.status(400).json({
+
+                return res.status(
+                    400
+                ).json({
                     success: false,
 
                     message:
@@ -806,31 +971,43 @@ app.post(
             // ------------------------------------------------
 
             const cleanEmail =
-                normalizeEmail(email);
+                normalizeEmail(
+                    email
+                );
 
             // ------------------------------------------------
-            // Validate email
+            // Email validation
             // ------------------------------------------------
 
             if (
-                !isValidEmail(cleanEmail)
+                !isValidEmail(
+                    cleanEmail
+                )
             ) {
-                return res.status(400).json({
+
+                return res.status(
+                    400
+                ).json({
                     success: false,
 
                     message:
-                        "Please enter a valid email address."
+                        "Invalid email or password."
                 });
             }
 
             // ------------------------------------------------
-            // Validate password
+            // Password validation
             // ------------------------------------------------
 
             if (
-                !isValidPassword(password)
+                !isValidPassword(
+                    password
+                )
             ) {
-                return res.status(400).json({
+
+                return res.status(
+                    401
+                ).json({
                     success: false,
 
                     message:
@@ -848,7 +1025,10 @@ app.post(
                 );
 
             if (!user) {
-                return res.status(401).json({
+
+                return res.status(
+                    401
+                ).json({
                     success: false,
 
                     message:
@@ -857,7 +1037,7 @@ app.post(
             }
 
             // ------------------------------------------------
-            // Verify password
+            // Compare password
             // ------------------------------------------------
 
             const passwordValid =
@@ -866,8 +1046,13 @@ app.post(
                     user.password_hash
                 );
 
-            if (!passwordValid) {
-                return res.status(401).json({
+            if (
+                !passwordValid
+            ) {
+
+                return res.status(
+                    401
+                ).json({
                     success: false,
 
                     message:
@@ -876,7 +1061,7 @@ app.post(
             }
 
             // ------------------------------------------------
-            // Activity log
+            // Activity
             // ------------------------------------------------
 
             await saveActivity(
@@ -886,10 +1071,11 @@ app.post(
             );
 
             // ------------------------------------------------
-            // Response
+            // Safe response
             // ------------------------------------------------
 
             return res.json({
+
                 success: true,
 
                 message:
@@ -911,14 +1097,16 @@ app.post(
 
             console.error(
                 "LOGIN ERROR:",
-                error
+                error.message
             );
 
-            return res.status(500).json({
+            return res.status(
+                500
+            ).json({
                 success: false,
 
                 message:
-                    "Unable to process login."
+                    "Unable to process login. Please try again later."
             });
         }
     }
@@ -930,7 +1118,11 @@ app.post(
 
 app.use(
     (req, res) => {
-        res.status(404).json({
+
+        return res.status(
+            404
+        ).json({
+
             success: false,
 
             message:
@@ -953,17 +1145,23 @@ app.use(
 
         console.error(
             "GLOBAL ERROR:",
-            error
+            error.message
         );
 
-        // CORS errors
+        // ----------------------------------------------------
+        // CORS error
+        // ----------------------------------------------------
+
         if (
             error.message &&
             error.message.includes(
                 "CORS policy"
             )
         ) {
-            return res.status(403).json({
+
+            return res.status(
+                403
+            ).json({
                 success: false,
 
                 message:
@@ -971,13 +1169,19 @@ app.use(
             });
         }
 
+        // ----------------------------------------------------
         // Invalid JSON
+        // ----------------------------------------------------
+
         if (
             error instanceof SyntaxError &&
             error.status === 400 &&
             "body" in error
         ) {
-            return res.status(400).json({
+
+            return res.status(
+                400
+            ).json({
                 success: false,
 
                 message:
@@ -985,11 +1189,38 @@ app.use(
             });
         }
 
-        return res.status(500).json({
+        // ----------------------------------------------------
+        // Production response
+        // ----------------------------------------------------
+
+        if (
+            IS_PRODUCTION
+        ) {
+
+            return res.status(
+                500
+            ).json({
+                success: false,
+
+                message:
+                    "Internal server error."
+            });
+        }
+
+        // ----------------------------------------------------
+        // Development response
+        // ----------------------------------------------------
+
+        return res.status(
+            500
+        ).json({
             success: false,
 
             message:
-                "Internal server error."
+                "Internal server error.",
+
+            error:
+                error.message
         });
     }
 );
@@ -1002,7 +1233,15 @@ async function startServer() {
 
     try {
 
+        // ----------------------------------------------------
+        // Initialize PostgreSQL
+        // ----------------------------------------------------
+
         await initializeDatabase();
+
+        // ----------------------------------------------------
+        // Activity table
+        // ----------------------------------------------------
 
         await pool.query(
             `
@@ -1024,6 +1263,10 @@ async function startServer() {
         console.log(
             "PostgreSQL activity_logs table is ready."
         );
+
+        // ----------------------------------------------------
+        // Start HTTP server
+        // ----------------------------------------------------
 
         app.listen(
             PORT,
@@ -1052,14 +1295,24 @@ async function startServer() {
                 console.log(
                     "Input validation enabled."
                 );
+
+                console.log(
+                    "Secure error handling enabled."
+                );
+
+                console.log(
+                    `Environment: ${NODE_ENV}`
+                );
             }
         );
 
     } catch (error) {
 
+        // IMPORTANT:
+        // Do not expose database credentials or stack traces.
         console.error(
             "DATABASE INITIALIZATION FAILED:",
-            error
+            error.message
         );
 
         process.exit(1);
