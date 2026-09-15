@@ -1,3 +1,9 @@
+// ============================================================
+// PRIYANSHU SECURE PORTAL
+// Production Authentication Server
+// PostgreSQL + bcrypt + Activity Logging
+// ============================================================
+
 const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
@@ -6,8 +12,10 @@ const fs = require("fs");
 const path = require("path");
 
 const {
+    initializeDatabase,
     createUser,
-    findUserByEmail
+    findUserByEmail,
+    pool
 } = require("./database");
 
 const app = express();
@@ -15,18 +23,23 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 
-// =====================================================
+// ============================================================
 // MIDDLEWARE
-// =====================================================
+// ============================================================
 
-app.use(cors());
+app.use(
+    cors({
+        origin: true,
+        credentials: true
+    })
+);
 
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
 
 
-// =====================================================
-// DATA DIRECTORY
-// =====================================================
+// ============================================================
+// DATA / EXCEL REPORT
+// ============================================================
 
 const dataDir =
     path.join(__dirname, "../data");
@@ -34,26 +47,16 @@ const dataDir =
 const excelFile =
     path.join(dataDir, "login_activity.xlsx");
 
-
-// =====================================================
-// CREATE DATA DIRECTORY
-// =====================================================
-
 if (!fs.existsSync(dataDir)) {
-
-    fs.mkdirSync(
-        dataDir,
-        {
-            recursive: true
-        }
-    );
-
+    fs.mkdirSync(dataDir, {
+        recursive: true
+    });
 }
 
 
-// =====================================================
+// ============================================================
 // CREATE EXCEL REPORT
-// =====================================================
+// ============================================================
 
 function createExcelFile() {
 
@@ -82,103 +85,222 @@ function createExcelFile() {
 createExcelFile();
 
 
-// =====================================================
-// SAVE ACTIVITY TO EXCEL
-// =====================================================
+// ============================================================
+// SAVE ACTIVITY
+// ============================================================
 
-function saveActivity(
+async function saveActivity(
     name,
     email,
     action
 ) {
 
-    const workbook =
-        XLSX.readFile(excelFile);
+    // --------------------------------------------
+    // PRIMARY STORAGE — POSTGRESQL
+    // --------------------------------------------
 
-    let worksheet =
-        workbook.Sheets["Activity"];
+    try {
 
-    let records =
-        XLSX.utils.sheet_to_json(
-            worksheet
+        await pool.query(
+            `
+            CREATE TABLE IF NOT EXISTS activity_logs (
+
+                id SERIAL PRIMARY KEY,
+
+                name TEXT NOT NULL,
+
+                email TEXT NOT NULL,
+
+                action TEXT NOT NULL,
+
+                created_at TIMESTAMPTZ
+                    DEFAULT CURRENT_TIMESTAMP
+
+            );
+            `
         );
 
-
-    const now =
-        new Date();
-
-
-    const record = {
-
-        ID:
-            records.length + 1,
-
-        Name:
-            name,
-
-        Email:
-            email,
-
-        Action:
-            action,
-
-        Date:
-            now.toLocaleDateString("en-IN"),
-
-        Time:
-            now.toLocaleTimeString("en-IN")
-
-    };
-
-
-    records.push(record);
-
-
-    worksheet =
-        XLSX.utils.json_to_sheet(
-            records
+        await pool.query(
+            `
+            INSERT INTO activity_logs
+            (
+                name,
+                email,
+                action
+            )
+            VALUES
+            (
+                $1,
+                $2,
+                $3
+            );
+            `,
+            [
+                name,
+                email,
+                action
+            ]
         );
 
+    } catch (error) {
 
-    workbook.Sheets["Activity"] =
-        worksheet;
+        console.error(
+            "POSTGRES ACTIVITY LOG ERROR:",
+            error.message
+        );
+    }
 
 
-    XLSX.writeFile(
-        workbook,
-        excelFile
-    );
+    // --------------------------------------------
+    // EXCEL REPORT
+    // --------------------------------------------
 
+    try {
+
+        const workbook =
+            fs.existsSync(excelFile)
+                ? XLSX.readFile(excelFile)
+                : XLSX.utils.book_new();
+
+        let worksheet =
+            workbook.Sheets["Activity"];
+
+        let records = [];
+
+        if (worksheet) {
+
+            records =
+                XLSX.utils.sheet_to_json(
+                    worksheet
+                );
+
+        } else {
+
+            worksheet =
+                XLSX.utils.json_to_sheet([]);
+
+            XLSX.utils.book_append_sheet(
+                workbook,
+                worksheet,
+                "Activity"
+            );
+        }
+
+        const now =
+            new Date();
+
+        records.push({
+            ID:
+                records.length + 1,
+
+            Name:
+                name,
+
+            Email:
+                email,
+
+            Action:
+                action,
+
+            Date:
+                now.toLocaleDateString(
+                    "en-IN"
+                ),
+
+            Time:
+                now.toLocaleTimeString(
+                    "en-IN"
+                )
+        });
+
+        worksheet =
+            XLSX.utils.json_to_sheet(
+                records
+            );
+
+        workbook.Sheets["Activity"] =
+            worksheet;
+
+        XLSX.writeFile(
+            workbook,
+            excelFile
+        );
+
+    } catch (error) {
+
+        console.error(
+            "EXCEL ACTIVITY LOG ERROR:",
+            error.message
+        );
+    }
 }
 
 
-// =====================================================
+// ============================================================
 // HEALTH CHECK
-// =====================================================
+// ============================================================
 
 app.get(
     "/",
     (req, res) => {
 
         res.json({
-
             success: true,
-
             message:
                 "Priyanshu Secure Portal API is running.",
-
             version:
-                "1.0.0"
-
+                "2.0.0",
+            database:
+                "PostgreSQL"
         });
-
     }
 );
 
 
-// =====================================================
-// REGISTER API
-// =====================================================
+// ============================================================
+// DATABASE HEALTH CHECK
+// ============================================================
+
+app.get(
+    "/api/health",
+    async (req, res) => {
+
+        try {
+
+            await pool.query(
+                "SELECT 1"
+            );
+
+            res.json({
+                success: true,
+                api:
+                    "online",
+                database:
+                    "connected"
+            });
+
+        } catch (error) {
+
+            console.error(
+                "HEALTH CHECK ERROR:",
+                error
+            );
+
+            res.status(500).json({
+                success: false,
+                api:
+                    "online",
+                database:
+                    "disconnected"
+            });
+        }
+    }
+);
+
+
+// ============================================================
+// REGISTER
+// ============================================================
 
 app.post(
     "/api/register",
@@ -193,9 +315,9 @@ app.post(
             } = req.body;
 
 
-            // -----------------------------------------
-            // VALIDATION
-            // -----------------------------------------
+            // --------------------------------------------
+            // REQUIRED FIELDS
+            // --------------------------------------------
 
             if (
                 !name ||
@@ -204,72 +326,110 @@ app.post(
             ) {
 
                 return res.status(400).json({
-
                     success: false,
-
                     message:
                         "Name, email and password are required."
-
                 });
-
             }
 
 
-            if (name.trim().length < 2) {
+            const cleanName =
+                String(name).trim();
+
+            const cleanEmail =
+                String(email)
+                    .trim()
+                    .toLowerCase();
+
+
+            // --------------------------------------------
+            // NAME VALIDATION
+            // --------------------------------------------
+
+            if (
+                cleanName.length < 2 ||
+                cleanName.length > 100
+            ) {
 
                 return res.status(400).json({
-
                     success: false,
-
                     message:
                         "Please enter a valid name."
-
                 });
-
             }
 
 
-            if (password.length < 6) {
+            // --------------------------------------------
+            // EMAIL VALIDATION
+            // --------------------------------------------
+
+            const emailPattern =
+                /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (
+                !emailPattern.test(
+                    cleanEmail
+                )
+            ) {
 
                 return res.status(400).json({
-
                     success: false,
-
                     message:
-                        "Password must contain at least 6 characters."
-
+                        "Please enter a valid email address."
                 });
-
             }
 
 
-            // -----------------------------------------
+            // --------------------------------------------
+            // PASSWORD VALIDATION
+            // --------------------------------------------
+
+            if (
+                password.length < 6
+            ) {
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Password must contain at least 6 characters."
+                });
+            }
+
+
+            if (
+                password.length > 128
+            ) {
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Password is too long."
+                });
+            }
+
+
+            // --------------------------------------------
             // CHECK EXISTING USER
-            // -----------------------------------------
+            // --------------------------------------------
 
             const existingUser =
-                findUserByEmail(
-                    email.trim()
+                await findUserByEmail(
+                    cleanEmail
                 );
-
 
             if (existingUser) {
 
                 return res.status(409).json({
-
                     success: false,
-
                     message:
                         "An account with this email already exists."
-
                 });
-
             }
 
 
-            // -----------------------------------------
+            // --------------------------------------------
             // HASH PASSWORD
-            // -----------------------------------------
+            // --------------------------------------------
 
             const passwordHash =
                 await bcrypt.hash(
@@ -278,35 +438,32 @@ app.post(
                 );
 
 
-            // -----------------------------------------
-            // SAVE USER
-            // -----------------------------------------
+            // --------------------------------------------
+            // CREATE USER
+            // --------------------------------------------
 
-            createUser(
-
-                name.trim(),
-
-                email.trim().toLowerCase(),
-
-                passwordHash
-
-            );
+            const newUser =
+                await createUser(
+                    cleanName,
+                    cleanEmail,
+                    passwordHash
+                );
 
 
-            // -----------------------------------------
-            // EXCEL ACTIVITY
-            // -----------------------------------------
+            // --------------------------------------------
+            // ACTIVITY
+            // --------------------------------------------
 
-            saveActivity(
-
-                name.trim(),
-
-                email.trim().toLowerCase(),
-
+            await saveActivity(
+                newUser.name,
+                newUser.email,
                 "REGISTER"
-
             );
 
+
+            // --------------------------------------------
+            // RESPONSE
+            // --------------------------------------------
 
             return res.status(201).json({
 
@@ -317,19 +474,18 @@ app.post(
 
                 user: {
 
+                    id:
+                        newUser.id,
+
                     name:
-                        name.trim(),
+                        newUser.name,
 
                     email:
-                        email.trim().toLowerCase()
-
+                        newUser.email
                 }
-
             });
 
-        }
-
-        catch (error) {
+        } catch (error) {
 
             console.error(
                 "REGISTER ERROR:",
@@ -337,24 +493,32 @@ app.post(
             );
 
 
+            // PostgreSQL unique constraint
+            if (
+                error.code === "23505"
+            ) {
+
+                return res.status(409).json({
+                    success: false,
+                    message:
+                        "An account with this email already exists."
+                });
+            }
+
+
             return res.status(500).json({
-
                 success: false,
-
                 message:
                     "Unable to create account."
-
             });
-
         }
-
     }
 );
 
 
-// =====================================================
-// LOGIN API
-// =====================================================
+// ============================================================
+// LOGIN
+// ============================================================
 
 app.post(
     "/api/login",
@@ -368,9 +532,9 @@ app.post(
             } = req.body;
 
 
-            // -----------------------------------------
-            // VALIDATION
-            // -----------------------------------------
+            // --------------------------------------------
+            // REQUIRED FIELDS
+            // --------------------------------------------
 
             if (
                 !email ||
@@ -378,44 +542,42 @@ app.post(
             ) {
 
                 return res.status(400).json({
-
                     success: false,
-
                     message:
                         "Email and password are required."
-
                 });
-
             }
 
 
-            // -----------------------------------------
+            const cleanEmail =
+                String(email)
+                    .trim()
+                    .toLowerCase();
+
+
+            // --------------------------------------------
             // FIND USER
-            // -----------------------------------------
+            // --------------------------------------------
 
             const user =
-                findUserByEmail(
-                    email.trim()
+                await findUserByEmail(
+                    cleanEmail
                 );
 
 
             if (!user) {
 
                 return res.status(401).json({
-
                     success: false,
-
                     message:
                         "Invalid email or password."
-
                 });
-
             }
 
 
-            // -----------------------------------------
-            // COMPARE PASSWORD
-            // -----------------------------------------
+            // --------------------------------------------
+            // VERIFY PASSWORD
+            // --------------------------------------------
 
             const passwordValid =
                 await bcrypt.compare(
@@ -427,35 +589,27 @@ app.post(
             if (!passwordValid) {
 
                 return res.status(401).json({
-
                     success: false,
-
                     message:
                         "Invalid email or password."
-
                 });
-
             }
 
 
-            // -----------------------------------------
-            // SAVE LOGIN ACTIVITY
-            // -----------------------------------------
+            // --------------------------------------------
+            // ACTIVITY
+            // --------------------------------------------
 
-            saveActivity(
-
+            await saveActivity(
                 user.name,
-
                 user.email,
-
                 "LOGIN"
-
             );
 
 
-            // -----------------------------------------
+            // --------------------------------------------
             // SUCCESS
-            // -----------------------------------------
+            // --------------------------------------------
 
             return res.json({
 
@@ -474,67 +628,97 @@ app.post(
 
                     email:
                         user.email
-
                 }
-
             });
 
-        }
-
-        catch (error) {
+        } catch (error) {
 
             console.error(
                 "LOGIN ERROR:",
                 error
             );
 
-
             return res.status(500).json({
-
                 success: false,
-
                 message:
                     "Unable to process login."
-
             });
-
         }
-
     }
 );
 
 
-// =====================================================
-// 404 HANDLER
-// =====================================================
+// ============================================================
+// 404
+// ============================================================
 
 app.use(
     (req, res) => {
 
         res.status(404).json({
-
             success: false,
-
             message:
                 "API endpoint not found."
-
         });
-
     }
 );
 
 
-// =====================================================
-// START SERVER
-// =====================================================
+// ============================================================
+// GLOBAL ERROR HANDLER
+// ============================================================
 
-app.listen(
-    PORT,
-    () => {
+app.use(
+    (error, req, res, next) => {
 
-        console.log(
-            `Priyanshu Secure Portal API running on port ${PORT}`
+        console.error(
+            "GLOBAL ERROR:",
+            error
         );
 
+        res.status(500).json({
+            success: false,
+            message:
+                "Internal server error."
+        });
     }
 );
+
+
+// ============================================================
+// START SERVER
+// ============================================================
+
+async function startServer() {
+
+    try {
+
+        await initializeDatabase();
+
+        app.listen(
+            PORT,
+            () => {
+
+                console.log(
+                    `Priyanshu Secure Portal API running on port ${PORT}`
+                );
+
+                console.log(
+                    "PostgreSQL database connected."
+                );
+            }
+        );
+
+    } catch (error) {
+
+        console.error(
+            "DATABASE INITIALIZATION FAILED:",
+            error
+        );
+
+        process.exit(1);
+    }
+}
+
+
+startServer();
