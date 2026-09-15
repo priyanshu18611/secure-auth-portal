@@ -1,6 +1,7 @@
 // ============================================================
 // PRIYANSHU SECURE PORTAL
 // Advanced JWT Authentication Frontend
+// Version 2.6.1
 // ============================================================
 
 const API_URL = "https://priyanshu-secure-auth.onrender.com";
@@ -19,7 +20,6 @@ const loginBtn = document.getElementById("loginBtn");
 
 const registerModal = document.getElementById("registerModal");
 const registerOverlay = document.getElementById("registerOverlay");
-const registerBox = document.getElementById("registerBox");
 const registerClose = document.getElementById("registerClose");
 const registerLink = document.getElementById("registerLink");
 
@@ -41,22 +41,16 @@ const registerBtn =
 const backToLogin =
     document.getElementById("backToLogin");
 
-const toast =
-    document.getElementById("toast");
-const toastTitle =
-    document.getElementById("toastTitle");
-const toastMessage =
-    document.getElementById("toastMessage");
+const toast = document.getElementById("toast");
+const toastTitle = document.getElementById("toastTitle");
+const toastMessage = document.getElementById("toastMessage");
 
 // ============================================================
 // HELPERS
 // ============================================================
 
 function exists(element) {
-    return (
-        element !== null &&
-        element !== undefined
-    );
+    return element !== null && element !== undefined;
 }
 
 // ============================================================
@@ -65,11 +59,7 @@ function exists(element) {
 
 let toastTimer = null;
 
-function showToast(
-    title,
-    message,
-    type = "success"
-) {
+function showToast(title, message, type = "success") {
     if (!exists(toast)) {
         alert(`${title}\n${message}`);
         return;
@@ -107,71 +97,38 @@ function showToast(
 // PASSWORD TOGGLE
 // ============================================================
 
-function setupPasswordToggle(
-    button,
-    input
-) {
-    if (
-        !exists(button) ||
-        !exists(input)
-    ) {
+function setupPasswordToggle(button, input) {
+    if (!exists(button) || !exists(input)) {
         return;
     }
 
-    button.addEventListener(
-        "click",
-        () => {
-            const isPassword =
-                input.type === "password";
+    button.addEventListener("click", () => {
+        const isPassword = input.type === "password";
 
-            input.type =
-                isPassword
-                    ? "text"
-                    : "password";
+        input.type = isPassword ? "text" : "password";
 
-            button.textContent =
-                isPassword
-                    ? "🙈"
-                    : "👁";
+        button.textContent = isPassword ? "🙈" : "👁";
 
-            button.setAttribute(
-                "aria-label",
-                isPassword
-                    ? "Hide password"
-                    : "Show password"
-            );
-        }
-    );
+        button.setAttribute(
+            "aria-label",
+            isPassword ? "Hide password" : "Show password"
+        );
+    });
 }
 
-setupPasswordToggle(
-    togglePassword,
-    passwordInput
-);
-
-setupPasswordToggle(
-    toggleRegisterPassword,
-    registerPassword
-);
-
-setupPasswordToggle(
-    toggleConfirmPassword,
-    confirmPassword
-);
+setupPasswordToggle(togglePassword, passwordInput);
+setupPasswordToggle(toggleRegisterPassword, registerPassword);
+setupPasswordToggle(toggleConfirmPassword, confirmPassword);
 
 // ============================================================
 // VALIDATION
 // ============================================================
 
 function isValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
-        email
-    );
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-function calculatePasswordStrength(
-    password
-) {
+function calculatePasswordStrength(password) {
     if (!password) {
         return {
             score: 0,
@@ -181,29 +138,12 @@ function calculatePasswordStrength(
 
     let score = 0;
 
-    if (password.length >= 6) {
-        score++;
-    }
-
-    if (password.length >= 10) {
-        score++;
-    }
-
-    if (/[a-z]/.test(password)) {
-        score++;
-    }
-
-    if (/[A-Z]/.test(password)) {
-        score++;
-    }
-
-    if (/[0-9]/.test(password)) {
-        score++;
-    }
-
-    if (/[^A-Za-z0-9]/.test(password)) {
-        score++;
-    }
+    if (password.length >= 6) score++;
+    if (password.length >= 10) score++;
+    if (/[a-z]/.test(password)) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
 
     if (score <= 2) {
         return {
@@ -226,53 +166,31 @@ function calculatePasswordStrength(
 }
 
 function updatePasswordStrength() {
-    if (
-        !exists(registerPassword) ||
-        !exists(passwordStrength)
-    ) {
+    if (!exists(registerPassword) || !exists(passwordStrength)) {
         return;
     }
 
     const result =
-        calculatePasswordStrength(
-            registerPassword.value
-        );
+        calculatePasswordStrength(registerPassword.value);
 
     const bar =
-        passwordStrength.querySelector(
-            ".strength-bar span"
-        );
+        passwordStrength.querySelector(".strength-bar span");
 
     const label =
-        passwordStrength.querySelector(
-            "small"
-        );
+        passwordStrength.querySelector("small");
 
     if (bar) {
-        if (result.score === 0) {
-            bar.style.width = "0%";
-        }
-
-        if (result.score === 1) {
-            bar.style.width = "33%";
-        }
-
-        if (result.score === 2) {
-            bar.style.width = "66%";
-        }
-
-        if (result.score === 3) {
-            bar.style.width = "100%";
-        }
+        if (result.score === 0) bar.style.width = "0%";
+        if (result.score === 1) bar.style.width = "33%";
+        if (result.score === 2) bar.style.width = "66%";
+        if (result.score === 3) bar.style.width = "100%";
     }
 
     if (label) {
-        label.textContent =
-            result.text;
+        label.textContent = result.text;
     }
 
-    passwordStrength.dataset.strength =
-        result.score;
+    passwordStrength.dataset.strength = result.score;
 }
 
 // ============================================================
@@ -280,10 +198,7 @@ function updatePasswordStrength() {
 // ============================================================
 
 function validatePasswordMatch() {
-    if (
-        !exists(registerPassword) ||
-        !exists(confirmPassword)
-    ) {
+    if (!exists(registerPassword) || !exists(confirmPassword)) {
         return true;
     }
 
@@ -292,10 +207,7 @@ function validatePasswordMatch() {
         return true;
     }
 
-    if (
-        registerPassword.value !==
-        confirmPassword.value
-    ) {
+    if (registerPassword.value !== confirmPassword.value) {
         confirmPassword.setCustomValidity(
             "Passwords do not match."
         );
@@ -309,13 +221,10 @@ function validatePasswordMatch() {
 }
 
 if (exists(registerPassword)) {
-    registerPassword.addEventListener(
-        "input",
-        () => {
-            validatePasswordMatch();
-            updatePasswordStrength();
-        }
-    );
+    registerPassword.addEventListener("input", () => {
+        validatePasswordMatch();
+        updatePasswordStrength();
+    });
 }
 
 if (exists(confirmPassword)) {
@@ -334,13 +243,8 @@ function openRegisterModal() {
         return;
     }
 
-    registerModal.classList.add(
-        "active"
-    );
-
-    document.body.classList.add(
-        "modal-open"
-    );
+    registerModal.classList.add("active");
+    document.body.classList.add("modal-open");
 
     setTimeout(() => {
         if (exists(registerName)) {
@@ -354,23 +258,15 @@ function closeRegisterModal() {
         return;
     }
 
-    registerModal.classList.remove(
-        "active"
-    );
-
-    document.body.classList.remove(
-        "modal-open"
-    );
+    registerModal.classList.remove("active");
+    document.body.classList.remove("modal-open");
 }
 
 if (exists(registerLink)) {
-    registerLink.addEventListener(
-        "click",
-        event => {
-            event.preventDefault();
-            openRegisterModal();
-        }
-    );
+    registerLink.addEventListener("click", event => {
+        event.preventDefault();
+        openRegisterModal();
+    });
 }
 
 if (exists(registerClose)) {
@@ -394,71 +290,47 @@ if (exists(backToLogin)) {
     );
 }
 
-document.addEventListener(
-    "keydown",
-    event => {
-        if (
-            event.key === "Escape" &&
-            exists(registerModal) &&
-            registerModal.classList.contains(
-                "active"
-            )
-        ) {
-            closeRegisterModal();
-        }
+document.addEventListener("keydown", event => {
+    if (
+        event.key === "Escape" &&
+        exists(registerModal) &&
+        registerModal.classList.contains("active")
+    ) {
+        closeRegisterModal();
     }
-);
+});
 
 // ============================================================
 // BUTTON LOADING
 // ============================================================
 
-function setLoginLoading(
-    isLoading
-) {
+function setLoginLoading(isLoading) {
     if (!exists(loginBtn)) {
         return;
     }
 
     loginBtn.disabled = isLoading;
-
-    loginBtn.classList.toggle(
-        "loading",
-        isLoading
-    );
+    loginBtn.classList.toggle("loading", isLoading);
 
     const text =
-        loginBtn.querySelector(
-            ".btn-text"
-        );
+        loginBtn.querySelector(".btn-text");
 
     if (text) {
         text.textContent =
-            isLoading
-                ? "Signing In..."
-                : "Sign In";
+            isLoading ? "Signing In..." : "Sign In";
     }
 }
 
-function setRegisterLoading(
-    isLoading
-) {
+function setRegisterLoading(isLoading) {
     if (!exists(registerBtn)) {
         return;
     }
 
-    registerBtn.disabled =
-        isLoading;
-
-    registerBtn.classList.toggle(
-        "loading",
-        isLoading
-    );
+    registerBtn.disabled = isLoading;
+    registerBtn.classList.toggle("loading", isLoading);
 
     const text =
-        registerBtn.querySelector(
-            ".register-btn-text"
-        );
+        registerBtn.querySelector(".register-btn-text");
 
     if (text) {
         text.textContent =
@@ -479,20 +351,11 @@ function loadRememberedEmail() {
                 "priynashu_remember_email"
             );
 
-        if (
-            savedEmail &&
-            exists(emailInput)
-        ) {
-            emailInput.value =
-                savedEmail;
+        if (savedEmail && exists(emailInput)) {
+            emailInput.value = savedEmail;
 
-            if (
-                exists(
-                    rememberCheckbox
-                )
-            ) {
-                rememberCheckbox.checked =
-                    true;
+            if (exists(rememberCheckbox)) {
+                rememberCheckbox.checked = true;
             }
         }
     } catch (error) {
@@ -506,9 +369,7 @@ function loadRememberedEmail() {
 function saveRememberedEmail() {
     try {
         if (
-            exists(
-                rememberCheckbox
-            ) &&
+            exists(rememberCheckbox) &&
             rememberCheckbox.checked &&
             exists(emailInput)
         ) {
@@ -532,31 +393,42 @@ function saveRememberedEmail() {
 loadRememberedEmail();
 
 // ============================================================
-// JWT AUTHENTICATION
+// JWT SESSION STORAGE
 // ============================================================
+
+const TOKEN_KEY =
+    "priynashu_access_token";
+
+const USER_KEY =
+    "priynashu_user";
 
 function saveAuthToken(token) {
     if (!token) {
-        return;
+        return false;
     }
 
     try {
         sessionStorage.setItem(
-            "priynashu_access_token",
+            TOKEN_KEY,
             token
         );
+
+        return true;
+
     } catch (error) {
         console.error(
             "Unable to save authentication token.",
             error
         );
+
+        return false;
     }
 }
 
 function getAuthToken() {
     try {
         return sessionStorage.getItem(
-            "priynashu_access_token"
+            TOKEN_KEY
         );
     } catch (error) {
         console.error(
@@ -568,22 +440,85 @@ function getAuthToken() {
     }
 }
 
-function clearAuthSession() {
-    try {
-        sessionStorage.removeItem(
-            "priynashu_access_token"
-        );
+function saveAuthenticatedUser(user) {
+    if (!user) {
+        return;
+    }
 
-        sessionStorage.removeItem(
-            "priynashu_user"
+    try {
+        sessionStorage.setItem(
+            USER_KEY,
+            JSON.stringify(user)
         );
     } catch (error) {
         console.error(
-            "Unable to clear authentication session.",
+            "Unable to save authenticated user.",
             error
         );
     }
 }
+
+function getStoredUser() {
+    try {
+        const value =
+            sessionStorage.getItem(
+                USER_KEY
+            );
+
+        return value
+            ? JSON.parse(value)
+            : null;
+
+    } catch (error) {
+        console.error(
+            "Unable to read stored user.",
+            error
+        );
+
+        return null;
+    }
+}
+
+// ============================================================
+// LOGOUT / CLEAR SESSION
+// ============================================================
+
+function logoutUser(showMessage = true) {
+    try {
+        sessionStorage.removeItem(
+            TOKEN_KEY
+        );
+
+        sessionStorage.removeItem(
+            USER_KEY
+        );
+
+        console.log(
+            "🔒 JWT session cleared."
+        );
+
+        if (showMessage) {
+            showToast(
+                "Logged Out",
+                "Your secure session has been ended.",
+                "success"
+            );
+        }
+
+    } catch (error) {
+        console.error(
+            "Logout error:",
+            error
+        );
+    }
+}
+
+// Make logout available to future dashboard buttons.
+window.priyanshuLogout = logoutUser;
+
+// ============================================================
+// AUTHENTICATED USER
+// ============================================================
 
 async function getAuthenticatedUser() {
     const token =
@@ -610,16 +545,13 @@ async function getAuthenticatedUser() {
             await response.json();
 
         if (!response.ok) {
-            clearAuthSession();
+            logoutUser(false);
             return null;
         }
 
         if (data.user) {
-            sessionStorage.setItem(
-                "priynashu_user",
-                JSON.stringify(
-                    data.user
-                )
+            saveAuthenticatedUser(
+                data.user
             );
         }
 
@@ -661,7 +593,6 @@ if (exists(loginForm)) {
                 );
 
                 emailInput.focus();
-
                 return;
             }
 
@@ -673,7 +604,6 @@ if (exists(loginForm)) {
                 );
 
                 emailInput.focus();
-
                 return;
             }
 
@@ -685,7 +615,6 @@ if (exists(loginForm)) {
                 );
 
                 passwordInput.focus();
-
                 return;
             }
 
@@ -718,29 +647,20 @@ if (exists(loginForm)) {
                     );
                 }
 
-                // ====================================================
-                // SAVE JWT TOKEN
-                // ====================================================
-
                 if (!data.token) {
                     throw new Error(
                         "Authentication token was not received from the server."
                     );
                 }
 
+                // Save JWT
                 saveAuthToken(
                     data.token
                 );
 
-                // ====================================================
-                // SAVE SAFE USER DATA
-                // ====================================================
-
-                sessionStorage.setItem(
-                    "priynashu_user",
-                    JSON.stringify(
-                        data.user
-                    )
+                // Save safe user data
+                saveAuthenticatedUser(
+                    data.user
                 );
 
                 saveRememberedEmail();
@@ -767,7 +687,7 @@ if (exists(loginForm)) {
                     data.expiresIn
                 );
 
-                // Verify token with protected endpoint
+                // Verify protected endpoint
                 const verifiedUser =
                     await getAuthenticatedUser();
 
@@ -783,7 +703,7 @@ if (exists(loginForm)) {
                     error
                 );
 
-                clearAuthSession();
+                logoutUser(false);
 
                 showToast(
                     "Login Failed",
@@ -831,7 +751,6 @@ if (exists(registerForm)) {
                 );
 
                 registerName.focus();
-
                 return;
             }
 
@@ -843,7 +762,6 @@ if (exists(registerForm)) {
                 );
 
                 registerEmail.focus();
-
                 return;
             }
 
@@ -855,7 +773,6 @@ if (exists(registerForm)) {
                 );
 
                 registerPassword.focus();
-
                 return;
             }
 
@@ -867,7 +784,6 @@ if (exists(registerForm)) {
                 );
 
                 confirmPassword.focus();
-
                 return;
             }
 
@@ -920,9 +836,7 @@ if (exists(registerForm)) {
                     "success"
                 );
 
-                if (
-                    exists(emailInput)
-                ) {
+                if (exists(emailInput)) {
                     emailInput.value =
                         data.user.email;
                 }
@@ -932,11 +846,8 @@ if (exists(registerForm)) {
                 registerPassword.value = "";
                 confirmPassword.value = "";
 
-                if (
-                    exists(acceptTerms)
-                ) {
-                    acceptTerms.checked =
-                        false;
+                if (exists(acceptTerms)) {
+                    acceptTerms.checked = false;
                 }
 
                 updatePasswordStrength();
@@ -944,9 +855,7 @@ if (exists(registerForm)) {
                 closeRegisterModal();
 
                 setTimeout(() => {
-                    if (
-                        exists(passwordInput)
-                    ) {
+                    if (exists(passwordInput)) {
                         passwordInput.focus();
                     }
                 }, 300);
@@ -965,9 +874,7 @@ if (exists(registerForm)) {
                 );
 
             } finally {
-                setRegisterLoading(
-                    false
-                );
+                setRegisterLoading(false);
             }
         }
     );
@@ -993,7 +900,7 @@ if (exists(forgotPassword)) {
 }
 
 // ============================================================
-// GOOGLE AUTHENTICATION
+// GOOGLE LOGIN
 // ============================================================
 
 const googleLogin =
@@ -1015,7 +922,7 @@ if (exists(googleLogin)) {
 }
 
 // ============================================================
-// GITHUB AUTHENTICATION
+// GITHUB LOGIN
 // ============================================================
 
 const githubLogin =
@@ -1046,11 +953,7 @@ const particlesContainer =
     );
 
 function createParticles() {
-    if (
-        !exists(
-            particlesContainer
-        )
-    ) {
+    if (!exists(particlesContainer)) {
         return;
     }
 
@@ -1059,8 +962,7 @@ function createParticles() {
             ? 18
             : 35;
 
-    particlesContainer.innerHTML =
-        "";
+    particlesContainer.innerHTML = "";
 
     for (
         let i = 0;
@@ -1068,9 +970,7 @@ function createParticles() {
         i++
     ) {
         const particle =
-            document.createElement(
-                "span"
-            );
+            document.createElement("span");
 
         particle.className =
             "particle";
@@ -1162,8 +1062,7 @@ if (
     loginCard.addEventListener(
         "mouseleave",
         () => {
-            loginCard.style.transform =
-                "";
+            loginCard.style.transform = "";
         }
     );
 }
@@ -1176,18 +1075,14 @@ document.addEventListener(
     "click",
     event => {
         const button =
-            event.target.closest(
-                "button"
-            );
+            event.target.closest("button");
 
         if (!button) {
             return;
         }
 
         const ripple =
-            document.createElement(
-                "span"
-            );
+            document.createElement("span");
 
         ripple.className =
             "click-ripple";
@@ -1201,9 +1096,7 @@ document.addEventListener(
         ripple.style.top =
             `${event.clientY - rect.top}px`;
 
-        button.appendChild(
-            ripple
-        );
+        button.appendChild(ripple);
 
         setTimeout(() => {
             ripple.remove();
@@ -1212,7 +1105,7 @@ document.addEventListener(
 );
 
 // ============================================================
-// API CONNECTION CHECK
+// API HEALTH CHECK
 // ============================================================
 
 async function checkAPIConnection() {
@@ -1250,7 +1143,7 @@ async function checkAPIConnection() {
 checkAPIConnection();
 
 // ============================================================
-// EXISTING SESSION CHECK
+// RESTORE EXISTING JWT SESSION
 // ============================================================
 
 async function restoreAuthenticatedSession() {
@@ -1261,17 +1154,27 @@ async function restoreAuthenticatedSession() {
         return;
     }
 
+    const storedUser =
+        getStoredUser();
+
+    if (storedUser) {
+        console.log(
+            "👤 Stored user session found:",
+            storedUser
+        );
+    }
+
     const user =
         await getAuthenticatedUser();
 
     if (user) {
         console.log(
-            "🔓 Existing authenticated session restored:",
+            "🔓 JWT session verified successfully:",
             user
         );
     } else {
         console.log(
-            "🔒 Existing authentication session expired or invalid."
+            "🔒 JWT session expired or invalid."
         );
     }
 }
@@ -1297,6 +1200,10 @@ window.addEventListener(
 
             console.log(
                 "🛡️ JWT authentication: ACTIVE"
+            );
+
+            console.log(
+                "🔒 Session management: ACTIVE"
             );
 
         }, 300);
