@@ -1,20 +1,54 @@
 // ============================================================
 // PRIYANSHU SECURE PORTAL
-// Secure Authentication API
-// Version 2.7.0
-// JWT + PostgreSQL + bcrypt + Password Reset
+// Production Authentication Backend
+// Version 2.8.0
+//
+// Features:
+// - Express
+// - PostgreSQL
+// - bcrypt password hashing
+// - JWT authentication
+// - Helmet security headers
+// - CORS protection
+// - Rate limiting
+// - Input validation
+// - Password reset tokens
+// - Resend password reset email
+// - Activity logging
+// - Excel security report
+// ============================================================
+
+
+// ============================================================
+// IMPORTS
 // ============================================================
 
 const express = require("express");
+
 const cors = require("cors");
+
 const helmet = require("helmet");
-const rateLimit = require("express-rate-limit");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const crypto = require("crypto");
-const XLSX = require("xlsx");
-const fs = require("fs");
-const path = require("path");
+
+const rateLimit =
+    require("express-rate-limit");
+
+const bcrypt =
+    require("bcryptjs");
+
+const jwt =
+    require("jsonwebtoken");
+
+const crypto =
+    require("crypto");
+
+const XLSX =
+    require("xlsx");
+
+const fs =
+    require("fs");
+
+const path =
+    require("path");
 
 const {
     pool,
@@ -26,24 +60,30 @@ const {
     findValidPasswordResetToken,
     markPasswordResetTokenUsed,
     updateUserPassword,
-    deleteExpiredResetTokens
+    deleteExpiredResetTokens,
+    closeDatabase
 } = require("./database");
+
 
 // ============================================================
 // APP
 // ============================================================
 
-const app = express();
+const app =
+    express();
+
+
+// ============================================================
+// ENVIRONMENT
+// ============================================================
 
 const PORT =
     process.env.PORT || 10000;
 
 const NODE_ENV =
-    process.env.NODE_ENV || "development";
+    process.env.NODE_ENV ||
+    "development";
 
-app.set("trust proxy", 1);
-
-app.disable("x-powered-by");
 
 // ============================================================
 // JWT CONFIGURATION
@@ -53,7 +93,8 @@ const JWT_SECRET =
     process.env.JWT_SECRET;
 
 const JWT_EXPIRES_IN =
-    process.env.JWT_EXPIRES_IN || "1h";
+    process.env.JWT_EXPIRES_IN ||
+    "1h";
 
 const JWT_ISSUER =
     "priyanshu-secure-portal";
@@ -61,29 +102,72 @@ const JWT_ISSUER =
 const JWT_AUDIENCE =
     "secure-auth-portal";
 
-if (
-    !JWT_SECRET ||
-    JWT_SECRET.length < 32
-) {
+
+// ============================================================
+// RESEND EMAIL CONFIGURATION
+// ============================================================
+
+const RESEND_API_KEY =
+    process.env.RESEND_API_KEY;
+
+const RESEND_FROM_EMAIL =
+    process.env.RESEND_FROM_EMAIL ||
+    "onboarding@resend.dev";
+
+const FRONTEND_URL =
+    "https://priyanshu18611.github.io/secure-auth-portal";
+
+
+// ============================================================
+// SECURITY STARTUP VALIDATION
+// ============================================================
+
+if (!JWT_SECRET) {
+
     throw new Error(
-        "JWT_SECRET is missing or too short. Configure a strong secret in Render Environment Variables."
+        "JWT_SECRET environment variable is missing."
     );
+
 }
+
+if (JWT_SECRET.length < 32) {
+
+    throw new Error(
+        "JWT_SECRET must contain at least 32 characters."
+    );
+
+}
+
+
+// ============================================================
+// HELMET
+// ============================================================
+
+app.use(
+    helmet({
+        contentSecurityPolicy: false
+    })
+);
+
 
 // ============================================================
 // CORS
 // ============================================================
 
 const allowedOrigins = [
+
     "https://priyanshu18611.github.io"
+
 ];
 
 app.use(
     cors({
+
         origin: function (
             origin,
             callback
         ) {
+
             if (!origin) {
                 return callback(
                     null,
@@ -96,10 +180,12 @@ app.use(
                     origin
                 )
             ) {
+
                 return callback(
                     null,
                     true
                 );
+
             }
 
             return callback(
@@ -107,6 +193,7 @@ app.use(
                     "CORS origin not allowed."
                 )
             );
+
         },
 
         methods: [
@@ -121,21 +208,13 @@ app.use(
         ],
 
         credentials: false
+
     })
 );
 
-// ============================================================
-// SECURITY HEADERS
-// ============================================================
-
-app.use(
-    helmet({
-        contentSecurityPolicy: false
-    })
-);
 
 // ============================================================
-// BODY PARSER
+// JSON BODY LIMIT
 // ============================================================
 
 app.use(
@@ -144,12 +223,14 @@ app.use(
     })
 );
 
+
 // ============================================================
-// RATE LIMITING
+// GENERAL RATE LIMIT
 // ============================================================
 
 const generalLimiter =
     rateLimit({
+
         windowMs:
             15 * 60 * 1000,
 
@@ -164,10 +245,21 @@ const generalLimiter =
             message:
                 "Too many requests. Please try again later."
         }
+
     });
+
+app.use(
+    generalLimiter
+);
+
+
+// ============================================================
+// AUTH RATE LIMIT
+// ============================================================
 
 const authLimiter =
     rateLimit({
+
         windowMs:
             15 * 60 * 1000,
 
@@ -182,100 +274,237 @@ const authLimiter =
             message:
                 "Too many authentication attempts. Please try again later."
         }
+
     });
 
-app.use(
-    "/api/",
-    generalLimiter
-);
-
-app.use(
-    [
-        "/api/register",
-        "/api/login",
-        "/api/forgot-password"
-    ],
-    authLimiter
-);
 
 // ============================================================
 // HELPERS
 // ============================================================
 
-function isPlainObject(value) {
-    return (
-        value !== null &&
-        typeof value === "object" &&
-        !Array.isArray(value)
-    );
-}
+function normalizeEmail(
+    email
+) {
 
-function normalizeName(value) {
-    return String(value || "")
-        .normalize("NFKC")
-        .replace(/\s+/g, " ")
-        .trim();
-}
-
-function isValidName(name) {
-    return (
-        name.length >= 2 &&
-        name.length <= 100 &&
-        /^[\p{L}\p{M} .'-]+$/u.test(
-            name
-        )
-    );
-}
-
-function normalizeEmail(value) {
-    return String(value || "")
-        .normalize("NFKC")
+    return String(
+        email || ""
+    )
         .trim()
         .toLowerCase();
+
 }
 
-function isValidEmail(email) {
-    return (
-        email.length >= 5 &&
-        email.length <= 254 &&
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
-            email
-        )
-    );
+
+function isValidEmail(
+    email
+) {
+
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        .test(email);
+
 }
 
-function isValidPassword(password) {
+
+function isValidPassword(
+    password
+) {
+
     return (
         typeof password ===
             "string" &&
         password.length >= 6 &&
         password.length <= 128
     );
+
 }
 
-function hasOnlyAllowedFields(
-    body,
-    allowedFields
+
+function isValidName(
+    name
 ) {
-    const keys =
-        Object.keys(body);
 
-    return keys.every(
-        key =>
-            allowedFields.includes(
-                key
-            )
+    return (
+        typeof name ===
+            "string" &&
+        name.trim().length >= 2 &&
+        name.trim().length <= 100
     );
+
 }
+
+
+function safeUser(
+    user
+) {
+
+    if (!user) {
+        return null;
+    }
+
+    return {
+
+        id: user.id,
+
+        name: user.name,
+
+        email: user.email,
+
+        created_at:
+            user.created_at
+
+    };
+
+}
+
 
 // ============================================================
-// ACTIVITY LOGGING
+// JWT GENERATOR
+// ============================================================
+
+function generateAccessToken(
+    user
+) {
+
+    return jwt.sign(
+
+        {
+            sub:
+                String(user.id),
+
+            email:
+                user.email,
+
+            name:
+                user.name
+
+        },
+
+        JWT_SECRET,
+
+        {
+
+            expiresIn:
+                JWT_EXPIRES_IN,
+
+            issuer:
+                JWT_ISSUER,
+
+            audience:
+                JWT_AUDIENCE,
+
+            algorithm:
+                "HS256"
+
+        }
+
+    );
+
+}
+
+
+// ============================================================
+// JWT AUTHENTICATION MIDDLEWARE
+// ============================================================
+
+function authenticateToken(
+    req,
+    res,
+    next
+) {
+
+    const authHeader =
+        req.headers.authorization;
+
+    if (
+        !authHeader ||
+        !authHeader.startsWith(
+            "Bearer "
+        )
+    ) {
+
+        return res.status(401).json({
+
+            success: false,
+
+            message:
+                "Authentication required."
+
+        });
+
+    }
+
+    const token =
+        authHeader.substring(7);
+
+    if (!token) {
+
+        return res.status(401).json({
+
+            success: false,
+
+            message:
+                "Authentication token missing."
+
+        });
+
+    }
+
+    try {
+
+        const decoded =
+            jwt.verify(
+
+                token,
+
+                JWT_SECRET,
+
+                {
+
+                    issuer:
+                        JWT_ISSUER,
+
+                    audience:
+                        JWT_AUDIENCE,
+
+                    algorithms: [
+                        "HS256"
+                    ]
+
+                }
+
+            );
+
+        req.user =
+            decoded;
+
+        next();
+
+    } catch (error) {
+
+        return res.status(401).json({
+
+            success: false,
+
+            message:
+                "Invalid or expired authentication token."
+
+        });
+
+    }
+
+}
+
+
+// ============================================================
+// ACTIVITY LOG TABLE
 // ============================================================
 
 async function initializeActivityLogs() {
 
     await pool.query(`
+
         CREATE TABLE IF NOT EXISTS activity_logs (
+
             id SERIAL PRIMARY KEY,
 
             user_id INTEGER,
@@ -290,81 +519,43 @@ async function initializeActivityLogs() {
 
             created_at TIMESTAMPTZ
                 DEFAULT CURRENT_TIMESTAMP
+
         );
+
+    `);
+
+    await pool.query(`
+
+        CREATE INDEX IF NOT EXISTS
+        idx_activity_logs_user_id
+
+        ON activity_logs(user_id);
+
+    `);
+
+    await pool.query(`
+
+        CREATE INDEX IF NOT EXISTS
+        idx_activity_logs_created_at
+
+        ON activity_logs(created_at);
+
     `);
 
     console.log(
         "PostgreSQL activity_logs table is ready."
     );
+
 }
 
-async function logActivity({
-    userId = null,
-    email = null,
-    action,
-    ipAddress = null,
-    userAgent = null
-}) {
-
-    try {
-
-        await pool.query(
-            `
-            INSERT INTO activity_logs
-            (
-                user_id,
-                email,
-                action,
-                ip_address,
-                user_agent
-            )
-            VALUES
-            (
-                $1,
-                $2,
-                $3,
-                $4,
-                $5
-            )
-            `,
-            [
-                userId,
-                email,
-                action,
-                ipAddress,
-                userAgent
-            ]
-        );
-
-        writeExcelActivity({
-            userId,
-            email,
-            action,
-            ipAddress,
-            userAgent
-        });
-
-    } catch (error) {
-
-        console.error(
-            "Activity logging error:",
-            error.message
-        );
-
-    }
-}
 
 // ============================================================
-// EXCEL ACTIVITY REPORT
+// EXCEL ACTIVITY LOGGER
 // ============================================================
 
-function writeExcelActivity({
-    userId,
-    email,
-    action,
-    ipAddress,
-    userAgent
-}) {
+function logToExcel(
+    data
+) {
 
     try {
 
@@ -380,18 +571,20 @@ function writeExcelActivity({
                 dataDirectory
             )
         ) {
+
             fs.mkdirSync(
                 dataDirectory,
                 {
                     recursive: true
                 }
             );
+
         }
 
         const filePath =
             path.join(
                 dataDirectory,
-                "activity_report.xlsx"
+                "activity_logs.xlsx"
             );
 
         let rows = [];
@@ -402,66 +595,61 @@ function writeExcelActivity({
             )
         ) {
 
-            try {
-
-                const workbook =
-                    XLSX.readFile(
-                        filePath
-                    );
-
-                const sheet =
-                    workbook.Sheets[
-                        "Activity"
-                    ];
-
-                if (sheet) {
-                    rows =
-                        XLSX.utils.sheet_to_json(
-                            sheet
-                        );
-                }
-
-            } catch (error) {
-
-                console.warn(
-                    "Existing Excel report could not be read."
+            const workbook =
+                XLSX.readFile(
+                    filePath
                 );
 
+            const sheetName =
+                workbook.SheetNames[0];
+
+            if (sheetName) {
+
+                rows =
+                    XLSX.utils.sheet_to_json(
+                        workbook.Sheets[
+                            sheetName
+                        ]
+                    );
+
             }
+
         }
 
         rows.push({
-            User_ID:
-                userId || "",
-
-            Email:
-                email || "",
-
-            Action:
-                action,
-
-            IP_Address:
-                ipAddress || "",
-
-            User_Agent:
-                userAgent || "",
 
             Timestamp:
-                new Date().toISOString()
-        });
+                new Date().toISOString(),
 
-        const workbook =
-            XLSX.utils.book_new();
+            User_ID:
+                data.userId || "",
+
+            Email:
+                data.email || "",
+
+            Action:
+                data.action || "",
+
+            IP_Address:
+                data.ip || "",
+
+            User_Agent:
+                data.userAgent || ""
+
+        });
 
         const worksheet =
             XLSX.utils.json_to_sheet(
                 rows
             );
 
+        const workbook =
+            XLSX.utils.book_new();
+
         XLSX.utils.book_append_sheet(
             workbook,
             worksheet,
-            "Activity"
+            "Activity Logs"
         );
 
         XLSX.writeFile(
@@ -472,134 +660,414 @@ function writeExcelActivity({
     } catch (error) {
 
         console.error(
-            "Excel activity logging error:",
+            "Excel logging error:",
             error.message
         );
 
     }
+
 }
 
-// ============================================================
-// JWT TOKEN GENERATION
-// ============================================================
-
-function generateAccessToken(
-    user
-) {
-
-    return jwt.sign(
-        {
-            sub: String(user.id),
-            email: user.email
-        },
-
-        JWT_SECRET,
-
-        {
-            algorithm: "HS256",
-
-            expiresIn:
-                JWT_EXPIRES_IN,
-
-            issuer:
-                JWT_ISSUER,
-
-            audience:
-                JWT_AUDIENCE
-        }
-    );
-}
 
 // ============================================================
-// JWT AUTHENTICATION MIDDLEWARE
+// ACTIVITY LOGGER
 // ============================================================
 
-function authenticateToken(
+async function logActivity(
     req,
-    res,
-    next
+    action,
+    userId = null,
+    email = null
 ) {
+
+    const ip =
+        req.headers[
+            "x-forwarded-for"
+        ] ||
+        req.socket.remoteAddress ||
+        "";
+
+    const userAgent =
+        req.headers[
+            "user-agent"
+        ] ||
+        "";
 
     try {
 
-        const authHeader =
-            req.headers.authorization;
+        await pool.query(
 
-        if (
-            !authHeader ||
-            !authHeader.startsWith(
-                "Bearer "
+            `
+
+            INSERT INTO activity_logs
+
+            (
+                user_id,
+                email,
+                action,
+                ip_address,
+                user_agent
             )
-        ) {
 
-            return res.status(401).json({
-                success: false,
-                message:
-                    "Authentication token required."
-            });
+            VALUES
 
-        }
+            (
+                $1,
+                $2,
+                $3,
+                $4,
+                $5
+            )
 
-        const token =
-            authHeader
-                .substring(7)
-                .trim();
+            `,
 
-        if (!token) {
+            [
+                userId,
+                email,
+                action,
+                ip,
+                userAgent
+            ]
 
-            return res.status(401).json({
-                success: false,
-                message:
-                    "Authentication token required."
-            });
-
-        }
-
-        const decoded =
-            jwt.verify(
-                token,
-                JWT_SECRET,
-                {
-                    algorithms: [
-                        "HS256"
-                    ],
-
-                    issuer:
-                        JWT_ISSUER,
-
-                    audience:
-                        JWT_AUDIENCE
-                }
-            );
-
-        req.user =
-            decoded;
-
-        next();
+        );
 
     } catch (error) {
 
-        if (
-            error.name ===
-            "TokenExpiredError"
-        ) {
-
-            return res.status(401).json({
-                success: false,
-                message:
-                    "Authentication token has expired."
-            });
-
-        }
-
-        return res.status(401).json({
-            success: false,
-            message:
-                "Invalid authentication token."
-        });
+        console.error(
+            "Database activity logging error:",
+            error.message
+        );
 
     }
+
+    logToExcel({
+
+        userId,
+
+        email,
+
+        action,
+
+        ip,
+
+        userAgent
+
+    });
+
 }
+
+
+// ============================================================
+// RESEND PASSWORD RESET EMAIL
+// ============================================================
+
+async function sendPasswordResetEmail(
+    recipientEmail,
+    recipientName,
+    resetToken
+) {
+
+    if (!RESEND_API_KEY) {
+
+        throw new Error(
+            "RESEND_API_KEY is not configured."
+        );
+
+    }
+
+    const resetUrl =
+        `${FRONTEND_URL}/reset-password.html?token=${encodeURIComponent(
+            resetToken
+        )}`;
+
+
+    const emailHtml = `
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width,
+                   initial-scale=1.0">
+
+    <title>
+        Password Reset
+    </title>
+
+</head>
+
+
+<body style="
+    margin:0;
+    padding:0;
+    background:#080b12;
+    font-family:Arial,
+                 Helvetica,
+                 sans-serif;
+">
+
+<table
+    width="100%"
+    cellpadding="0"
+    cellspacing="0"
+    border="0"
+    style="
+        background:#080b12;
+        padding:40px 15px;
+    "
+>
+
+<tr>
+
+<td align="center">
+
+<table
+    width="100%"
+    cellpadding="0"
+    cellspacing="0"
+    border="0"
+    style="
+        max-width:600px;
+        background:#111722;
+        border-radius:18px;
+        overflow:hidden;
+    "
+>
+
+<tr>
+
+<td style="
+    padding:40px;
+    color:#ffffff;
+">
+
+    <div style="
+        font-size:30px;
+        font-weight:800;
+        letter-spacing:3px;
+        margin-bottom:8px;
+    ">
+
+        PK
+
+    </div>
+
+
+    <div style="
+        color:#8b95a7;
+        font-size:11px;
+        font-weight:700;
+        letter-spacing:3px;
+        margin-bottom:32px;
+    ">
+
+        PRIYANSHU SECURE PORTAL
+
+    </div>
+
+
+    <h1 style="
+        margin:0 0 20px 0;
+        font-size:28px;
+        color:#ffffff;
+    ">
+
+        Reset Your Password
+
+    </h1>
+
+
+    <p style="
+        color:#b7c0cf;
+        font-size:15px;
+        line-height:1.7;
+    ">
+
+        Hello ${
+            recipientName || "there"
+        },
+
+    </p>
+
+
+    <p style="
+        color:#b7c0cf;
+        font-size:15px;
+        line-height:1.7;
+    ">
+
+        We received a request to reset
+        your Priyanshu Secure Portal
+        password.
+
+    </p>
+
+
+    <div style="
+        text-align:center;
+        margin:35px 0;
+    ">
+
+        <a
+            href="${resetUrl}"
+            style="
+                display:inline-block;
+                padding:15px 30px;
+                background:#ffffff;
+                color:#080b12;
+                text-decoration:none;
+                border-radius:10px;
+                font-weight:700;
+                font-size:15px;
+            "
+        >
+
+            Reset Password
+
+        </a>
+
+    </div>
+
+
+    <p style="
+        color:#8f99aa;
+        font-size:13px;
+        line-height:1.7;
+    ">
+
+        This link expires in
+        <strong>
+            15 minutes
+        </strong>
+        and can only be used once.
+
+    </p>
+
+
+    <p style="
+        color:#8f99aa;
+        font-size:13px;
+        line-height:1.7;
+    ">
+
+        If you did not request this
+        password reset, you can safely
+        ignore this email.
+
+    </p>
+
+
+    <hr style="
+        border:0;
+        border-top:1px solid #252d3a;
+        margin:30px 0;
+    ">
+
+
+    <p style="
+        color:#697386;
+        font-size:12px;
+        line-height:1.6;
+    ">
+
+        Priyanshu Secure Portal<br>
+
+        Automated Security Notification
+
+    </p>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</body>
+
+</html>
+
+`;
+
+
+    const response =
+        await fetch(
+            "https://api.resend.com/emails",
+            {
+
+                method:
+                    "POST",
+
+                headers: {
+
+                    "Authorization":
+                        `Bearer ${RESEND_API_KEY}`,
+
+                    "Content-Type":
+                        "application/json"
+
+                },
+
+                body:
+                    JSON.stringify({
+
+                        from:
+                            RESEND_FROM_EMAIL,
+
+                        to: [
+                            recipientEmail
+                        ],
+
+                        subject:
+                            "Reset Your Priyanshu Secure Portal Password",
+
+                        html:
+                            emailHtml
+
+                    })
+
+            }
+        );
+
+
+    const data =
+        await response.json();
+
+
+    if (!response.ok) {
+
+        console.error(
+            "Resend API error:",
+            data
+        );
+
+        throw new Error(
+            "Password reset email could not be sent."
+        );
+
+    }
+
+
+    console.log(
+        "Password reset email sent:",
+        data.id
+    );
+
+
+    return data;
+
+}
+
 
 // ============================================================
 // ROOT
@@ -607,42 +1075,56 @@ function authenticateToken(
 
 app.get(
     "/",
-    async (req, res) => {
+    (req, res) => {
 
         res.json({
+
             success: true,
 
-            message:
-                "Priyanshu Secure Portal API is running.",
+            service:
+                "Priyanshu Secure Portal API",
 
             version:
-                "2.7.0",
+                "2.8.0",
 
-            environment:
-                NODE_ENV,
-
-            database:
-                "PostgreSQL",
-
-            authentication:
-                "JWT",
-
-            passwordRecovery:
-                "Secure Reset Token",
+            status:
+                "online",
 
             security: {
-                helmet: true,
-                rateLimiting: true,
-                strictCors: true,
-                inputValidation: true,
-                secureErrors: true,
-                jwt: true,
-                passwordReset: true
+
+                helmet:
+                    true,
+
+                cors:
+                    true,
+
+                rateLimiting:
+                    true,
+
+                bcrypt:
+                    true,
+
+                jwt:
+                    true,
+
+                postgresql:
+                    true,
+
+                passwordRecovery:
+                    true,
+
+                resendEmail:
+                    Boolean(
+                        RESEND_API_KEY
+                    )
+
             }
+
         });
 
     }
 );
+
 
 // ============================================================
 // HEALTH CHECK
@@ -659,10 +1141,15 @@ app.get(
             );
 
             res.json({
+
                 success: true,
-                api: "online",
+
+                api:
+                    "online",
+
                 database:
                     "connected"
+
             });
 
         } catch (error) {
@@ -673,10 +1160,15 @@ app.get(
             );
 
             res.status(503).json({
+
                 success: false,
-                api: "online",
+
+                api:
+                    "online",
+
                 database:
                     "disconnected"
+
             });
 
         }
@@ -684,53 +1176,22 @@ app.get(
     }
 );
 
+
 // ============================================================
 // REGISTER
 // ============================================================
 
 app.post(
     "/api/register",
+    authLimiter,
     async (req, res) => {
 
         try {
 
-            if (
-                !isPlainObject(
-                    req.body
-                )
-            ) {
-
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        "Invalid request body."
-                });
-
-            }
-
-            if (
-                !hasOnlyAllowedFields(
-                    req.body,
-                    [
-                        "name",
-                        "email",
-                        "password"
-                    ]
-                )
-            ) {
-
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        "Invalid registration fields."
-                });
-
-            }
-
             const name =
-                normalizeName(
-                    req.body.name
-                );
+                String(
+                    req.body.name || ""
+                ).trim();
 
             const email =
                 normalizeEmail(
@@ -740,29 +1201,42 @@ app.post(
             const password =
                 req.body.password;
 
-            if (
-                !isValidName(name)
-            ) {
 
-                return res.status(400).json({
+            if (!isValidName(name)) {
+
+                return res.status(
+                    400
+                ).json({
+
                     success: false,
+
                     message:
-                        "Please provide a valid name."
+                        "Name must contain between 2 and 100 characters."
+
                 });
 
             }
 
+
             if (
-                !isValidEmail(email)
+                !isValidEmail(
+                    email
+                )
             ) {
 
-                return res.status(400).json({
+                return res.status(
+                    400
+                ).json({
+
                     success: false,
+
                     message:
                         "Please provide a valid email address."
+
                 });
 
             }
+
 
             if (
                 !isValidPassword(
@@ -770,34 +1244,48 @@ app.post(
                 )
             ) {
 
-                return res.status(400).json({
+                return res.status(
+                    400
+                ).json({
+
                     success: false,
+
                     message:
-                        "Password must contain 6 to 128 characters."
+                        "Password must contain between 6 and 128 characters."
+
                 });
 
             }
+
 
             const existingUser =
                 await findUserByEmail(
                     email
                 );
 
+
             if (existingUser) {
 
-                return res.status(409).json({
+                return res.status(
+                    409
+                ).json({
+
                     success: false,
+
                     message:
                         "An account with this email already exists."
+
                 });
 
             }
+
 
             const passwordHash =
                 await bcrypt.hash(
                     password,
                     12
                 );
+
 
             const user =
                 await createUser(
@@ -806,45 +1294,29 @@ app.post(
                     passwordHash
                 );
 
-            await logActivity({
-                userId:
-                    user.id,
 
-                email:
-                    user.email,
+            await logActivity(
+                req,
+                "REGISTER",
+                user.id,
+                user.email
+            );
 
-                action:
-                    "REGISTER",
 
-                ipAddress:
-                    req.ip,
+            return res.status(
+                201
+            ).json({
 
-                userAgent:
-                    req.get(
-                        "user-agent"
-                    )
-            });
-
-            return res.status(201).json({
                 success: true,
 
                 message:
                     "Account created successfully.",
 
-                user: {
-                    id:
-                        user.id,
+                user:
+                    safeUser(user)
 
-                    name:
-                        user.name,
-
-                    email:
-                        user.email,
-
-                    created_at:
-                        user.created_at
-                }
             });
+
 
         } catch (error) {
 
@@ -853,23 +1325,35 @@ app.post(
                 error
             );
 
+
             if (
                 error.code ===
                 "23505"
             ) {
 
-                return res.status(409).json({
+                return res.status(
+                    409
+                ).json({
+
                     success: false,
+
                     message:
                         "An account with this email already exists."
+
                 });
 
             }
 
-            return res.status(500).json({
+
+            return res.status(
+                500
+            ).json({
+
                 success: false,
+
                 message:
                     "Unable to create account."
+
             });
 
         }
@@ -877,47 +1361,17 @@ app.post(
     }
 );
 
+
 // ============================================================
-// LOGIN + JWT
+// LOGIN
 // ============================================================
 
 app.post(
     "/api/login",
+    authLimiter,
     async (req, res) => {
 
         try {
-
-            if (
-                !isPlainObject(
-                    req.body
-                )
-            ) {
-
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        "Invalid request body."
-                });
-
-            }
-
-            if (
-                !hasOnlyAllowedFields(
-                    req.body,
-                    [
-                        "email",
-                        "password"
-                    ]
-                )
-            ) {
-
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        "Invalid login fields."
-                });
-
-            }
 
             const email =
                 normalizeEmail(
@@ -927,61 +1381,76 @@ app.post(
             const password =
                 req.body.password;
 
-            if (
-                !isValidEmail(email)
-            ) {
-
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        "Please provide a valid email address."
-                });
-
-            }
 
             if (
-                !isValidPassword(
-                    password
+                !isValidEmail(
+                    email
                 )
             ) {
 
-                return res.status(400).json({
+                return res.status(
+                    400
+                ).json({
+
                     success: false,
+
                     message:
-                        "Invalid email or password."
+                        "Please provide a valid email address."
+
                 });
 
             }
+
+
+            if (
+                typeof password !==
+                "string" ||
+                password.length ===
+                0
+            ) {
+
+                return res.status(
+                    400
+                ).json({
+
+                    success: false,
+
+                    message:
+                        "Password is required."
+
+                });
+
+            }
+
 
             const user =
                 await findUserByEmail(
                     email
                 );
 
+
             if (!user) {
 
-                await logActivity({
-                    email,
+                await logActivity(
+                    req,
+                    "LOGIN_FAILED",
+                    null,
+                    email
+                );
 
-                    action:
-                        "LOGIN_FAILED",
+                return res.status(
+                    401
+                ).json({
 
-                    ipAddress:
-                        req.ip,
-
-                    userAgent:
-                        req.get(
-                            "user-agent"
-                        )
-                });
-
-                return res.status(401).json({
                     success: false,
+
                     message:
                         "Invalid email or password."
+
                 });
 
             }
+
 
             const passwordMatches =
                 await bcrypt.compare(
@@ -989,74 +1458,48 @@ app.post(
                     user.password_hash
                 );
 
-            if (!passwordMatches) {
 
-                await logActivity({
-                    userId:
-                        user.id,
+            if (
+                !passwordMatches
+            ) {
 
-                    email:
-                        user.email,
+                await logActivity(
+                    req,
+                    "LOGIN_FAILED",
+                    user.id,
+                    user.email
+                );
 
-                    action:
-                        "LOGIN_FAILED",
+                return res.status(
+                    401
+                ).json({
 
-                    ipAddress:
-                        req.ip,
-
-                    userAgent:
-                        req.get(
-                            "user-agent"
-                        )
-                });
-
-                return res.status(401).json({
                     success: false,
+
                     message:
                         "Invalid email or password."
+
                 });
 
             }
 
-            const safeUser = {
-                id:
-                    user.id,
-
-                name:
-                    user.name,
-
-                email:
-                    user.email,
-
-                created_at:
-                    user.created_at
-            };
 
             const token =
                 generateAccessToken(
-                    safeUser
+                    user
                 );
 
-            await logActivity({
-                userId:
-                    user.id,
 
-                email:
-                    user.email,
+            await logActivity(
+                req,
+                "LOGIN_SUCCESS",
+                user.id,
+                user.email
+            );
 
-                action:
-                    "LOGIN",
-
-                ipAddress:
-                    req.ip,
-
-                userAgent:
-                    req.get(
-                        "user-agent"
-                    )
-            });
 
             return res.json({
+
                 success: true,
 
                 message:
@@ -1068,8 +1511,10 @@ app.post(
                     JWT_EXPIRES_IN,
 
                 user:
-                    safeUser
+                    safeUser(user)
+
             });
+
 
         } catch (error) {
 
@@ -1078,10 +1523,15 @@ app.post(
                 error
             );
 
-            return res.status(500).json({
+            return res.status(
+                500
+            ).json({
+
                 success: false,
+
                 message:
                     "Unable to process login."
+
             });
 
         }
@@ -1089,106 +1539,87 @@ app.post(
     }
 );
 
+
 // ============================================================
 // FORGOT PASSWORD
 // ============================================================
 
 app.post(
     "/api/forgot-password",
+    authLimiter,
     async (req, res) => {
 
+        const genericMessage =
+            "If an account exists for this email, password reset instructions will be sent.";
+
         try {
-
-            if (
-                !isPlainObject(
-                    req.body
-                )
-            ) {
-
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        "Invalid request body."
-                });
-
-            }
-
-            if (
-                !hasOnlyAllowedFields(
-                    req.body,
-                    ["email"]
-                )
-            ) {
-
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        "Invalid password recovery fields."
-                });
-
-            }
 
             const email =
                 normalizeEmail(
                     req.body.email
                 );
 
+
             if (
-                !isValidEmail(email)
+                !isValidEmail(
+                    email
+                )
             ) {
 
-                return res.status(400).json({
+                return res.status(
+                    400
+                ).json({
+
                     success: false,
+
                     message:
                         "Please provide a valid email address."
+
                 });
 
             }
+
 
             const user =
                 await findUserByEmail(
                     email
                 );
 
+
             // ------------------------------------------------
-            // IMPORTANT:
-            // Do not reveal whether email exists.
+            // Do not reveal whether account exists
             // ------------------------------------------------
 
             if (!user) {
 
-                await logActivity({
-                    email,
-
-                    action:
-                        "PASSWORD_RESET_REQUEST",
-
-                    ipAddress:
-                        req.ip,
-
-                    userAgent:
-                        req.get(
-                            "user-agent"
-                        )
-                });
+                await logActivity(
+                    req,
+                    "PASSWORD_RESET_REQUEST",
+                    null,
+                    email
+                );
 
                 return res.json({
+
                     success: true,
 
                     message:
-                        "If an account exists for this email, password recovery instructions will be sent."
+                        genericMessage
+
                 });
 
             }
+
 
             // ------------------------------------------------
             // Generate cryptographically secure token
             // ------------------------------------------------
 
-            const rawToken =
-                crypto.randomBytes(
-                    32
-                ).toString("hex");
+            const rawResetToken =
+                crypto
+                    .randomBytes(32)
+                    .toString("hex");
+
 
             // ------------------------------------------------
             // Store only SHA-256 hash
@@ -1200,12 +1631,13 @@ app.post(
                         "sha256"
                     )
                     .update(
-                        rawToken
+                        rawResetToken
                     )
                     .digest("hex");
 
+
             // ------------------------------------------------
-            // Token expires after 15 minutes
+            // Token expires in 15 minutes
             // ------------------------------------------------
 
             const expiresAt =
@@ -1214,64 +1646,85 @@ app.post(
                     15 * 60 * 1000
                 );
 
+
             await createPasswordResetToken(
+
                 user.id,
+
                 tokenHash,
+
                 expiresAt
+
             );
 
-            await logActivity({
-                userId:
-                    user.id,
 
-                email:
+            // ------------------------------------------------
+            // Send email through Resend
+            // ------------------------------------------------
+
+            try {
+
+                await sendPasswordResetEmail(
+
                     user.email,
 
-                action:
-                    "PASSWORD_RESET_REQUEST",
+                    user.name,
 
-                ipAddress:
-                    req.ip,
+                    rawResetToken
 
-                userAgent:
-                    req.get(
-                        "user-agent"
-                    )
-            });
+                );
 
-            // ------------------------------------------------
-            // DEVELOPMENT ONLY
-            // ------------------------------------------------
-            // Never expose this token in production.
-            // Actual email service will be connected next.
-            // ------------------------------------------------
+            } catch (emailError) {
 
-            if (
-                NODE_ENV !==
-                "production"
-            ) {
+                console.error(
+                    "PASSWORD RESET EMAIL ERROR:",
+                    emailError.message
+                );
 
-                return res.json({
-                    success: true,
+
+                // Remove token if email failed
+                await deleteExpiredResetTokens();
+
+
+                await logActivity(
+                    req,
+                    "PASSWORD_RESET_EMAIL_FAILED",
+                    user.id,
+                    user.email
+                );
+
+
+                return res.status(
+                    500
+                ).json({
+
+                    success: false,
 
                     message:
-                        "Password reset request created.",
+                        "Unable to send password reset email. Please try again later."
 
-                    resetToken:
-                        rawToken,
-
-                    expiresIn:
-                        "15 minutes"
                 });
 
             }
 
+
+            await logActivity(
+                req,
+                "PASSWORD_RESET_REQUEST",
+                user.id,
+                user.email
+            );
+
+
             return res.json({
+
                 success: true,
 
                 message:
-                    "If an account exists for this email, password recovery instructions will be sent."
+                    genericMessage
+
             });
+
 
         } catch (error) {
 
@@ -1280,10 +1733,16 @@ app.post(
                 error
             );
 
-            return res.status(500).json({
+
+            return res.status(
+                500
+            ).json({
+
                 success: false,
+
                 message:
-                    "Unable to process password recovery request."
+                    "Unable to process password recovery."
+
             });
 
         }
@@ -1291,70 +1750,45 @@ app.post(
     }
 );
 
+
 // ============================================================
 // RESET PASSWORD
 // ============================================================
 
 app.post(
     "/api/reset-password",
+    authLimiter,
     async (req, res) => {
 
         try {
 
-            if (
-                !isPlainObject(
-                    req.body
-                )
-            ) {
-
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        "Invalid request body."
-                });
-
-            }
-
-            if (
-                !hasOnlyAllowedFields(
-                    req.body,
-                    [
-                        "token",
-                        "password"
-                    ]
-                )
-            ) {
-
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        "Invalid password reset fields."
-                });
-
-            }
-
             const token =
                 String(
-                    req.body.token ||
-                    ""
+                    req.body.token || ""
                 ).trim();
 
             const password =
                 req.body.password;
 
+
             if (
-                !/^[a-fA-F0-9]{64}$/.test(
-                    token
-                )
+                !/^[a-fA-F0-9]{64}$/
+                    .test(token)
             ) {
 
-                return res.status(400).json({
+                return res.status(
+                    400
+                ).json({
+
                     success: false,
+
                     message:
                         "Invalid or expired reset token."
+
                 });
 
             }
+
 
             if (
                 !isValidPassword(
@@ -1362,17 +1796,19 @@ app.post(
                 )
             ) {
 
-                return res.status(400).json({
+                return res.status(
+                    400
+                ).json({
+
                     success: false,
+
                     message:
-                        "Password must contain 6 to 128 characters."
+                        "Password must contain between 6 and 128 characters."
+
                 });
 
             }
 
-            // ------------------------------------------------
-            // Hash received token
-            // ------------------------------------------------
 
             const tokenHash =
                 crypto
@@ -1384,28 +1820,28 @@ app.post(
                     )
                     .digest("hex");
 
-            // ------------------------------------------------
-            // Find valid token
-            // ------------------------------------------------
 
-            const resetRecord =
+            const resetToken =
                 await findValidPasswordResetToken(
                     tokenHash
                 );
 
-            if (!resetRecord) {
 
-                return res.status(400).json({
+            if (!resetToken) {
+
+                return res.status(
+                    400
+                ).json({
+
                     success: false,
+
                     message:
                         "Invalid or expired reset token."
+
                 });
 
             }
 
-            // ------------------------------------------------
-            // Hash new password
-            // ------------------------------------------------
 
             const passwordHash =
                 await bcrypt.hash(
@@ -1413,61 +1849,62 @@ app.post(
                     12
                 );
 
+
             const updatedUser =
                 await updateUserPassword(
-                    resetRecord.user_id,
+
+                    resetToken.user_id,
+
                     passwordHash
+
                 );
+
 
             if (!updatedUser) {
 
-                return res.status(400).json({
+                return res.status(
+                    400
+                ).json({
+
                     success: false,
+
                     message:
                         "Unable to reset password."
+
                 });
 
             }
 
+
             // ------------------------------------------------
-            // Invalidate token
+            // One-time token
             // ------------------------------------------------
 
             await markPasswordResetTokenUsed(
-                resetRecord.id
+                resetToken.id
             );
 
-            // ------------------------------------------------
-            // Remove other reset tokens
-            // ------------------------------------------------
 
             await deleteExpiredResetTokens();
 
-            await logActivity({
-                userId:
-                    updatedUser.id,
 
-                email:
-                    updatedUser.email,
+            await logActivity(
+                req,
+                "PASSWORD_RESET",
+                updatedUser.id,
+                updatedUser.email
+            );
 
-                action:
-                    "PASSWORD_RESET",
-
-                ipAddress:
-                    req.ip,
-
-                userAgent:
-                    req.get(
-                        "user-agent"
-                    )
-            });
 
             return res.json({
+
                 success: true,
 
                 message:
-                    "Password reset successfully. Please sign in with your new password."
+                    "Password has been reset successfully."
+
             });
+
 
         } catch (error) {
 
@@ -1476,10 +1913,16 @@ app.post(
                 error
             );
 
-            return res.status(500).json({
+
+            return res.status(
+                500
+            ).json({
+
                 success: false,
+
                 message:
                     "Unable to reset password."
+
             });
 
         }
@@ -1487,8 +1930,9 @@ app.post(
     }
 );
 
+
 // ============================================================
-// PROTECTED USER PROFILE
+// CURRENT USER
 // ============================================================
 
 app.get(
@@ -1498,61 +1942,39 @@ app.get(
 
         try {
 
-            const userId =
-                Number(
-                    req.user.sub
-                );
-
-            if (
-                !Number.isInteger(
-                    userId
-                ) ||
-                userId <= 0
-            ) {
-
-                return res.status(401).json({
-                    success: false,
-                    message:
-                        "Invalid authentication identity."
-                });
-
-            }
-
             const user =
                 await findUserById(
-                    userId
+                    Number(
+                        req.user.sub
+                    )
                 );
+
 
             if (!user) {
 
-                return res.status(401).json({
+                return res.status(
+                    404
+                ).json({
+
                     success: false,
+
                     message:
-                        "User account no longer exists."
+                        "User account not found."
+
                 });
 
             }
 
+
             return res.json({
+
                 success: true,
 
-                authenticated:
-                    true,
+                user:
+                    safeUser(user)
 
-                user: {
-                    id:
-                        user.id,
-
-                    name:
-                        user.name,
-
-                    email:
-                        user.email,
-
-                    created_at:
-                        user.created_at
-                }
             });
+
 
         } catch (error) {
 
@@ -1561,16 +1983,23 @@ app.get(
                 error
             );
 
-            return res.status(500).json({
+
+            return res.status(
+                500
+            ).json({
+
                 success: false,
+
                 message:
-                    "Unable to load authenticated user."
+                    "Unable to retrieve account information."
+
             });
 
         }
 
     }
 );
+
 
 // ============================================================
 // 404
@@ -1579,14 +2008,20 @@ app.get(
 app.use(
     (req, res) => {
 
-        res.status(404).json({
+        res.status(
+            404
+        ).json({
+
             success: false,
+
             message:
-                "Endpoint not found."
+                "API endpoint not found."
+
         });
 
     }
 );
+
 
 // ============================================================
 // GLOBAL ERROR HANDLER
@@ -1605,43 +2040,40 @@ app.use(
             error.message
         );
 
+
         if (
             error.message ===
             "CORS origin not allowed."
         ) {
 
-            return res.status(403).json({
+            return res.status(
+                403
+            ).json({
+
                 success: false,
+
                 message:
-                    "Origin not allowed."
+                    "Origin is not allowed."
+
             });
 
         }
 
-        if (
-            error instanceof
-                SyntaxError &&
-            error.status === 400 &&
-            error.type ===
-                "entity.parse.failed"
-        ) {
 
-            return res.status(400).json({
-                success: false,
-                message:
-                    "Invalid JSON request."
-            });
+        return res.status(
+            500
+        ).json({
 
-        }
-
-        return res.status(500).json({
             success: false,
+
             message:
-                "An internal server error occurred."
+                "Internal server error."
+
         });
 
     }
 );
+
 
 // ============================================================
 // START SERVER
@@ -1655,75 +2087,147 @@ async function startServer() {
 
         await initializeActivityLogs();
 
-        // Clean old reset tokens on startup
         await deleteExpiredResetTokens();
+
 
         app.listen(
             PORT,
             () => {
 
                 console.log(
-                    `Priyanshu Secure Portal API running on port ${PORT}`
+                    "============================================================"
                 );
 
                 console.log(
-                    "PostgreSQL database connected."
+                    "PRIYANSHU SECURE PORTAL"
                 );
 
                 console.log(
-                    "Helmet security enabled."
+                    "============================================================"
                 );
 
                 console.log(
-                    "Rate limiting enabled."
-                );
-
-                console.log(
-                    "Strict CORS enabled."
-                );
-
-                console.log(
-                    "Input validation enabled."
-                );
-
-                console.log(
-                    "Secure error handling enabled."
-                );
-
-                console.log(
-                    "JWT authentication enabled."
-                );
-
-                console.log(
-                    `JWT expiry: ${JWT_EXPIRES_IN}`
-                );
-
-                console.log(
-                    "Password reset system enabled."
-                );
-
-                console.log(
-                    "Password reset token lifetime: 15 minutes."
+                    `Server running on port ${PORT}`
                 );
 
                 console.log(
                     `Environment: ${NODE_ENV}`
                 );
 
+                console.log(
+                    "PostgreSQL: CONNECTED"
+                );
+
+                console.log(
+                    "JWT: ACTIVE"
+                );
+
+                console.log(
+                    "bcrypt: ACTIVE"
+                );
+
+                console.log(
+                    "Helmet: ACTIVE"
+                );
+
+                console.log(
+                    "CORS: ACTIVE"
+                );
+
+                console.log(
+                    "Rate Limiting: ACTIVE"
+                );
+
+                console.log(
+                    "Password Recovery: ACTIVE"
+                );
+
+                console.log(
+                    `Resend Email: ${
+                        RESEND_API_KEY
+                            ? "CONFIGURED"
+                            : "NOT CONFIGURED"
+                    }`
+                );
+
+                console.log(
+                    "============================================================"
+                );
+
             }
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "SERVER STARTUP FAILED:",
+            error
+        );
+
+        process.exit(
+            1
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// GRACEFUL SHUTDOWN
+// ============================================================
+
+async function shutdown(
+    signal
+) {
+
+    console.log(
+        `${signal} received. Shutting down...`
+    );
+
+
+    try {
+
+        await closeDatabase();
+
+        console.log(
+            "Database connection closed."
+        );
+
+        process.exit(
+            0
         );
 
     } catch (error) {
 
         console.error(
-            "SERVER STARTUP ERROR:",
+            "Shutdown error:",
             error
         );
 
-        process.exit(1);
+        process.exit(
+            1
+        );
 
     }
 
 }
+
+
+process.on(
+    "SIGTERM",
+    () => shutdown("SIGTERM")
+);
+
+process.on(
+    "SIGINT",
+    () => shutdown("SIGINT")
+);
+
+
+// ============================================================
+// START
+// ============================================================
 
 startServer();
