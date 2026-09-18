@@ -1,3 +1,8 @@
+# ============================================================
+# PRIYANSHU SECURE PORTAL
+# Git Ignore Rules
+# ============================================================
+
 # Node
 node_modules/
 
@@ -6,14 +11,27 @@ node_modules/
 .env.*
 *.log
 
-# Authentication data
+# Local databases
 data/*.db
 data/*.db-shm
 data/*.db-wal
 
-# Excel reports
+# Excel activity reports
 data/*.xlsx
+
+# Temporary files
+*.tmp
+*.temp
 
 # OS files
 .DS_Store
 Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+
+# Runtime files
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
