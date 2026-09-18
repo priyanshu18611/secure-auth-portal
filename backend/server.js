@@ -1,7 +1,8 @@
 // ============================================================
 // PRIYANSHU SECURE PORTAL
 // Production Authentication Backend
-// Version 2.8.1
+// Version 3.0.0
+// ============================================================
 //
 // Features:
 // - Express
@@ -14,8 +15,10 @@
 // - Input validation
 // - Password reset tokens
 // - Resend password reset email
-// - Activity logging
+// - PostgreSQL activity logging
 // - Excel security report
+// - Health monitoring
+// - Graceful shutdown
 // ============================================================
 
 
@@ -24,31 +27,16 @@
 // ============================================================
 
 const express = require("express");
-
 const cors = require("cors");
-
 const helmet = require("helmet");
-
-const rateLimit =
-    require("express-rate-limit");
-
-const bcrypt =
-    require("bcryptjs");
-
-const jwt =
-    require("jsonwebtoken");
-
-const crypto =
-    require("crypto");
-
-const XLSX =
-    require("xlsx");
-
-const fs =
-    require("fs");
-
-const path =
-    require("path");
+const rateLimit = require("express-rate-limit");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const XLSX = require("xlsx");
+const fs = require("fs");
+const path = require("path");
+const https = require("https");
 
 const {
     pool,
@@ -69,10 +57,10 @@ const {
 // APP
 // ============================================================
 
-const app =
-    express();
+const app = express();
 
-// Render runs the service behind a reverse proxy.
+
+// Render runs the application behind a reverse proxy.
 app.set("trust proxy", 1);
 
 
@@ -81,11 +69,10 @@ app.set("trust proxy", 1);
 // ============================================================
 
 const PORT =
-    process.env.PORT || 10000;
+    Number(process.env.PORT) || 10000;
 
 const NODE_ENV =
-    process.env.NODE_ENV ||
-    "development";
+    process.env.NODE_ENV || "development";
 
 
 // ============================================================
@@ -96,8 +83,7 @@ const JWT_SECRET =
     process.env.JWT_SECRET;
 
 const JWT_EXPIRES_IN =
-    process.env.JWT_EXPIRES_IN ||
-    "1h";
+    process.env.JWT_EXPIRES_IN || "1h";
 
 const JWT_ISSUER =
     "priyanshu-secure-portal";
@@ -107,7 +93,7 @@ const JWT_AUDIENCE =
 
 
 // ============================================================
-// RESEND EMAIL CONFIGURATION
+// EMAIL CONFIGURATION
 // ============================================================
 
 const RESEND_API_KEY =
@@ -126,19 +112,15 @@ const FRONTEND_URL =
 // ============================================================
 
 if (!JWT_SECRET) {
-
     throw new Error(
         "JWT_SECRET environment variable is missing."
     );
-
 }
 
 if (JWT_SECRET.length < 32) {
-
     throw new Error(
         "JWT_SECRET must contain at least 32 characters."
     );
-
 }
 
 
@@ -158,37 +140,24 @@ app.use(
 // ============================================================
 
 const allowedOrigins = [
-
     "https://priyanshu18611.github.io"
-
 ];
 
 app.use(
     cors({
+        origin: function (origin, callback) {
 
-        origin: function (
-            origin,
-            callback
-        ) {
+            // Allow non-browser requests such as
+            // health checks and server-side clients.
 
             if (!origin) {
-                return callback(
-                    null,
-                    true
-                );
+                return callback(null, true);
             }
 
             if (
-                allowedOrigins.includes(
-                    origin
-                )
+                allowedOrigins.includes(origin)
             ) {
-
-                return callback(
-                    null,
-                    true
-                );
-
+                return callback(null, true);
             }
 
             return callback(
@@ -196,7 +165,6 @@ app.use(
                     "CORS origin not allowed."
                 )
             );
-
         },
 
         methods: [
@@ -211,7 +179,6 @@ app.use(
         ],
 
         credentials: false
-
     })
 );
 
@@ -228,7 +195,7 @@ app.use(
 
 
 // ============================================================
-// GENERAL RATE LIMIT
+// GENERAL RATE LIMITER
 // ============================================================
 
 const generalLimiter =
@@ -248,16 +215,13 @@ const generalLimiter =
             message:
                 "Too many requests. Please try again later."
         }
-
     });
 
-app.use(
-    generalLimiter
-);
+app.use(generalLimiter);
 
 
 // ============================================================
-// AUTH RATE LIMIT
+// AUTH RATE LIMITER
 // ============================================================
 
 const authLimiter =
@@ -277,30 +241,23 @@ const authLimiter =
             message:
                 "Too many authentication attempts. Please try again later."
         }
-
     });
 
 
 // ============================================================
-// HELPERS
+// INPUT HELPERS
 // ============================================================
 
-function normalizeEmail(
-    email
-) {
+function normalizeEmail(email) {
 
-    return String(
-        email || ""
-    )
+    return String(email || "")
         .trim()
         .toLowerCase();
 
 }
 
 
-function isValidEmail(
-    email
-) {
+function isValidEmail(email) {
 
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         .test(email);
@@ -308,13 +265,10 @@ function isValidEmail(
 }
 
 
-function isValidPassword(
-    password
-) {
+function isValidPassword(password) {
 
     return (
-        typeof password ===
-            "string" &&
+        typeof password === "string" &&
         password.length >= 6 &&
         password.length <= 128
     );
@@ -322,13 +276,10 @@ function isValidPassword(
 }
 
 
-function isValidName(
-    name
-) {
+function isValidName(name) {
 
     return (
-        typeof name ===
-            "string" &&
+        typeof name === "string" &&
         name.trim().length >= 2 &&
         name.trim().length <= 100
     );
@@ -336,118 +287,82 @@ function isValidName(
 }
 
 
-function safeUser(
-    user
-) {
+function safeUser(user) {
 
     if (!user) {
         return null;
     }
 
     return {
-
         id: user.id,
-
         name: user.name,
-
         email: user.email,
-
-        created_at:
-            user.created_at
-
+        created_at: user.created_at
     };
 
 }
 
 
 // ============================================================
-// JWT GENERATOR
+// JWT
 // ============================================================
 
-function generateAccessToken(
-    user
-) {
+function generateAccessToken(user) {
 
     return jwt.sign(
-
         {
-            sub:
-                String(user.id),
-
-            email:
-                user.email,
-
-            name:
-                user.name
-
+            sub: String(user.id),
+            email: user.email,
+            name: user.name
         },
 
         JWT_SECRET,
 
         {
+            expiresIn: JWT_EXPIRES_IN,
 
-            expiresIn:
-                JWT_EXPIRES_IN,
+            issuer: JWT_ISSUER,
 
-            issuer:
-                JWT_ISSUER,
+            audience: JWT_AUDIENCE,
 
-            audience:
-                JWT_AUDIENCE,
-
-            algorithm:
-                "HS256"
-
+            algorithm: "HS256"
         }
-
     );
 
 }
 
 
 // ============================================================
-// JWT AUTHENTICATION MIDDLEWARE
+// AUTHENTICATION MIDDLEWARE
 // ============================================================
 
-function authenticateToken(
-    req,
-    res,
-    next
-) {
+function authenticateToken(req, res, next) {
 
     const authHeader =
         req.headers.authorization;
 
     if (
         !authHeader ||
-        !authHeader.startsWith(
-            "Bearer "
-        )
+        !authHeader.startsWith("Bearer ")
     ) {
 
         return res.status(401).json({
-
             success: false,
-
             message:
                 "Authentication required."
-
         });
 
     }
 
     const token =
-        authHeader.substring(7);
+        authHeader.substring(7).trim();
 
     if (!token) {
 
         return res.status(401).json({
-
             success: false,
-
             message:
                 "Authentication token missing."
-
         });
 
     }
@@ -456,41 +371,25 @@ function authenticateToken(
 
         const decoded =
             jwt.verify(
-
                 token,
-
                 JWT_SECRET,
-
                 {
-
-                    issuer:
-                        JWT_ISSUER,
-
-                    audience:
-                        JWT_AUDIENCE,
-
-                    algorithms: [
-                        "HS256"
-                    ]
-
+                    issuer: JWT_ISSUER,
+                    audience: JWT_AUDIENCE,
+                    algorithms: ["HS256"]
                 }
-
             );
 
-        req.user =
-            decoded;
+        req.user = decoded;
 
         next();
 
     } catch (error) {
 
         return res.status(401).json({
-
             success: false,
-
             message:
                 "Invalid or expired authentication token."
-
         });
 
     }
@@ -504,11 +403,11 @@ function authenticateToken(
 
 async function initializeActivityLogs() {
 
-    // Create the table for new databases.
     await pool.query(`
         CREATE TABLE IF NOT EXISTS activity_logs (
             id SERIAL PRIMARY KEY,
             user_id INTEGER,
+            name TEXT,
             email TEXT,
             action TEXT NOT NULL,
             ip_address TEXT,
@@ -518,10 +417,19 @@ async function initializeActivityLogs() {
         );
     `);
 
-    // Migration for older activity_logs tables.
+
+    // --------------------------------------------------------
+    // Compatibility migrations
+    // --------------------------------------------------------
+
     await pool.query(`
         ALTER TABLE activity_logs
         ADD COLUMN IF NOT EXISTS user_id INTEGER;
+    `);
+
+    await pool.query(`
+        ALTER TABLE activity_logs
+        ADD COLUMN IF NOT EXISTS name TEXT;
     `);
 
     await pool.query(`
@@ -550,30 +458,33 @@ async function initializeActivityLogs() {
         DEFAULT CURRENT_TIMESTAMP;
     `);
 
-    // Legacy compatibility: older activity_logs tables may contain a
-    // required `name` column. The current logger does not depend on it,
-    // so make it optional instead of allowing logging to break requests.
-    await pool.query(`
-        ALTER TABLE activity_logs
-        ADD COLUMN IF NOT EXISTS name TEXT;
-    `);
+
+    // --------------------------------------------------------
+    // Older database compatibility
+    // --------------------------------------------------------
 
     await pool.query(`
         ALTER TABLE activity_logs
         ALTER COLUMN name DROP NOT NULL;
     `);
 
-    // Give old rows a safe action value before enforcing NOT NULL.
+
     await pool.query(`
         UPDATE activity_logs
         SET action = 'LEGACY_LOG'
         WHERE action IS NULL;
     `);
 
+
     await pool.query(`
         ALTER TABLE activity_logs
         ALTER COLUMN action SET NOT NULL;
     `);
+
+
+    // --------------------------------------------------------
+    // Indexes
+    // --------------------------------------------------------
 
     await pool.query(`
         CREATE INDEX IF NOT EXISTS
@@ -587,20 +498,19 @@ async function initializeActivityLogs() {
         ON activity_logs(created_at);
     `);
 
+
     console.log(
-        "PostgreSQL activity_logs table and migrations are ready."
+        "PostgreSQL activity_logs table is ready."
     );
 
 }
 
 
 // ============================================================
-// EXCEL ACTIVITY LOGGER
+// EXCEL ACTIVITY REPORT
 // ============================================================
 
-function logToExcel(
-    data
-) {
+function logToExcel(data) {
 
     try {
 
@@ -611,10 +521,9 @@ function logToExcel(
                 "data"
             );
 
+
         if (
-            !fs.existsSync(
-                dataDirectory
-            )
+            !fs.existsSync(dataDirectory)
         ) {
 
             fs.mkdirSync(
@@ -626,40 +535,55 @@ function logToExcel(
 
         }
 
+
         const filePath =
             path.join(
                 dataDirectory,
                 "activity_logs.xlsx"
             );
 
+
         let rows = [];
 
+
         if (
-            fs.existsSync(
-                filePath
-            )
+            fs.existsSync(filePath)
         ) {
 
-            const workbook =
-                XLSX.readFile(
-                    filePath
+            try {
+
+                const workbook =
+                    XLSX.readFile(
+                        filePath
+                    );
+
+                const sheetName =
+                    workbook.SheetNames[0];
+
+                if (sheetName) {
+
+                    rows =
+                        XLSX.utils.sheet_to_json(
+                            workbook.Sheets[
+                                sheetName
+                            ]
+                        );
+
+                }
+
+            } catch (readError) {
+
+                console.error(
+                    "Excel read error:",
+                    readError.message
                 );
 
-            const sheetName =
-                workbook.SheetNames[0];
-
-            if (sheetName) {
-
-                rows =
-                    XLSX.utils.sheet_to_json(
-                        workbook.Sheets[
-                            sheetName
-                        ]
-                    );
+                rows = [];
 
             }
 
         }
+
 
         rows.push({
 
@@ -668,6 +592,9 @@ function logToExcel(
 
             User_ID:
                 data.userId || "",
+
+            Name:
+                data.name || "",
 
             Email:
                 data.email || "",
@@ -683,13 +610,16 @@ function logToExcel(
 
         });
 
+
         const worksheet =
             XLSX.utils.json_to_sheet(
                 rows
             );
 
+
         const workbook =
             XLSX.utils.book_new();
+
 
         XLSX.utils.book_append_sheet(
             workbook,
@@ -697,12 +627,17 @@ function logToExcel(
             "Activity Logs"
         );
 
+
         XLSX.writeFile(
             workbook,
             filePath
         );
 
+
     } catch (error) {
+
+        // Excel reporting must never
+        // break authentication.
 
         console.error(
             "Excel logging error:",
@@ -722,58 +657,64 @@ async function logActivity(
     req,
     action,
     userId = null,
-    email = null
+    email = null,
+    name = null
 ) {
 
+    const forwardedFor =
+        req.headers["x-forwarded-for"];
+
     const ip =
-        req.headers[
-            "x-forwarded-for"
-        ] ||
-        req.socket.remoteAddress ||
-        "";
+        forwardedFor
+            ? String(forwardedFor)
+                .split(",")[0]
+                .trim()
+            : (
+                req.socket.remoteAddress ||
+                ""
+            );
+
 
     const userAgent =
-        req.headers[
-            "user-agent"
-        ] ||
+        req.headers["user-agent"] ||
         "";
+
+
+    // --------------------------------------------------------
+    // PostgreSQL logging
+    // --------------------------------------------------------
 
     try {
 
         await pool.query(
-
             `
-
             INSERT INTO activity_logs
-
             (
                 user_id,
+                name,
                 email,
                 action,
                 ip_address,
                 user_agent
             )
-
             VALUES
-
             (
                 $1,
                 $2,
                 $3,
                 $4,
-                $5
+                $5,
+                $6
             )
-
             `,
-
             [
                 userId,
+                name,
                 email,
                 action,
                 ip,
                 userAgent
             ]
-
         );
 
     } catch (error) {
@@ -785,18 +726,18 @@ async function logActivity(
 
     }
 
+
+    // --------------------------------------------------------
+    // Excel reporting
+    // --------------------------------------------------------
+
     logToExcel({
-
         userId,
-
+        name,
         email,
-
         action,
-
         ip,
-
         userAgent
-
     });
 
 }
@@ -820,14 +761,33 @@ async function sendPasswordResetEmail(
 
     }
 
+
     const resetUrl =
         `${FRONTEND_URL}/reset-password.html?token=${encodeURIComponent(
             resetToken
         )}`;
 
 
-    const emailHtml = `
+    // --------------------------------------------------------
+    // Escape user-controlled name
+    // --------------------------------------------------------
 
+    const safeName =
+        String(
+            recipientName || "there"
+        )
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+
+    // --------------------------------------------------------
+    // Email HTML
+    // --------------------------------------------------------
+
+    const emailHtml = `
 <!DOCTYPE html>
 
 <html>
@@ -836,16 +796,17 @@ async function sendPasswordResetEmail(
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width,
-                   initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width,
+                 initial-scale=1.0"
+    >
 
     <title>
         Password Reset
     </title>
 
 </head>
-
 
 <body style="
     margin:0;
@@ -891,140 +852,108 @@ async function sendPasswordResetEmail(
     color:#ffffff;
 ">
 
-    <div style="
-        font-size:30px;
-        font-weight:800;
-        letter-spacing:3px;
-        margin-bottom:8px;
-    ">
+<div style="
+    font-size:30px;
+    font-weight:800;
+    letter-spacing:3px;
+    margin-bottom:8px;
+">
+    PK
+</div>
 
-        PK
+<div style="
+    color:#8b95a7;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:3px;
+    margin-bottom:32px;
+">
+    PRIYANSHU SECURE PORTAL
+</div>
 
-    </div>
+<h1 style="
+    margin:0 0 20px 0;
+    font-size:28px;
+    color:#ffffff;
+">
+    Reset Your Password
+</h1>
 
+<p style="
+    color:#b7c0cf;
+    font-size:15px;
+    line-height:1.7;
+">
+    Hello ${safeName},
+</p>
 
-    <div style="
-        color:#8b95a7;
-        font-size:11px;
+<p style="
+    color:#b7c0cf;
+    font-size:15px;
+    line-height:1.7;
+">
+    We received a request to reset
+    your Priyanshu Secure Portal
+    password.
+</p>
+
+<div style="
+    text-align:center;
+    margin:35px 0;
+">
+
+<a
+    href="${resetUrl}"
+    style="
+        display:inline-block;
+        padding:15px 30px;
+        background:#ffffff;
+        color:#080b12;
+        text-decoration:none;
+        border-radius:10px;
         font-weight:700;
-        letter-spacing:3px;
-        margin-bottom:32px;
-    ">
-
-        PRIYANSHU SECURE PORTAL
-
-    </div>
-
-
-    <h1 style="
-        margin:0 0 20px 0;
-        font-size:28px;
-        color:#ffffff;
-    ">
-
-        Reset Your Password
-
-    </h1>
-
-
-    <p style="
-        color:#b7c0cf;
         font-size:15px;
-        line-height:1.7;
-    ">
+    "
+>
+    Reset Password
+</a>
 
-        Hello ${
-            recipientName || "there"
-        },
+</div>
 
-    </p>
+<p style="
+    color:#8f99aa;
+    font-size:13px;
+    line-height:1.7;
+">
+    This link expires in
+    <strong>15 minutes</strong>
+    and can only be used once.
+</p>
 
+<p style="
+    color:#8f99aa;
+    font-size:13px;
+    line-height:1.7;
+">
+    If you did not request this
+    password reset, you can safely
+    ignore this email.
+</p>
 
-    <p style="
-        color:#b7c0cf;
-        font-size:15px;
-        line-height:1.7;
-    ">
+<hr style="
+    border:0;
+    border-top:1px solid #252d3a;
+    margin:30px 0;
+">
 
-        We received a request to reset
-        your Priyanshu Secure Portal
-        password.
-
-    </p>
-
-
-    <div style="
-        text-align:center;
-        margin:35px 0;
-    ">
-
-        <a
-            href="${resetUrl}"
-            style="
-                display:inline-block;
-                padding:15px 30px;
-                background:#ffffff;
-                color:#080b12;
-                text-decoration:none;
-                border-radius:10px;
-                font-weight:700;
-                font-size:15px;
-            "
-        >
-
-            Reset Password
-
-        </a>
-
-    </div>
-
-
-    <p style="
-        color:#8f99aa;
-        font-size:13px;
-        line-height:1.7;
-    ">
-
-        This link expires in
-        <strong>
-            15 minutes
-        </strong>
-        and can only be used once.
-
-    </p>
-
-
-    <p style="
-        color:#8f99aa;
-        font-size:13px;
-        line-height:1.7;
-    ">
-
-        If you did not request this
-        password reset, you can safely
-        ignore this email.
-
-    </p>
-
-
-    <hr style="
-        border:0;
-        border-top:1px solid #252d3a;
-        margin:30px 0;
-    ">
-
-
-    <p style="
-        color:#697386;
-        font-size:12px;
-        line-height:1.6;
-    ">
-
-        Priyanshu Secure Portal<br>
-
-        Automated Security Notification
-
-    </p>
+<p style="
+    color:#697386;
+    font-size:12px;
+    line-height:1.6;
+">
+    Priyanshu Secure Portal<br>
+    Automated Security Notification
+</p>
 
 </td>
 
@@ -1041,59 +970,162 @@ async function sendPasswordResetEmail(
 </body>
 
 </html>
-
 `;
 
 
-    const response =
-        await fetch(
-            "https://api.resend.com/emails",
-            {
+    // --------------------------------------------------------
+    // Resend request
+    // --------------------------------------------------------
 
-                method:
-                    "POST",
+    const requestBody =
+        JSON.stringify({
 
-                headers: {
+            from:
+                RESEND_FROM_EMAIL,
 
-                    "Authorization":
-                        `Bearer ${RESEND_API_KEY}`,
+            to: [
+                recipientEmail
+            ],
 
-                    "Content-Type":
-                        "application/json"
+            subject:
+                "Reset Your Priyanshu Secure Portal Password",
 
-                },
+            html:
+                emailHtml
 
-                body:
-                    JSON.stringify({
+        });
 
-                        from:
-                            RESEND_FROM_EMAIL,
 
-                        to: [
-                            recipientEmail
-                        ],
+    const responseData =
+        await new Promise(
+            (resolve, reject) => {
 
-                        subject:
-                            "Reset Your Priyanshu Secure Portal Password",
+                const request =
+                    https.request(
+                        "https://api.resend.com/emails",
+                        {
+                            method: "POST",
 
-                        html:
-                            emailHtml
+                            headers: {
+                                "Authorization":
+                                    `Bearer ${RESEND_API_KEY}`,
 
-                    })
+                                "Content-Type":
+                                    "application/json",
+
+                                "Content-Length":
+                                    Buffer.byteLength(
+                                        requestBody
+                                    )
+                            },
+
+                            timeout: 15000
+                        },
+
+                        (response) => {
+
+                            let body = "";
+
+
+                            response.setEncoding(
+                                "utf8"
+                            );
+
+
+                            response.on(
+                                "data",
+                                (chunk) => {
+                                    body += chunk;
+                                }
+                            );
+
+
+                            response.on(
+                                "end",
+                                () => {
+
+                                    let data;
+
+                                    try {
+
+                                        data =
+                                            body
+                                                ? JSON.parse(
+                                                    body
+                                                )
+                                                : {};
+
+                                    } catch (
+                                        parseError
+                                    ) {
+
+                                        return reject(
+                                            new Error(
+                                                "Invalid response received from Resend."
+                                            )
+                                        );
+
+                                    }
+
+
+                                    resolve({
+                                        statusCode:
+                                            response.statusCode,
+
+                                        data
+                                    });
+
+                                }
+                            );
+
+                        }
+                    );
+
+
+                request.on(
+                    "timeout",
+                    () => {
+
+                        request.destroy(
+                            new Error(
+                                "Resend API request timed out."
+                            )
+                        );
+
+                    }
+                );
+
+
+                request.on(
+                    "error",
+                    (error) => {
+
+                        reject(error);
+
+                    }
+                );
+
+
+                request.write(
+                    requestBody
+                );
+
+
+                request.end();
 
             }
         );
 
 
-    const data =
-        await response.json();
-
-
-    if (!response.ok) {
+    if (
+        responseData.statusCode < 200 ||
+        responseData.statusCode >= 300
+    ) {
 
         console.error(
             "Resend API error:",
-            data
+            responseData.statusCode,
+            responseData.data
         );
 
         throw new Error(
@@ -1105,11 +1137,11 @@ async function sendPasswordResetEmail(
 
     console.log(
         "Password reset email sent:",
-        data.id
+        responseData.data.id
     );
 
 
-    return data;
+    return responseData.data;
 
 }
 
@@ -1130,39 +1162,31 @@ app.get(
                 "Priyanshu Secure Portal API",
 
             version:
-                "2.8.1",
+                "3.0.0",
 
             status:
                 "online",
 
             security: {
 
-                helmet:
-                    true,
+                helmet: true,
 
-                cors:
-                    true,
+                cors: true,
 
-                rateLimiting:
-                    true,
+                rateLimiting: true,
 
-                bcrypt:
-                    true,
+                bcrypt: true,
 
-                jwt:
-                    true,
+                jwt: true,
 
-                postgresql:
-                    true,
+                postgresql: true,
 
-                passwordRecovery:
-                    true,
+                passwordRecovery: true,
 
                 resendEmail:
                     Boolean(
                         RESEND_API_KEY
                     )
-
             }
 
         });
@@ -1185,7 +1209,8 @@ app.get(
                 "SELECT 1"
             );
 
-            res.json({
+
+            return res.json({
 
                 success: true,
 
@@ -1204,7 +1229,10 @@ app.get(
                 error.message
             );
 
-            res.status(503).json({
+
+            return res.status(
+                503
+            ).json({
 
                 success: false,
 
@@ -1238,16 +1266,24 @@ app.post(
                     req.body.name || ""
                 ).trim();
 
+
             const email =
                 normalizeEmail(
                     req.body.email
                 );
 
+
             const password =
                 req.body.password;
 
 
-            if (!isValidName(name)) {
+            // ------------------------------------------------
+            // Validation
+            // ------------------------------------------------
+
+            if (
+                !isValidName(name)
+            ) {
 
                 return res.status(
                     400
@@ -1264,9 +1300,7 @@ app.post(
 
 
             if (
-                !isValidEmail(
-                    email
-                )
+                !isValidEmail(email)
             ) {
 
                 return res.status(
@@ -1284,9 +1318,7 @@ app.post(
 
 
             if (
-                !isValidPassword(
-                    password
-                )
+                !isValidPassword(password)
             ) {
 
                 return res.status(
@@ -1302,6 +1334,10 @@ app.post(
 
             }
 
+
+            // ------------------------------------------------
+            // Existing user
+            // ------------------------------------------------
 
             const existingUser =
                 await findUserByEmail(
@@ -1325,12 +1361,20 @@ app.post(
             }
 
 
+            // ------------------------------------------------
+            // Hash password
+            // ------------------------------------------------
+
             const passwordHash =
                 await bcrypt.hash(
                     password,
                     12
                 );
 
+
+            // ------------------------------------------------
+            // Create user
+            // ------------------------------------------------
 
             const user =
                 await createUser(
@@ -1340,11 +1384,16 @@ app.post(
                 );
 
 
+            // ------------------------------------------------
+            // Activity log
+            // ------------------------------------------------
+
             await logActivity(
                 req,
                 "REGISTER",
                 user.id,
-                user.email
+                user.email,
+                user.name
             );
 
 
@@ -1362,7 +1411,6 @@ app.post(
 
             });
 
-
         } catch (error) {
 
             console.error(
@@ -1372,8 +1420,7 @@ app.post(
 
 
             if (
-                error.code ===
-                "23505"
+                error.code === "23505"
             ) {
 
                 return res.status(
@@ -1423,14 +1470,17 @@ app.post(
                     req.body.email
                 );
 
+
             const password =
                 req.body.password;
 
 
+            // ------------------------------------------------
+            // Validation
+            // ------------------------------------------------
+
             if (
-                !isValidEmail(
-                    email
-                )
+                !isValidEmail(email)
             ) {
 
                 return res.status(
@@ -1448,10 +1498,8 @@ app.post(
 
 
             if (
-                typeof password !==
-                "string" ||
-                password.length ===
-                0
+                typeof password !== "string" ||
+                password.length === 0
             ) {
 
                 return res.status(
@@ -1468,6 +1516,10 @@ app.post(
             }
 
 
+            // ------------------------------------------------
+            // Find user
+            // ------------------------------------------------
+
             const user =
                 await findUserByEmail(
                     email
@@ -1480,8 +1532,10 @@ app.post(
                     req,
                     "LOGIN_FAILED",
                     null,
-                    email
+                    email,
+                    null
                 );
+
 
                 return res.status(
                     401
@@ -1496,6 +1550,10 @@ app.post(
 
             }
 
+
+            // ------------------------------------------------
+            // Verify password
+            // ------------------------------------------------
 
             const passwordMatches =
                 await bcrypt.compare(
@@ -1504,16 +1562,16 @@ app.post(
                 );
 
 
-            if (
-                !passwordMatches
-            ) {
+            if (!passwordMatches) {
 
                 await logActivity(
                     req,
                     "LOGIN_FAILED",
                     user.id,
-                    user.email
+                    user.email,
+                    user.name
                 );
+
 
                 return res.status(
                     401
@@ -1529,17 +1587,26 @@ app.post(
             }
 
 
+            // ------------------------------------------------
+            // Generate JWT
+            // ------------------------------------------------
+
             const token =
                 generateAccessToken(
                     user
                 );
 
 
+            // ------------------------------------------------
+            // Activity log
+            // ------------------------------------------------
+
             await logActivity(
                 req,
                 "LOGIN_SUCCESS",
                 user.id,
-                user.email
+                user.email,
+                user.name
             );
 
 
@@ -1560,13 +1627,13 @@ app.post(
 
             });
 
-
         } catch (error) {
 
             console.error(
                 "LOGIN ERROR:",
                 error
             );
+
 
             return res.status(
                 500
@@ -1594,33 +1661,36 @@ app.post(
     authLimiter,
     async (req, res) => {
 
-        const genericMessage =
-            "If an account exists for this email, password reset instructions will be sent.";
+        const email =
+            normalizeEmail(
+                req.body.email
+            );
+
+
+        // Generic response prevents
+        // account enumeration.
+
+        const genericResponse = {
+
+            success: true,
+
+            message:
+                "If an account exists for this email, a password reset link has been sent."
+
+        };
+
 
         try {
 
-            const email =
-                normalizeEmail(
-                    req.body.email
-                );
-
-
             if (
-                !isValidEmail(
-                    email
-                )
+                !isValidEmail(email)
             ) {
 
                 return res.status(
-                    400
-                ).json({
-
-                    success: false,
-
-                    message:
-                        "Please provide a valid email address."
-
-                });
+                    200
+                ).json(
+                    genericResponse
+                );
 
             }
 
@@ -1631,59 +1701,42 @@ app.post(
                 );
 
 
-            // ------------------------------------------------
-            // Do not reveal whether account exists
-            // ------------------------------------------------
-
             if (!user) {
 
                 await logActivity(
                     req,
-                    "PASSWORD_RESET_REQUEST",
+                    "PASSWORD_RESET_REQUEST_UNKNOWN",
                     null,
-                    email
+                    email,
+                    null
                 );
 
-                return res.json({
 
-                    success: true,
-
-                    message:
-                        genericMessage
-
-                });
+                return res.status(
+                    200
+                ).json(
+                    genericResponse
+                );
 
             }
 
 
             // ------------------------------------------------
-            // Generate cryptographically secure token
+            // Secure random token
             // ------------------------------------------------
 
-            const rawResetToken =
+            const resetToken =
                 crypto
                     .randomBytes(32)
                     .toString("hex");
 
 
-            // ------------------------------------------------
-            // Store only SHA-256 hash
-            // ------------------------------------------------
-
             const tokenHash =
                 crypto
-                    .createHash(
-                        "sha256"
-                    )
-                    .update(
-                        rawResetToken
-                    )
+                    .createHash("sha256")
+                    .update(resetToken)
                     .digest("hex");
 
-
-            // ------------------------------------------------
-            // Token expires in 15 minutes
-            // ------------------------------------------------
 
             const expiresAt =
                 new Date(
@@ -1693,30 +1746,22 @@ app.post(
 
 
             await createPasswordResetToken(
-
                 user.id,
-
                 tokenHash,
-
                 expiresAt
-
             );
 
 
             // ------------------------------------------------
-            // Send email through Resend
+            // Send email
             // ------------------------------------------------
 
             try {
 
                 await sendPasswordResetEmail(
-
                     user.email,
-
                     user.name,
-
-                    rawResetToken
-
+                    resetToken
                 );
 
             } catch (emailError) {
@@ -1727,49 +1772,61 @@ app.post(
                 );
 
 
-                // Remove token if email failed
-                await deleteExpiredResetTokens();
+                // Delete exact token
+                // if email failed.
+
+                try {
+
+                    await pool.query(
+                        `
+                        DELETE FROM password_reset_tokens
+                        WHERE token_hash = $1
+                        `,
+                        [tokenHash]
+                    );
+
+                } catch (deleteError) {
+
+                    console.error(
+                        "Reset token cleanup error:",
+                        deleteError.message
+                    );
+
+                }
 
 
                 await logActivity(
                     req,
                     "PASSWORD_RESET_EMAIL_FAILED",
                     user.id,
-                    user.email
+                    user.email,
+                    user.name
                 );
 
 
                 return res.status(
-                    500
-                ).json({
-
-                    success: false,
-
-                    message:
-                        "Unable to send password reset email. Please try again later."
-
-                });
+                    200
+                ).json(
+                    genericResponse
+                );
 
             }
 
 
             await logActivity(
                 req,
-                "PASSWORD_RESET_REQUEST",
+                "PASSWORD_RESET_REQUESTED",
                 user.id,
-                user.email
+                user.email,
+                user.name
             );
 
 
-            return res.json({
-
-                success: true,
-
-                message:
-                    genericMessage
-
-            });
-
+            return res.status(
+                200
+            ).json(
+                genericResponse
+            );
 
         } catch (error) {
 
@@ -1780,15 +1837,10 @@ app.post(
 
 
             return res.status(
-                500
-            ).json({
-
-                success: false,
-
-                message:
-                    "Unable to process password recovery."
-
-            });
+                200
+            ).json(
+                genericResponse
+            );
 
         }
 
@@ -1812,13 +1864,17 @@ app.post(
                     req.body.token || ""
                 ).trim();
 
-            const password =
+
+            const newPassword =
                 req.body.password;
 
 
+            // ------------------------------------------------
+            // Token validation
+            // ------------------------------------------------
+
             if (
-                !/^[a-fA-F0-9]{64}$/
-                    .test(token)
+                !/^[a-f0-9]{64}$/i.test(token)
             ) {
 
                 return res.status(
@@ -1828,16 +1884,20 @@ app.post(
                     success: false,
 
                     message:
-                        "Invalid or expired reset token."
+                        "Invalid or expired password reset link."
 
                 });
 
             }
 
 
+            // ------------------------------------------------
+            // Password validation
+            // ------------------------------------------------
+
             if (
                 !isValidPassword(
-                    password
+                    newPassword
                 )
             ) {
 
@@ -1855,24 +1915,28 @@ app.post(
             }
 
 
+            // ------------------------------------------------
+            // Hash token
+            // ------------------------------------------------
+
             const tokenHash =
                 crypto
-                    .createHash(
-                        "sha256"
-                    )
-                    .update(
-                        token
-                    )
+                    .createHash("sha256")
+                    .update(token)
                     .digest("hex");
 
 
-            const resetToken =
+            // ------------------------------------------------
+            // Find valid token
+            // ------------------------------------------------
+
+            const resetRecord =
                 await findValidPasswordResetToken(
                     tokenHash
                 );
 
 
-            if (!resetToken) {
+            if (!resetRecord) {
 
                 return res.status(
                     400
@@ -1881,40 +1945,71 @@ app.post(
                     success: false,
 
                     message:
-                        "Invalid or expired reset token."
+                        "Invalid or expired password reset link."
 
                 });
 
             }
 
 
+            // ------------------------------------------------
+            // Find user
+            // ------------------------------------------------
+
+            const user =
+                await findUserById(
+                    resetRecord.user_id
+                );
+
+
+            if (!user) {
+
+                return res.status(
+                    400
+                ).json({
+
+                    success: false,
+
+                    message:
+                        "Invalid or expired password reset link."
+
+                });
+
+            }
+
+
+            // ------------------------------------------------
+            // Hash new password
+            // ------------------------------------------------
+
             const passwordHash =
                 await bcrypt.hash(
-                    password,
+                    newPassword,
                     12
                 );
 
 
+            // ------------------------------------------------
+            // Update password
+            // ------------------------------------------------
+
             const updatedUser =
                 await updateUserPassword(
-
-                    resetToken.user_id,
-
+                    user.id,
                     passwordHash
-
                 );
 
 
             if (!updatedUser) {
 
                 return res.status(
-                    400
+                    500
                 ).json({
 
                     success: false,
 
                     message:
-                        "Unable to reset password."
+                        "Unable to update password."
 
                 });
 
@@ -1922,34 +2017,51 @@ app.post(
 
 
             // ------------------------------------------------
-            // One-time token
+            // Mark token used
             // ------------------------------------------------
 
             await markPasswordResetTokenUsed(
-                resetToken.id
+                resetRecord.id
             );
 
 
-            await deleteExpiredResetTokens();
+            // ------------------------------------------------
+            // Delete other active tokens
+            // ------------------------------------------------
 
+            await pool.query(
+                `
+                DELETE FROM password_reset_tokens
+                WHERE user_id = $1
+                AND used_at IS NULL
+                `,
+                [user.id]
+            );
+
+
+            // ------------------------------------------------
+            // Activity log
+            // ------------------------------------------------
 
             await logActivity(
                 req,
-                "PASSWORD_RESET",
-                updatedUser.id,
-                updatedUser.email
+                "PASSWORD_RESET_SUCCESS",
+                user.id,
+                user.email,
+                user.name
             );
 
 
-            return res.json({
+            return res.status(
+                200
+            ).json({
 
                 success: true,
 
                 message:
-                    "Password has been reset successfully."
+                    "Password reset successfully. You can now log in with your new password."
 
             });
-
 
         } catch (error) {
 
@@ -1987,11 +2099,34 @@ app.get(
 
         try {
 
+            const userId =
+                Number(
+                    req.user.sub
+                );
+
+
+            if (
+                !Number.isInteger(userId) ||
+                userId <= 0
+            ) {
+
+                return res.status(
+                    401
+                ).json({
+
+                    success: false,
+
+                    message:
+                        "Invalid authentication token."
+
+                });
+
+            }
+
+
             const user =
                 await findUserById(
-                    Number(
-                        req.user.sub
-                    )
+                    userId
                 );
 
 
@@ -2020,11 +2155,10 @@ app.get(
 
             });
 
-
         } catch (error) {
 
             console.error(
-                "ME ERROR:",
+                "ME ENDPOINT ERROR:",
                 error
             );
 
@@ -2036,7 +2170,7 @@ app.get(
                 success: false,
 
                 message:
-                    "Unable to retrieve account information."
+                    "Unable to load user profile."
 
             });
 
@@ -2073,22 +2207,18 @@ app.use(
 // ============================================================
 
 app.use(
-    (
-        error,
-        req,
-        res,
-        next
-    ) => {
+    (error, req, res, next) => {
 
         console.error(
-            "GLOBAL ERROR:",
-            error.message
+            "GLOBAL SERVER ERROR:",
+            error
         );
 
 
         if (
+            error &&
             error.message ===
-            "CORS origin not allowed."
+                "CORS origin not allowed."
         ) {
 
             return res.status(
@@ -2098,9 +2228,18 @@ app.use(
                 success: false,
 
                 message:
-                    "Origin is not allowed."
+                    "Origin not allowed."
 
             });
+
+        }
+
+
+        if (
+            res.headersSent
+        ) {
+
+            return next(error);
 
         }
 
@@ -2121,84 +2260,219 @@ app.use(
 
 
 // ============================================================
-// START SERVER
+// SERVER STARTUP
 // ============================================================
 
 async function startServer() {
 
     try {
 
+        console.log(
+            "============================================================"
+        );
+
+        console.log(
+            "PRIYANSHU SECURE PORTAL"
+        );
+
+        console.log(
+            "Production Authentication Backend"
+        );
+
+        console.log(
+            "Version: 3.0.0"
+        );
+
+        console.log(
+            "============================================================"
+        );
+
+
+        // ----------------------------------------------------
+        // PostgreSQL connection
+        // ----------------------------------------------------
+
+        console.log(
+            "Connecting to PostgreSQL..."
+        );
+
+
+        await pool.query(
+            "SELECT 1"
+        );
+
+
+        console.log(
+            "PostgreSQL CONNECTED"
+        );
+
+
+        // ----------------------------------------------------
+        // Database initialization
+        // ----------------------------------------------------
+
         await initializeDatabase();
 
+
+        console.log(
+            "Database initialization completed."
+        );
+
+
+        // ----------------------------------------------------
+        // Activity logs
+        // ----------------------------------------------------
+
         await initializeActivityLogs();
+
+
+        // ----------------------------------------------------
+        // Reset-token cleanup
+        // ----------------------------------------------------
 
         await deleteExpiredResetTokens();
 
 
-        app.listen(
-            PORT,
+        console.log(
+            "Expired password reset tokens cleaned."
+        );
+
+
+        // ----------------------------------------------------
+        // Security status
+        // ----------------------------------------------------
+
+        console.log(
+            "JWT ACTIVE"
+        );
+
+        console.log(
+            "bcrypt ACTIVE"
+        );
+
+        console.log(
+            "Helmet ACTIVE"
+        );
+
+        console.log(
+            "CORS ACTIVE"
+        );
+
+        console.log(
+            "Rate Limiting ACTIVE"
+        );
+
+        console.log(
+            "Password Recovery ACTIVE"
+        );
+
+        console.log(
+            "Resend Email:",
+            RESEND_API_KEY
+                ? "CONFIGURED"
+                : "NOT CONFIGURED"
+        );
+
+
+        // ----------------------------------------------------
+        // Start HTTP server
+        // ----------------------------------------------------
+
+        const server =
+            app.listen(
+                PORT,
+                () => {
+
+                    console.log(
+                        "============================================================"
+                    );
+
+                    console.log(
+                        `SERVER LIVE ON PORT ${PORT}`
+                    );
+
+                    console.log(
+                        `Environment: ${NODE_ENV}`
+                    );
+
+                    console.log(
+                        `Frontend: ${FRONTEND_URL}`
+                    );
+
+                    console.log(
+                        "API Status: ONLINE"
+                    );
+
+                    console.log(
+                        "============================================================"
+                    );
+
+                }
+            );
+
+
+        // ----------------------------------------------------
+        // Graceful shutdown
+        // ----------------------------------------------------
+
+        const shutdown =
+            async (signal) => {
+
+                console.log(
+                    `Received ${signal}. Shutting down...`
+                );
+
+
+                server.close(
+                    async () => {
+
+                        console.log(
+                            "HTTP server closed."
+                        );
+
+
+                        try {
+
+                            await closeDatabase();
+
+
+                            console.log(
+                                "PostgreSQL connection pool closed."
+                            );
+
+
+                            process.exit(0);
+
+                        } catch (error) {
+
+                            console.error(
+                                "Database shutdown error:",
+                                error.message
+                            );
+
+
+                            process.exit(1);
+
+                        }
+
+                    }
+                );
+
+            };
+
+
+        process.once(
+            "SIGTERM",
             () => {
+                shutdown("SIGTERM");
+            }
+        );
 
-                console.log(
-                    "============================================================"
-                );
 
-                console.log(
-                    "PRIYANSHU SECURE PORTAL"
-                );
-
-                console.log(
-                    "============================================================"
-                );
-
-                console.log(
-                    `Server running on port ${PORT}`
-                );
-
-                console.log(
-                    `Environment: ${NODE_ENV}`
-                );
-
-                console.log(
-                    "PostgreSQL: CONNECTED"
-                );
-
-                console.log(
-                    "JWT: ACTIVE"
-                );
-
-                console.log(
-                    "bcrypt: ACTIVE"
-                );
-
-                console.log(
-                    "Helmet: ACTIVE"
-                );
-
-                console.log(
-                    "CORS: ACTIVE"
-                );
-
-                console.log(
-                    "Rate Limiting: ACTIVE"
-                );
-
-                console.log(
-                    "Password Recovery: ACTIVE"
-                );
-
-                console.log(
-                    `Resend Email: ${
-                        RESEND_API_KEY
-                            ? "CONFIGURED"
-                            : "NOT CONFIGURED"
-                    }`
-                );
-
-                console.log(
-                    "============================================================"
-                );
-
+        process.once(
+            "SIGINT",
+            () => {
+                shutdown("SIGINT");
             }
         );
 
@@ -2206,73 +2480,45 @@ async function startServer() {
     } catch (error) {
 
         console.error(
-            "SERVER STARTUP FAILED:",
-            error
+            "============================================================"
         );
-
-        process.exit(
-            1
-        );
-
-    }
-
-}
-
-
-// ============================================================
-// GRACEFUL SHUTDOWN
-// ============================================================
-
-async function shutdown(
-    signal
-) {
-
-    console.log(
-        `${signal} received. Shutting down...`
-    );
-
-
-    try {
-
-        await closeDatabase();
-
-        console.log(
-            "Database connection closed."
-        );
-
-        process.exit(
-            0
-        );
-
-    } catch (error) {
 
         console.error(
-            "Shutdown error:",
+            "SERVER STARTUP FAILED"
+        );
+
+        console.error(
             error
         );
 
-        process.exit(
-            1
+        console.error(
+            "============================================================"
         );
+
+
+        try {
+
+            await closeDatabase();
+
+        } catch (shutdownError) {
+
+            console.error(
+                "Database cleanup error:",
+                shutdownError.message
+            );
+
+        }
+
+
+        process.exit(1);
 
     }
 
 }
 
 
-process.on(
-    "SIGTERM",
-    () => shutdown("SIGTERM")
-);
-
-process.on(
-    "SIGINT",
-    () => shutdown("SIGINT")
-);
-
-
 // ============================================================
-// START
+// START APPLICATION
 // ============================================================
 
 startServer();
