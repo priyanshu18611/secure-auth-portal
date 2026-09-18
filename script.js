@@ -1,204 +1,477 @@
+// ============================================================
+// PRIYANSHU SECURE PORTAL
+// Frontend Authentication Controller
+// Version 3.0.0
+// ============================================================
+
 "use strict";
 
-/* =========================================================
-   PRIYANSHU SECURE PORTAL
-   AUTHENTICATION FRONTEND
-   ========================================================= */
 
-const API_URL = "https://priyanshu-secure-auth.onrender.com";
+// ============================================================
+// CONFIGURATION
+// ============================================================
 
-const TOKEN_KEY = "priynashu_access_token";
-const USER_KEY = "priynashu_user";
-const REMEMBER_EMAIL_KEY = "priynashu_remember_email";
+const API_URL =
+    "https://priyanshu-secure-auth.onrender.com";
 
-/* =========================================================
-   HELPERS
-   ========================================================= */
+const TOKEN_KEY =
+    "priynashu_access_token";
 
-function $(id) {
-    return document.getElementById(id);
-}
+const USER_KEY =
+    "priynashu_user";
 
-function normalizeEmail(value) {
-    return String(value || "").trim().toLowerCase();
-}
+const REMEMBER_EMAIL_KEY =
+    "priynashu_remember_email";
 
-function validEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
 
-/* =========================================================
-   TOAST / MESSAGE
-   ========================================================= */
+// ============================================================
+// DOM HELPERS
+// ============================================================
 
-function showMessage(title, message, type = "error") {
-    console.log(`[${type}] ${title}: ${message}`);
+const $ = (id) =>
+    document.getElementById(id);
 
-    const toast = $("toast");
 
-    if (!toast) {
-        alert(`${title}\n\n${message}`);
-        return;
-    }
+// ============================================================
+// ELEMENTS
+// ============================================================
 
-    const titleElement = $("toastTitle");
-    const messageElement = $("toastMessage");
+const loginForm =
+    $("loginForm");
 
-    if (titleElement) {
-        titleElement.textContent = title;
-    }
+const loginBtn =
+    $("loginBtn");
 
-    if (messageElement) {
-        messageElement.textContent = message;
-    }
+const emailInput =
+    $("email");
 
-    toast.dataset.type = type;
+const passwordInput =
+    $("password");
 
-    toast.classList.add("show");
-    toast.classList.add("active");
+const rememberInput =
+    $("remember");
 
-    clearTimeout(window.__toastTimer);
+const togglePassword =
+    $("togglePassword");
 
-    window.__toastTimer = setTimeout(() => {
-        toast.classList.remove("show");
-        toast.classList.remove("active");
-    }, 4500);
-}
+const forgotPassword =
+    $("forgotPassword");
 
-/* =========================================================
-   API REQUEST
-   ========================================================= */
+const googleLogin =
+    $("googleLogin");
 
-async function apiRequest(endpoint, options = {}) {
+const githubLogin =
+    $("githubLogin");
 
-    const controller = new AbortController();
+const registerLink =
+    $("registerLink");
 
-    const timeout = setTimeout(() => {
-        controller.abort();
-    }, 40000);
+const registerModal =
+    $("registerModal");
+
+const closeRegister =
+    $("closeRegister");
+
+const registerForm =
+    $("registerForm");
+
+const registerBtn =
+    $("registerBtn");
+
+const registerName =
+    $("registerName");
+
+const registerEmail =
+    $("registerEmail");
+
+const registerPassword =
+    $("registerPassword");
+
+const registerConfirmPassword =
+    $("registerConfirmPassword");
+
+const registerTerms =
+    $("registerTerms");
+
+const toast =
+    $("toast");
+
+const toastTitle =
+    $("toastTitle");
+
+const toastMessage =
+    $("toastMessage");
+
+const toastClose =
+    $("toastClose");
+
+
+// ============================================================
+// API REQUEST HELPER
+// ============================================================
+
+async function apiRequest(
+    endpoint,
+    options = {}
+) {
+
+    const controller =
+        new AbortController();
+
+    const timeout =
+        setTimeout(
+            () => {
+                controller.abort();
+            },
+            30000
+        );
 
     try {
 
-        const response = await fetch(
-            API_URL + endpoint,
-            {
-                method: options.method || "GET",
+        const response =
+            await fetch(
+                `${API_URL}${endpoint}`,
+                {
+                    ...options,
 
-                headers: {
-                    "Content-Type": "application/json",
-                    ...(options.headers || {})
-                },
+                    headers: {
+                        "Content-Type":
+                            "application/json",
 
-                body: options.body,
+                        ...(options.headers || {})
+                    },
 
-                signal: controller.signal
-            }
-        );
+                    signal:
+                        controller.signal
+                }
+            );
 
-        const text = await response.text();
 
-        let data;
+        let data = null;
+
 
         try {
-            data = text ? JSON.parse(text) : {};
-        } catch {
+
+            data =
+                await response.json();
+
+        } catch (error) {
+
             data = {
                 success: false,
-                message: text || "Invalid server response."
+                message:
+                    "Invalid server response."
             };
+
         }
 
+
         return {
-            ok: response.ok,
-            status: response.status,
-            data: data
+            response,
+            data
         };
 
     } catch (error) {
 
-        console.error("API ERROR:", error);
+        if (
+            error.name ===
+            "AbortError"
+        ) {
 
-        if (error.name === "AbortError") {
             throw new Error(
-                "Server is taking too long to respond. Render may be waking up. Please try again."
+                "Server took too long to respond. Please try again."
             );
+
         }
 
         throw new Error(
-            "Unable to connect to the secure authentication server."
+            "Unable to connect to the authentication server."
         );
 
     } finally {
+
         clearTimeout(timeout);
-    }
-}
 
-/* =========================================================
-   SESSION
-   ========================================================= */
-
-function saveSession(token, user) {
-
-    if (!token) {
-        throw new Error("Authentication token was not received.");
     }
 
-    sessionStorage.setItem(
-        TOKEN_KEY,
-        token
-    );
-
-    sessionStorage.setItem(
-        USER_KEY,
-        JSON.stringify(user || {})
-    );
 }
 
-function clearSession() {
 
-    sessionStorage.removeItem(TOKEN_KEY);
-    sessionStorage.removeItem(USER_KEY);
+// ============================================================
+// TOAST
+// ============================================================
+
+let toastTimer = null;
+
+
+function showToast(
+    message,
+    type = "info",
+    title = null
+) {
+
+    if (!toast) {
+
+        alert(message);
+
+        return;
+
+    }
+
+
+    if (toastTimer) {
+
+        clearTimeout(
+            toastTimer
+        );
+
+    }
+
+
+    if (toastTitle) {
+
+        toastTitle.textContent =
+            title ||
+            (
+                type === "success"
+                    ? "Success"
+                    : type === "error"
+                        ? "Error"
+                        : "Notice"
+            );
+
+    }
+
+
+    if (toastMessage) {
+
+        toastMessage.textContent =
+            message;
+
+    }
+
+
+    const icon =
+        toast.querySelector(
+            ".toast-icon"
+        );
+
+
+    if (icon) {
+
+        icon.textContent =
+            type === "success"
+                ? "✓"
+                : type === "error"
+                    ? "!"
+                    : "i";
+
+    }
+
+
+    toast.classList.add(
+        "show"
+    );
+
+
+    toastTimer =
+        setTimeout(
+            () => {
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            },
+            4500
+        );
+
 }
 
-/* =========================================================
-   REMEMBER EMAIL
-   ========================================================= */
+
+// ============================================================
+// CLOSE TOAST
+// ============================================================
+
+function hideToast() {
+
+    if (!toast) {
+        return;
+    }
+
+    toast.classList.remove(
+        "show"
+    );
+
+}
+
+
+if (toastClose) {
+
+    toastClose.addEventListener(
+        "click",
+        hideToast
+    );
+
+}
+
+
+// ============================================================
+// BUTTON LOADING STATE
+// ============================================================
+
+function setButtonLoading(
+    button,
+    loading,
+    loadingText = "Please wait..."
+) {
+
+    if (!button) {
+        return;
+    }
+
+
+    const text =
+        button.querySelector(
+            ".button-text"
+        );
+
+
+    button.disabled =
+        loading;
+
+
+    button.classList.toggle(
+        "loading",
+        loading
+    );
+
+
+    if (text) {
+
+        if (loading) {
+
+            button.dataset.originalText =
+                text.textContent;
+
+            text.textContent =
+                loadingText;
+
+        } else {
+
+            text.textContent =
+                button.dataset.originalText ||
+                text.textContent;
+
+        }
+
+    }
+
+}
+
+
+// ============================================================
+// EMAIL VALIDATION
+// ============================================================
+
+function isValidEmail(email) {
+
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        .test(email);
+
+}
+
+
+// ============================================================
+// PASSWORD VISIBILITY
+// ============================================================
+
+if (togglePassword) {
+
+    togglePassword.addEventListener(
+        "click",
+        () => {
+
+            if (!passwordInput) {
+                return;
+            }
+
+
+            const isPassword =
+                passwordInput.type ===
+                "password";
+
+
+            passwordInput.type =
+                isPassword
+                    ? "text"
+                    : "password";
+
+
+            togglePassword.classList.toggle(
+                "password-visible",
+                isPassword
+            );
+
+
+            togglePassword.setAttribute(
+                "aria-label",
+                isPassword
+                    ? "Hide password"
+                    : "Show password"
+            );
+
+        }
+    );
+
+}
+
+
+// ============================================================
+// REMEMBERED EMAIL
+// ============================================================
 
 function loadRememberedEmail() {
 
-    const emailInput = $("email");
-    const remember = $("remember");
-
-    if (!emailInput) return;
-
     try {
 
-        const savedEmail =
+        const rememberedEmail =
             localStorage.getItem(
                 REMEMBER_EMAIL_KEY
             );
 
-        if (savedEmail) {
 
-            emailInput.value = savedEmail;
+        if (
+            rememberedEmail &&
+            emailInput
+        ) {
 
-            if (remember) {
-                remember.checked = true;
-            }
+            emailInput.value =
+                rememberedEmail;
+
         }
 
     } catch (error) {
-        console.warn("Remember email unavailable.");
+
+        console.warn(
+            "Could not load remembered email."
+        );
+
     }
+
 }
 
-function saveRememberedEmail(email) {
 
-    const remember = $("remember");
+function saveRememberedEmail(
+    email
+) {
 
     try {
 
-        if (remember && remember.checked) {
+        if (
+            rememberInput &&
+            rememberInput.checked
+        ) {
 
             localStorage.setItem(
                 REMEMBER_EMAIL_KEY,
@@ -210,509 +483,776 @@ function saveRememberedEmail(email) {
             localStorage.removeItem(
                 REMEMBER_EMAIL_KEY
             );
+
         }
 
     } catch (error) {
-        console.warn("Unable to save remembered email.");
-    }
-}
 
-/* =========================================================
-   LOGIN BUTTON
-   ========================================================= */
-
-function setLoginLoading(loading) {
-
-    const button = $("loginBtn");
-
-    if (!button) return;
-
-    button.disabled = loading;
-
-    if (loading) {
-
-        button.dataset.originalText =
-            button.textContent;
-
-        button.textContent =
-            "Signing In...";
-
-    } else {
-
-        button.textContent =
-            button.dataset.originalText ||
-            "Sign In";
-    }
-}
-
-/* =========================================================
-   LOGIN
-   ========================================================= */
-
-async function loginUser(event) {
-
-    if (event) {
-        event.preventDefault();
-    }
-
-    const emailInput = $("email");
-    const passwordInput = $("password");
-
-    if (!emailInput || !passwordInput) {
-
-        console.error(
-            "Login fields not found."
+        console.warn(
+            "Could not save remembered email."
         );
+
+    }
+
+}
+
+
+// ============================================================
+// LOGIN
+// ============================================================
+
+async function loginUser() {
+
+    if (
+        !emailInput ||
+        !passwordInput
+    ) {
 
         return;
+
     }
 
+
     const email =
-        normalizeEmail(
-            emailInput.value
-        );
+        emailInput.value
+            .trim()
+            .toLowerCase();
 
     const password =
         passwordInput.value;
 
-    /* ---------- VALIDATION ---------- */
 
-    if (!email) {
+    // --------------------------------------------------------
+    // Frontend validation
+    // --------------------------------------------------------
 
-        showMessage(
-            "Email Required",
-            "Please enter your email address."
+    if (!isValidEmail(email)) {
+
+        showToast(
+            "Please enter a valid email address.",
+            "error",
+            "Invalid email"
         );
 
         emailInput.focus();
 
         return;
+
     }
 
-    if (!validEmail(email)) {
 
-        showMessage(
-            "Invalid Email",
-            "Please enter a valid email address."
-        );
+    if (
+        !password ||
+        password.length === 0
+    ) {
 
-        emailInput.focus();
-
-        return;
-    }
-
-    if (!password) {
-
-        showMessage(
-            "Password Required",
-            "Please enter your password."
+        showToast(
+            "Please enter your password.",
+            "error",
+            "Password required"
         );
 
         passwordInput.focus();
 
         return;
+
     }
 
-    /* ---------- LOADING ---------- */
 
-    setLoginLoading(true);
+    if (
+        password.length > 128
+    ) {
+
+        showToast(
+            "Password is too long.",
+            "error",
+            "Invalid password"
+        );
+
+        return;
+
+    }
+
+
+    setButtonLoading(
+        loginBtn,
+        true,
+        "Signing in..."
+    );
+
 
     try {
 
-        console.log(
-            "🔐 Sending login request..."
-        );
-
-        const result =
+        const {
+            response,
+            data
+        } =
             await apiRequest(
                 "/api/login",
                 {
                     method: "POST",
 
-                    body: JSON.stringify({
-                        email: email,
-                        password: password
-                    })
+                    body:
+                        JSON.stringify({
+                            email,
+                            password
+                        })
                 }
             );
 
-        console.log(
-            "Login response:",
-            result.status,
-            result.data
-        );
 
-        /* ---------- SERVER ERROR ---------- */
+        if (
+            !response.ok ||
+            !data.success
+        ) {
 
-        if (!result.ok) {
-
-            const message =
-                result.data &&
-                result.data.message
-                    ? result.data.message
-                    : "Login failed.";
-
-            throw new Error(message);
-        }
-
-        /* ---------- SUCCESS CHECK ---------- */
-
-        if (!result.data.success) {
-
-            throw new Error(
-                result.data.message ||
-                "Invalid email or password."
+            showToast(
+                data.message ||
+                "Login failed. Please check your credentials.",
+                "error",
+                "Sign in failed"
             );
+
+            return;
+
         }
 
-        /* ---------- TOKEN CHECK ---------- */
 
-        if (!result.data.token) {
+        // ----------------------------------------------------
+        // Save authentication data
+        // ----------------------------------------------------
 
-            throw new Error(
-                "Login succeeded but authentication token was not received."
+        if (
+            !data.token
+        ) {
+
+            showToast(
+                "The server did not return an authentication token.",
+                "error",
+                "Authentication error"
             );
+
+            return;
+
         }
 
-        /* ---------- SAVE SESSION ---------- */
 
-        saveSession(
-            result.data.token,
-            result.data.user
+        sessionStorage.setItem(
+            TOKEN_KEY,
+            data.token
         );
 
-        saveRememberedEmail(email);
 
-        /* ---------- SUCCESS ---------- */
+        if (data.user) {
 
-        showMessage(
-            "Login Successful",
-            "Authentication verified. Opening your dashboard...",
-            "success"
+            sessionStorage.setItem(
+                USER_KEY,
+                JSON.stringify(
+                    data.user
+                )
+            );
+
+        }
+
+
+        saveRememberedEmail(
+            email
         );
 
-        console.log(
-            "✅ Login successful."
+
+        showToast(
+            "Login successful. Opening your dashboard...",
+            "success",
+            "Welcome back"
         );
 
-        /* ---------- REDIRECT ---------- */
 
-        setTimeout(() => {
+        // ----------------------------------------------------
+        // Dashboard redirect
+        // ----------------------------------------------------
 
-            window.location.href =
-                "dashboard.html";
+        setTimeout(
+            () => {
 
-        }, 700);
+                window.location.href =
+                    "dashboard.html";
+
+            },
+            700
+        );
+
 
     } catch (error) {
 
         console.error(
-            "❌ LOGIN FAILED:",
+            "LOGIN REQUEST ERROR:",
             error
         );
 
-        showMessage(
-            "Login Failed",
+
+        showToast(
             error.message ||
-            "Unable to sign in. Please try again.",
-            "error"
+            "Unable to connect to the server.",
+            "error",
+            "Connection error"
         );
 
     } finally {
 
-        setLoginLoading(false);
+        setButtonLoading(
+            loginBtn,
+            false
+        );
+
     }
+
 }
 
-/* =========================================================
-   REGISTER
-   ========================================================= */
 
-async function registerUser(event) {
+// ============================================================
+// LOGIN FORM SUBMIT
+// ============================================================
 
-    if (event) {
-        event.preventDefault();
+if (loginForm) {
+
+    loginForm.addEventListener(
+        "submit",
+        async (event) => {
+
+            event.preventDefault();
+
+            await loginUser();
+
+        }
+    );
+
+}
+
+
+// ============================================================
+// REGISTER MODAL
+// ============================================================
+
+function openRegisterModal() {
+
+    if (!registerModal) {
+        return;
     }
 
-    const nameInput =
-        $("registerName") ||
-        $("name");
 
-    const emailInput =
-        $("registerEmail") ||
-        $("regEmail");
+    registerModal.classList.add(
+        "show"
+    );
 
-    const passwordInput =
-        $("registerPassword") ||
-        $("regPassword");
 
-    const confirmInput =
-        $("confirmPassword") ||
-        $("confirmPasswordInput");
+    registerModal.setAttribute(
+        "aria-hidden",
+        "false"
+    );
 
-    const terms =
-        $("acceptTerms") ||
-        $("terms");
+
+    document.body.style.overflow =
+        "hidden";
+
+
+    setTimeout(
+        () => {
+
+            if (registerName) {
+
+                registerName.focus();
+
+            }
+
+        },
+        250
+    );
+
+}
+
+
+function closeRegisterModal() {
+
+    if (!registerModal) {
+        return;
+    }
+
+
+    registerModal.classList.remove(
+        "show"
+    );
+
+
+    registerModal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+
+    document.body.style.overflow =
+        "";
+
+
+    if (registerForm) {
+
+        registerForm.reset();
+
+    }
+
+}
+
+
+if (registerLink) {
+
+    registerLink.addEventListener(
+        "click",
+        openRegisterModal
+    );
+
+}
+
+
+if (closeRegister) {
+
+    closeRegister.addEventListener(
+        "click",
+        closeRegisterModal
+    );
+
+}
+
+
+// ============================================================
+// CLOSE MODAL WHEN CLICKING BACKDROP
+// ============================================================
+
+if (registerModal) {
+
+    const backdrop =
+        registerModal.querySelector(
+            ".modal-backdrop"
+        );
+
+
+    if (backdrop) {
+
+        backdrop.addEventListener(
+            "click",
+            closeRegisterModal
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// ESC KEY
+// ============================================================
+
+document.addEventListener(
+    "keydown",
+    (event) => {
+
+        if (
+            event.key === "Escape" &&
+            registerModal &&
+            registerModal.classList.contains(
+                "show"
+            )
+        ) {
+
+            closeRegisterModal();
+
+        }
+
+    }
+);
+
+
+// ============================================================
+// REGISTER
+// ============================================================
+
+async function registerUser() {
 
     if (
-        !nameInput ||
-        !emailInput ||
-        !passwordInput
+        !registerName ||
+        !registerEmail ||
+        !registerPassword ||
+        !registerConfirmPassword
     ) {
 
-        console.error(
-            "Registration fields not found."
-        );
-
         return;
+
     }
+
 
     const name =
-        String(nameInput.value || "")
-            .trim();
+        registerName.value.trim();
 
     const email =
-        normalizeEmail(
-            emailInput.value
-        );
+        registerEmail.value
+            .trim()
+            .toLowerCase();
 
     const password =
-        passwordInput.value;
+        registerPassword.value;
 
-    const confirm =
-        confirmInput
-            ? confirmInput.value
-            : password;
+    const confirmPassword =
+        registerConfirmPassword.value;
 
-    if (name.length < 2) {
 
-        showMessage(
-            "Name Required",
-            "Please enter your full name."
+    // --------------------------------------------------------
+    // Validation
+    // --------------------------------------------------------
+
+    if (
+        name.length < 2 ||
+        name.length > 100
+    ) {
+
+        showToast(
+            "Name must contain between 2 and 100 characters.",
+            "error",
+            "Invalid name"
         );
 
-        nameInput.focus();
+        registerName.focus();
 
         return;
+
     }
 
-    if (!validEmail(email)) {
 
-        showMessage(
-            "Invalid Email",
-            "Please enter a valid email address."
+    if (
+        !isValidEmail(email)
+    ) {
+
+        showToast(
+            "Please provide a valid email address.",
+            "error",
+            "Invalid email"
         );
 
-        emailInput.focus();
+        registerEmail.focus();
 
         return;
+
     }
 
-    if (password.length < 6) {
 
-        showMessage(
-            "Weak Password",
-            "Password must contain at least 6 characters."
+    if (
+        password.length < 6 ||
+        password.length > 128
+    ) {
+
+        showToast(
+            "Password must contain between 6 and 128 characters.",
+            "error",
+            "Invalid password"
         );
 
-        passwordInput.focus();
+        registerPassword.focus();
 
         return;
+
     }
 
-    if (password !== confirm) {
 
-        showMessage(
-            "Password Mismatch",
-            "Both passwords must match."
+    if (
+        password !==
+        confirmPassword
+    ) {
+
+        showToast(
+            "Passwords do not match.",
+            "error",
+            "Password mismatch"
         );
 
-        confirmInput?.focus();
+        registerConfirmPassword.focus();
 
         return;
+
     }
 
-    if (terms && !terms.checked) {
 
-        showMessage(
-            "Terms Required",
-            "Please accept the Terms & Privacy Policy."
+    if (
+        registerTerms &&
+        !registerTerms.checked
+    ) {
+
+        showToast(
+            "Please accept the responsible-use agreement.",
+            "error",
+            "Agreement required"
         );
 
         return;
+
     }
 
-    const button =
-        $("registerBtn");
 
-    if (button) {
-        button.disabled = true;
-        button.textContent =
-            "Creating Account...";
-    }
+    setButtonLoading(
+        registerBtn,
+        true,
+        "Creating..."
+    );
+
 
     try {
 
-        const result =
+        const {
+            response,
+            data
+        } =
             await apiRequest(
                 "/api/register",
                 {
                     method: "POST",
 
-                    body: JSON.stringify({
-                        name: name,
-                        email: email,
-                        password: password
-                    })
+                    body:
+                        JSON.stringify({
+                            name,
+                            email,
+                            password
+                        })
                 }
             );
 
-        if (!result.ok) {
 
-            throw new Error(
-                result.data.message ||
-                "Unable to create account."
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            showToast(
+                data.message ||
+                "Unable to create your account.",
+                "error",
+                "Registration failed"
             );
+
+            return;
+
         }
 
-        if (!result.data.success) {
 
-            throw new Error(
-                result.data.message ||
-                "Registration failed."
-            );
-        }
-
-        showMessage(
-            "Account Created",
-            "Your account has been created successfully. Please sign in.",
-            "success"
+        showToast(
+            "Your account has been created successfully. You can now sign in.",
+            "success",
+            "Account created"
         );
 
-        /* Put email into login form */
 
-        const loginEmail =
-            $("email");
+        // ----------------------------------------------------
+        // Close modal
+        // ----------------------------------------------------
 
-        if (loginEmail) {
-            loginEmail.value = email;
+        closeRegisterModal();
+
+
+        // ----------------------------------------------------
+        // Fill login fields
+        // ----------------------------------------------------
+
+        if (emailInput) {
+
+            emailInput.value =
+                email;
+
         }
 
-        /* Clear registration */
-
-        if (nameInput) {
-            nameInput.value = "";
-        }
 
         if (passwordInput) {
-            passwordInput.value = "";
+
+            passwordInput.value =
+                "";
+
         }
 
-        if (confirmInput) {
-            confirmInput.value = "";
+
+        if (rememberInput) {
+
+            rememberInput.checked =
+                true;
+
         }
 
-        /* Close modal if present */
 
-        setTimeout(() => {
+        saveRememberedEmail(
+            email
+        );
 
-            closeRegisterModal();
-
-            if (loginEmail) {
-                loginEmail.focus();
-            }
-
-        }, 800);
 
     } catch (error) {
 
         console.error(
-            "REGISTER ERROR:",
+            "REGISTER REQUEST ERROR:",
             error
         );
 
-        showMessage(
-            "Registration Failed",
+
+        showToast(
             error.message ||
-            "Unable to create account."
+            "Unable to connect to the server.",
+            "error",
+            "Connection error"
         );
 
     } finally {
 
-        if (button) {
-            button.disabled = false;
-            button.textContent =
-                "Create Secure Account";
-        }
+        setButtonLoading(
+            registerBtn,
+            false
+        );
+
     }
+
 }
 
-/* =========================================================
-   FORGOT PASSWORD
-   ========================================================= */
 
-async function forgotPasswordHandler(event) {
+// ============================================================
+// REGISTER FORM SUBMIT
+// ============================================================
 
-    if (event) {
-        event.preventDefault();
-    }
+if (registerForm) {
 
-    const emailInput =
-        $("email");
+    registerForm.addEventListener(
+        "submit",
+        async (event) => {
 
-    if (!emailInput) return;
+            event.preventDefault();
+
+            await registerUser();
+
+        }
+    );
+
+}
+
+
+// ============================================================
+// FORGOT PASSWORD
+// ============================================================
+
+async function forgotPasswordFlow() {
+
+    const currentEmail =
+        emailInput
+            ? emailInput.value
+                .trim()
+                .toLowerCase()
+            : "";
+
 
     const email =
-        normalizeEmail(
-            emailInput.value
+        currentEmail ||
+        window.prompt(
+            "Enter your account email address:"
         );
 
-    if (!validEmail(email)) {
 
-        showMessage(
-            "Email Required",
-            "Enter your account email first."
-        );
-
-        emailInput.focus();
+    if (
+        email === null
+    ) {
 
         return;
+
     }
+
+
+    const normalizedEmail =
+        String(email)
+            .trim()
+            .toLowerCase();
+
+
+    if (
+        !isValidEmail(
+            normalizedEmail
+        )
+    ) {
+
+        showToast(
+            "Please enter a valid email address.",
+            "error",
+            "Invalid email"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        emailInput &&
+        !emailInput.value
+    ) {
+
+        emailInput.value =
+            normalizedEmail;
+
+    }
+
+
+    if (forgotPassword) {
+
+        forgotPassword.disabled =
+            true;
+
+    }
+
 
     try {
 
-        showMessage(
-            "Please Wait",
-            "Sending password reset request...",
-            "success"
-        );
-
-        const result =
+        const {
+            response,
+            data
+        } =
             await apiRequest(
                 "/api/forgot-password",
                 {
                     method: "POST",
 
-                    body: JSON.stringify({
-                        email: email
-                    })
+                    body:
+                        JSON.stringify({
+                            email:
+                                normalizedEmail
+                        })
                 }
             );
 
-        if (!result.ok) {
 
-            throw new Error(
-                result.data.message ||
-                "Unable to process reset request."
+        // ----------------------------------------------------
+        // Backend intentionally returns a generic response
+        // to prevent account enumeration.
+        // ----------------------------------------------------
+
+        if (
+            !response.ok
+        ) {
+
+            showToast(
+                data.message ||
+                "Unable to process the request.",
+                "error",
+                "Request failed"
             );
+
+            return;
+
         }
 
-        showMessage(
-            "Check Your Email",
-            result.data.message ||
-            "If the account exists, password reset instructions have been sent.",
-            "success"
+
+        showToast(
+            data.message ||
+            "If an account exists for this email, a password reset link has been sent.",
+            "success",
+            "Check your email"
         );
+
 
     } catch (error) {
 
@@ -721,323 +1261,183 @@ async function forgotPasswordHandler(event) {
             error
         );
 
-        showMessage(
-            "Reset Failed",
+
+        showToast(
             error.message ||
-            "Unable to process password reset."
+            "Unable to connect to the server.",
+            "error",
+            "Connection error"
         );
-    }
-}
 
-/* =========================================================
-   PASSWORD VISIBILITY
-   ========================================================= */
+    } finally {
 
-function togglePassword(inputId, buttonId) {
+        if (forgotPassword) {
 
-    const input =
-        $(inputId);
+            forgotPassword.disabled =
+                false;
 
-    const button =
-        $(buttonId);
-
-    if (!input) return;
-
-    if (input.type === "password") {
-
-        input.type = "text";
-
-        if (button) {
-            button.textContent = "🙈";
         }
 
-    } else {
-
-        input.type = "password";
-
-        if (button) {
-            button.textContent = "👁";
-        }
     }
+
 }
 
-/* =========================================================
-   REGISTER MODAL
-   ========================================================= */
 
-function openRegisterModal() {
+if (forgotPassword) {
 
-    const modal =
-        $("registerModal");
-
-    if (!modal) return;
-
-    modal.classList.add("active");
-    modal.classList.add("show");
-
-    document.body.classList.add(
-        "modal-open"
+    forgotPassword.addEventListener(
+        "click",
+        forgotPasswordFlow
     );
+
 }
 
-function closeRegisterModal() {
 
-    const modal =
-        $("registerModal");
+// ============================================================
+// SOCIAL LOGIN PLACEHOLDERS
+// ============================================================
+//
+// Google and GitHub OAuth are not configured in the current
+// backend. Do not pretend these buttons are functional OAuth.
+//
+// They remain ready for a future OAuth implementation.
+// ============================================================
+
+if (googleLogin) {
+
+    googleLogin.addEventListener(
+        "click",
+        () => {
+
+            showToast(
+                "Google authentication is not configured yet.",
+                "info",
+                "Google Login"
+            );
 
-    if (!modal) return;
-
-    modal.classList.remove("active");
-    modal.classList.remove("show");
-
-    document.body.classList.remove(
-        "modal-open"
-    );
-}
-
-/* =========================================================
-   SOCIAL LOGIN
-   ========================================================= */
-
-function socialLogin(provider) {
-
-    showMessage(
-        `${provider} Login`,
-        `${provider} OAuth is not connected yet. Please use email and password.`,
-        "error"
-    );
-}
-
-/* =========================================================
-   INITIALIZATION
-   ========================================================= */
-
-function initializeSecurePortal() {
-
-    console.log(
-        "🔐 Priyanshu Secure Portal initialized."
-    );
-
-    console.log(
-        "🌐 API:",
-        API_URL
-    );
-
-    /* ---------- Remember email ---------- */
-
-    loadRememberedEmail();
-
-    /* ---------- Login ---------- */
-
-    const loginForm =
-        $("loginForm");
-
-    if (loginForm) {
-
-        loginForm.addEventListener(
-            "submit",
-            loginUser
-        );
-
-    }
-
-    /* ---------- Register ---------- */
-
-    const registerForm =
-        $("registerForm");
-
-    if (registerForm) {
-
-        registerForm.addEventListener(
-            "submit",
-            registerUser
-        );
-
-    }
-
-    /* ---------- Register link ---------- */
-
-    const registerLink =
-        $("registerLink");
-
-    if (registerLink) {
-
-        registerLink.addEventListener(
-            "click",
-            function(event) {
-
-                event.preventDefault();
-
-                openRegisterModal();
-            }
-        );
-    }
-
-    /* ---------- Close register ---------- */
-
-    const registerClose =
-        $("registerClose");
-
-    if (registerClose) {
-
-        registerClose.addEventListener(
-            "click",
-            closeRegisterModal
-        );
-    }
-
-    const backToLogin =
-        $("backToLogin");
-
-    if (backToLogin) {
-
-        backToLogin.addEventListener(
-            "click",
-            function(event) {
-
-                event.preventDefault();
-
-                closeRegisterModal();
-            }
-        );
-    }
-
-    /* ---------- Forgot password ---------- */
-
-    const forgotPassword =
-        $("forgotPassword");
-
-    if (forgotPassword) {
-
-        forgotPassword.addEventListener(
-            "click",
-            forgotPasswordHandler
-        );
-    }
-
-    /* ---------- Password toggle ---------- */
-
-    const togglePasswordButton =
-        $("togglePassword");
-
-    if (togglePasswordButton) {
-
-        togglePasswordButton.addEventListener(
-            "click",
-            function(event) {
-
-                event.preventDefault();
-
-                togglePassword(
-                    "password",
-                    "togglePassword"
-                );
-            }
-        );
-    }
-
-    const toggleRegisterButton =
-        $("toggleRegisterPassword");
-
-    if (toggleRegisterButton) {
-
-        toggleRegisterButton.addEventListener(
-            "click",
-            function(event) {
-
-                event.preventDefault();
-
-                togglePassword(
-                    "registerPassword",
-                    "toggleRegisterPassword"
-                );
-            }
-        );
-    }
-
-    const toggleConfirmButton =
-        $("toggleConfirmPassword");
-
-    if (toggleConfirmButton) {
-
-        toggleConfirmButton.addEventListener(
-            "click",
-            function(event) {
-
-                event.preventDefault();
-
-                togglePassword(
-                    "confirmPassword",
-                    "toggleConfirmPassword"
-                );
-            }
-        );
-    }
-
-    /* ---------- Google ---------- */
-
-    const google =
-        $("googleLogin");
-
-    if (google) {
-
-        google.addEventListener(
-            "click",
-            function(event) {
-
-                event.preventDefault();
-
-                socialLogin("Google");
-            }
-        );
-    }
-
-    /* ---------- GitHub ---------- */
-
-    const github =
-        $("githubLogin");
-
-    if (github) {
-
-        github.addEventListener(
-            "click",
-            function(event) {
-
-                event.preventDefault();
-
-                socialLogin("GitHub");
-            }
-        );
-    }
-
-    /* ---------- Escape closes modal ---------- */
-
-    document.addEventListener(
-        "keydown",
-        function(event) {
-
-            if (event.key === "Escape") {
-                closeRegisterModal();
-            }
         }
     );
+
 }
 
-/* =========================================================
-   START
-   ========================================================= */
 
-if (
-    document.readyState ===
-    "loading"
-) {
+if (githubLogin) {
 
-    document.addEventListener(
-        "DOMContentLoaded",
-        initializeSecurePortal
+    githubLogin.addEventListener(
+        "click",
+        () => {
+
+            showToast(
+                "GitHub authentication is not configured yet.",
+                "info",
+                "GitHub Login"
+            );
+
+        }
     );
 
-} else {
-
-    initializeSecurePortal();
 }
+
+
+// ============================================================
+// EXISTING SESSION CHECK
+// ============================================================
+
+async function checkExistingSession() {
+
+    const token =
+        sessionStorage.getItem(
+            TOKEN_KEY
+        );
+
+
+    if (!token) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const {
+            response,
+            data
+        } =
+            await apiRequest(
+                "/api/me",
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Authorization":
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+
+        if (
+            response.ok &&
+            data.success
+        ) {
+
+            if (data.user) {
+
+                sessionStorage.setItem(
+                    USER_KEY,
+                    JSON.stringify(
+                        data.user
+                    )
+                );
+
+            }
+
+
+            // Existing valid session.
+            // Do not show login again.
+
+            window.location.href =
+                "dashboard.html";
+
+        } else {
+
+            sessionStorage.removeItem(
+                TOKEN_KEY
+            );
+
+            sessionStorage.removeItem(
+                USER_KEY
+            );
+
+        }
+
+    } catch (error) {
+
+        // Do not block the login page if
+        // the Render service is waking up.
+
+        console.warn(
+            "Existing session check failed:",
+            error.message
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// INITIALIZATION
+// ============================================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        loadRememberedEmail();
+
+        checkExistingSession();
+
+    }
+);
