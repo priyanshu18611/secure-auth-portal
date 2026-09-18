@@ -1,0 +1,2230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Python Master Course | Priyanshu Study Hub</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #070b16;
+      --panel: #0d1324;
+      --panel2: #111a2e;
+      --border: rgba(255,255,255,.09);
+      --text: #f5f7ff;
+      --muted: #9ba7c2;
+      --accent: #7c5cff;
+      --accent2: #00d4ff;
+      --success: #21d19f;
+      --danger: #ff5d73;
+    }
+
+    body {
+      font-family: Inter, Arial, sans-serif;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(124,92,255,.18), transparent 28%),
+        radial-gradient(circle at 85% 20%, rgba(0,212,255,.12), transparent 25%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* TOPBAR */
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      background: rgba(7,11,22,.88);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: linear-gradient(135deg,var(--accent),var(--accent2));
+      color: white;
+      font-weight: 900;
+      box-shadow: 0 8px 30px rgba(124,92,255,.3);
+    }
+
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      margin-top: 3px;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .top-btn {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: .25s;
+    }
+
+    .top-btn:hover {
+      background: rgba(124,92,255,.18);
+      border-color: rgba(124,92,255,.45);
+    }
+
+    /* LAYOUT */
+
+    .layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      min-height: calc(100vh - 72px);
+    }
+
+    /* SIDEBAR */
+
+    .sidebar {
+      border-right: 1px solid var(--border);
+      background: rgba(8,13,27,.72);
+      padding: 22px 16px;
+      position: sticky;
+      top: 72px;
+      height: calc(100vh - 72px);
+      overflow-y: auto;
+    }
+
+    .course-title {
+      padding: 12px;
+      margin-bottom: 16px;
+    }
+
+    .course-title h2 {
+      font-size: 19px;
+    }
+
+    .course-title p {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    .progress-box {
+      padding: 14px;
+      background: linear-gradient(
+        135deg,
+        rgba(124,92,255,.12),
+        rgba(0,212,255,.07)
+      );
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 18px;
+    }
+
+    .progress-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      margin-bottom: 9px;
+    }
+
+    .progress-head span:last-child {
+      color: var(--accent2);
+      font-weight: 700;
+    }
+
+    .progress-track {
+      height: 7px;
+      background: rgba(255,255,255,.08);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg,var(--accent),var(--accent2));
+      border-radius: inherit;
+      transition: width .4s ease;
+    }
+
+    .module {
+      margin-bottom: 6px;
+    }
+
+    .module-title {
+      width: 100%;
+      text-align: left;
+      border: 0;
+      color: var(--text);
+      background: transparent;
+      padding: 11px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .module-title:hover {
+      background: rgba(255,255,255,.05);
+    }
+
+    .lessons {
+      padding: 2px 0 6px 10px;
+    }
+
+    .lesson-btn {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      text-align: left;
+      padding: 9px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: .2s;
+    }
+
+    .lesson-btn:hover {
+      color: white;
+      background: rgba(255,255,255,.05);
+    }
+
+    .lesson-btn.active {
+      color: white;
+      background: rgba(124,92,255,.18);
+      border-left: 2px solid var(--accent);
+    }
+
+    .lesson-btn.completed {
+      color: var(--success);
+    }
+
+    /* MAIN */
+
+    .main {
+      padding: 32px;
+      max-width: 1100px;
+      width: 100%;
+    }
+
+    .hero {
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(124,92,255,.13),
+          rgba(0,212,255,.05)
+        ),
+        rgba(255,255,255,.025);
+      margin-bottom: 25px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      font-size: 11px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(124,92,255,.16);
+      color: #cfc6ff;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 {
+      font-size: clamp(27px,4vw,42px);
+      line-height: 1.1;
+    }
+
+    .hero p {
+      color: var(--muted);
+      margin-top: 12px;
+      max-width: 750px;
+      line-height: 1.7;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .stat {
+      padding: 15px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.14);
+      border-radius: 14px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 22px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    /* LESSON */
+
+    .lesson-card {
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: rgba(13,19,36,.78);
+      overflow: hidden;
+    }
+
+    .lesson-header {
+      padding: 27px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .lesson-number {
+      color: var(--accent2);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .lesson-header h2 {
+      font-size: 28px;
+    }
+
+    .lesson-body {
+      padding: 27px;
+    }
+
+    .content-section {
+      margin-bottom: 30px;
+    }
+
+    .content-section h3 {
+      font-size: 17px;
+      margin-bottom: 11px;
+    }
+
+    .content-section p {
+      color: #c3cbe0;
+      line-height: 1.75;
+      font-size: 14px;
+    }
+
+    .note {
+      margin-top: 14px;
+      padding: 14px;
+      border-left: 3px solid var(--accent2);
+      background: rgba(0,212,255,.06);
+      color: #cbd7ef;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    pre {
+      margin-top: 14px;
+      padding: 18px;
+      overflow-x: auto;
+      border-radius: 13px;
+      background: #050812;
+      border: 1px solid rgba(255,255,255,.08);
+      color: #e9edff;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    code {
+      font-family: "Courier New", monospace;
+    }
+
+    .copy-btn {
+      margin-top: 9px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color: #d9def0;
+      padding: 7px 11px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 11px;
+    }
+
+    .practice {
+      padding: 18px;
+      border: 1px solid rgba(124,92,255,.25);
+      background: rgba(124,92,255,.06);
+      border-radius: 13px;
+      margin-top: 12px;
+    }
+
+    .practice ol {
+      margin-left: 19px;
+      color: #cbd2e5;
+      line-height: 1.8;
+      font-size: 13px;
+    }
+
+    .quiz {
+      border: 1px solid var(--border);
+      padding: 19px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.025);
+    }
+
+    .quiz-question {
+      font-weight: 700;
+      margin-bottom: 13px;
+      line-height: 1.5;
+    }
+
+    .quiz-option {
+      width: 100%;
+      text-align: left;
+      padding: 11px;
+      margin-top: 7px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: rgba(255,255,255,.03);
+      color: #dce2f3;
+      cursor: pointer;
+    }
+
+    .quiz-option:hover {
+      background: rgba(124,92,255,.12);
+    }
+
+    .quiz-option.correct {
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .quiz-option.wrong {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .quiz-result {
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .lesson-footer {
+      padding: 20px 27px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .action-btn {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 16px;
+      cursor: pointer;
+      color: white;
+      background: linear-gradient(135deg,var(--accent),#5a3cff);
+      font-weight: 700;
+    }
+
+    .action-btn.secondary {
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--border);
+    }
+
+    .action-btn.complete {
+      background: linear-gradient(135deg,#16b982,#0a9470);
+    }
+
+    .empty {
+      padding: 60px 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    /* MOBILE */
+
+    .mobile-menu {
+      display: none;
+    }
+
+    @media(max-width:900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: fixed;
+        left: -310px;
+        top: 72px;
+        width: 300px;
+        z-index: 45;
+        transition: .3s;
+      }
+
+      .sidebar.open {
+        left: 0;
+      }
+
+      .mobile-menu {
+        display: block;
+      }
+
+      .main {
+        padding: 20px;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2,1fr);
+      }
+    }
+
+    @media(max-width:600px) {
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .brand-text {
+        display: none;
+      }
+
+      .main {
+        padding: 13px;
+      }
+
+      .hero,
+      .lesson-header,
+      .lesson-body {
+        padding: 19px;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2,1fr);
+      }
+
+      .lesson-footer {
+        padding: 16px;
+        flex-direction: column;
+      }
+
+      .action-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TOP BAR -->
+
+  <header class="topbar">
+
+    <div class="brand">
+
+      <button class="top-btn mobile-menu" onclick="toggleSidebar()">
+        ☰
+      </button>
+
+      <div class="brand-logo">PK</div>
+
+      <div class="brand-text">
+        PRIYANSHU STUDY HUB
+        <small>PYTHON MASTER COURSE</small>
+      </div>
+
+    </div>
+
+    <div class="top-actions">
+      <a class="top-btn" href="dashboard.html">← Dashboard</a>
+    </div>
+
+  </header>
+
+
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar" id="sidebar">
+
+      <div class="course-title">
+        <h2>🐍 Python Mastery</h2>
+        <p>
+          Beginner → Intermediate → Project Ready
+        </p>
+      </div>
+
+      <div class="progress-box">
+
+        <div class="progress-head">
+          <span>Course Progress</span>
+          <span id="progressPercent">0%</span>
+        </div>
+
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+      </div>
+
+      <div id="moduleList"></div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main">
+
+      <section class="hero">
+
+        <span class="hero-badge">
+          🚀 COMPLETE PYTHON ROADMAP
+        </span>
+
+        <h1>
+          Learn Python From Zero to Projects
+        </h1>
+
+        <p>
+          Concepts, examples, practice problems, quizzes,
+          OOP, APIs, NumPy, Pandas and project development —
+          all inside one learning system.
+        </p>
+
+        <div class="stats">
+
+          <div class="stat">
+            <strong id="moduleCount">20</strong>
+            <span>Modules</span>
+          </div>
+
+          <div class="stat">
+            <strong id="lessonCount">20</strong>
+            <span>Lessons</span>
+          </div>
+
+          <div class="stat">
+            <strong>50+</strong>
+            <span>Practice Tasks</span>
+          </div>
+
+          <div class="stat">
+            <strong>10+</strong>
+            <span>Projects</span>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <section class="lesson-card">
+
+        <div class="lesson-header">
+
+          <div class="lesson-number" id="lessonNumber">
+            MODULE 01
+          </div>
+
+          <h2 id="lessonTitle">
+            Introduction to Python
+          </h2>
+
+        </div>
+
+
+        <div class="lesson-body" id="lessonBody">
+        </div>
+
+
+        <div class="lesson-footer">
+
+          <button
+            class="action-btn secondary"
+            onclick="previousLesson()"
+          >
+            ← Previous
+          </button>
+
+          <button
+            class="action-btn"
+            id="completeBtn"
+            onclick="completeLesson()"
+          >
+            ✓ Mark Complete
+          </button>
+
+          <button
+            class="action-btn"
+            onclick="nextLesson()"
+          >
+            Next →
+          </button>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+
+<script>
+
+  /* ==========================================
+     COURSE DATA
+  ========================================== */
+
+  const lessons = [
+
+    {
+      id: "python-01",
+      module: "Module 01",
+      title: "Introduction to Python",
+
+      concept: `
+        Python is a high-level, interpreted programming language
+        known for its simple syntax and wide ecosystem.
+        It is commonly used for web development, automation,
+        data analytics, AI/ML, scripting and software development.
+      `,
+
+      explanation: `
+        Python code is designed to be easy to read.
+        Unlike languages that require many symbols,
+        Python uses indentation to define blocks of code.
+      `,
+
+      code: `# Your first Python program
+
+print("Hello, Priyanshu!")
+
+# Basic calculation
+print(10 + 20)
+
+# Python can perform calculations directly
+print(100 / 4)`,
+
+      practice: [
+        "Print your name.",
+        "Print your college name.",
+        "Print the result of 25 + 75.",
+        "Print a short introduction using multiple print statements."
+      ],
+
+      question: "Which function is commonly used to display output in Python?",
+
+      options: [
+        "display()",
+        "print()",
+        "output()",
+        "show()"
+      ],
+
+      answer: 1
+    },
+
+
+    {
+      id: "python-02",
+      module: "Module 02",
+      title: "Variables & Data Types",
+
+      concept: `
+        A variable is a name used to store a value.
+        Python automatically determines the type of the value.
+      `,
+
+      explanation: `
+        Common Python data types include int, float, str, bool,
+        list, tuple, set and dict.
+      `,
+
+      code: `name = "Priyanshu"
+age = 23
+cgpa = 7.31
+developer = True
+
+print(name)
+print(age)
+print(cgpa)
+print(developer)
+
+print(type(name))
+print(type(age))`,
+
+      practice: [
+        "Create a variable containing your name.",
+        "Create an integer variable containing your age.",
+        "Create a float variable containing your percentage.",
+        "Create a Boolean variable called is_student."
+      ],
+
+      question: "Which type is used for decimal numbers?",
+
+      options: [
+        "int",
+        "str",
+        "float",
+        "bool"
+      ],
+
+      answer: 2
+    },
+
+
+    {
+      id: "python-03",
+      module: "Module 03",
+      title: "Operators",
+
+      concept: `
+        Operators are symbols used to perform operations
+        on values and variables.
+      `,
+
+      explanation: `
+        Python supports arithmetic, comparison, logical,
+        assignment and membership operators.
+      `,
+
+      code: `a = 20
+b = 6
+
+print(a + b)
+print(a - b)
+print(a * b)
+print(a / b)
+print(a // b)
+print(a % b)
+print(a ** 2)
+
+print(a > b)
+print(a == b)
+
+print(a > 10 and b < 10)`,
+
+      practice: [
+        "Calculate the area of a rectangle.",
+        "Check whether two numbers are equal.",
+        "Find the remainder of two numbers.",
+        "Use AND and OR with comparison expressions."
+      ],
+
+      question: "What does // perform in Python?",
+
+      options: [
+        "Normal division",
+        "Floor division",
+        "Power",
+        "Modulo"
+      ],
+
+      answer: 1
+    },
+
+
+    {
+      id: "python-04",
+      module: "Module 04",
+      title: "Conditional Statements",
+
+      concept: `
+        Conditional statements allow a program to make decisions.
+        Python uses if, elif and else.
+      `,
+
+      explanation: `
+        The program checks a condition and executes
+        the appropriate block of code.
+      `,
+
+      code: `marks = 75
+
+if marks >= 90:
+    print("Excellent")
+elif marks >= 60:
+    print("Good")
+elif marks >= 40:
+    print("Pass")
+else:
+    print("Fail")`,
+
+      practice: [
+        "Create a program to check positive or negative numbers.",
+        "Create an age eligibility checker.",
+        "Create a grade calculator.",
+        "Check whether a number is even or odd."
+      ],
+
+      question: "Which keyword checks another condition?",
+
+      options: [
+        "else if",
+        "elif",
+        "elseif",
+        "check"
+      ],
+
+      answer: 1
+    },
+
+
+    {
+      id: "python-05",
+      module: "Module 05",
+      title: "Loops",
+
+      concept: `
+        Loops are used when we need to repeat a block of code.
+        Python provides for and while loops.
+      `,
+
+      explanation: `
+        A for loop is useful when iterating through a sequence.
+        A while loop continues while a condition remains true.
+      `,
+
+      code: `# for loop
+
+for i in range(1, 6):
+    print(i)
+
+
+# while loop
+
+count = 1
+
+while count <= 5:
+    print("Count:", count)
+    count += 1`,
+
+      practice: [
+        "Print numbers from 1 to 100.",
+        "Print even numbers from 1 to 50.",
+        "Create a multiplication table.",
+        "Calculate the sum of numbers from 1 to 100."
+      ],
+
+      question: "Which function commonly creates a sequence of numbers?",
+
+      options: [
+        "numbers()",
+        "sequence()",
+        "range()",
+        "loop()"
+      ],
+
+      answer: 2
+    },
+
+
+    {
+      id: "python-06",
+      module: "Module 06",
+      title: "Functions",
+
+      concept: `
+        Functions are reusable blocks of code.
+        They help make programs organized and maintainable.
+      `,
+
+      explanation: `
+        A function is created using the def keyword.
+        Functions can accept parameters and return values.
+      `,
+
+      code: `def greet(name):
+    return "Hello " + name
+
+
+message = greet("Priyanshu")
+
+print(message)
+
+
+def add(a, b):
+    return a + b
+
+
+print(add(10, 20))`,
+
+      practice: [
+        "Create a function to calculate square.",
+        "Create a function to calculate factorial.",
+        "Create a function to check even/odd.",
+        "Create a function that returns the maximum of two numbers."
+      ],
+
+      question: "Which keyword creates a function?",
+
+      options: [
+        "function",
+        "def",
+        "func",
+        "create"
+      ],
+
+      answer: 1
+    },
+
+
+    {
+      id: "python-07",
+      module: "Module 07",
+      title: "Strings",
+
+      concept: `
+        A string is a sequence of characters.
+        Strings can be created using single or double quotes.
+      `,
+
+      explanation: `
+        Python provides many built-in string operations
+        such as upper(), lower(), strip(), split() and replace().
+      `,
+
+      code: `name = "Priyanshu Kumar"
+
+print(name.upper())
+print(name.lower())
+print(name.replace("Kumar", "Developer"))
+
+print(len(name))
+
+words = "Python is powerful"
+
+print(words.split())`,
+
+      practice: [
+        "Reverse a string.",
+        "Count the number of characters.",
+        "Convert text to uppercase.",
+        "Count the number of words in a sentence."
+      ],
+
+      question: "Which function returns string length?",
+
+      options: [
+        "length()",
+        "size()",
+        "len()",
+        "count()"
+      ],
+
+      answer: 2
+    },
+
+
+    {
+      id: "python-08",
+      module: "Module 08",
+      title: "Lists",
+
+      concept: `
+        A list stores multiple values in an ordered collection.
+        Lists are mutable, meaning their values can be changed.
+      `,
+
+      explanation: `
+        Lists support indexing, slicing, adding, removing
+        and sorting elements.
+      `,
+
+      code: `skills = [
+    "Python",
+    "Java",
+    "SQL",
+    "JavaScript"
+]
+
+print(skills[0])
+
+skills.append("React")
+
+skills.remove("Java")
+
+print(skills)
+
+skills.sort()
+
+print(skills)`,
+
+      practice: [
+        "Create a list of five programming languages.",
+        "Add a new language.",
+        "Remove one language.",
+        "Sort the list."
+      ],
+
+      question: "Are Python lists mutable?",
+
+      options: [
+        "Yes",
+        "No",
+        "Only strings",
+        "Only numbers"
+      ],
+
+      answer: 0
+    },
+
+
+    {
+      id: "python-09",
+      module: "Module 09",
+      title: "Tuples",
+
+      concept: `
+        A tuple is an ordered collection similar to a list,
+        but tuples are immutable.
+      `,
+
+      explanation: `
+        Tuples are useful when data should not accidentally
+        be modified after creation.
+      `,
+
+      code: `student = (
+    "Priyanshu",
+    "CSE",
+    2026
+)
+
+print(student[0])
+print(student[1])
+print(student[2])
+
+print(len(student))`,
+
+      practice: [
+        "Create a tuple containing three subjects.",
+        "Access each item using indexing.",
+        "Find the tuple length.",
+        "Try changing a tuple item and observe the result."
+      ],
+
+      question: "Are tuples mutable?",
+
+      options: [
+        "Yes",
+        "No",
+        "Sometimes",
+        "Only integers"
+      ],
+
+      answer: 1
+    },
+
+
+    {
+      id: "python-10",
+      module: "Module 10",
+      title: "Sets",
+
+      concept: `
+        A set is an unordered collection of unique elements.
+        Duplicate values are automatically removed.
+      `,
+
+      explanation: `
+        Sets are useful for removing duplicates and
+        performing mathematical set operations.
+      `,
+
+      code: `numbers = {1, 2, 3, 3, 4, 4}
+
+print(numbers)
+
+numbers.add(5)
+
+print(numbers)
+
+numbers.remove(2)
+
+print(numbers)`,
+
+      practice: [
+        "Create a set of programming languages.",
+        "Add an element.",
+        "Remove an element.",
+        "Use a set to remove duplicate numbers."
+      ],
+
+      question: "What happens to duplicate values in a set?",
+
+      options: [
+        "They remain",
+        "They are removed",
+        "They become strings",
+        "They cause an error"
+      ],
+
+      answer: 1
+    },
+
+
+    {
+      id: "python-11",
+      module: "Module 11",
+      title: "Dictionaries",
+
+      concept: `
+        A dictionary stores data as key-value pairs.
+      `,
+
+      explanation: `
+        Dictionaries are widely used in APIs, JSON,
+        configuration files and real-world applications.
+      `,
+
+      code: `student = {
+    "name": "Priyanshu",
+    "branch": "CSE",
+    "year": 2026
+}
+
+print(student["name"])
+
+student["skill"] = "Python"
+
+print(student)
+
+print(student.keys())
+print(student.values())`,
+
+      practice: [
+        "Create a student dictionary.",
+        "Add email and phone fields.",
+        "Update one value.",
+        "Print all keys and values."
+      ],
+
+      question: "Dictionary data is stored as what?",
+
+      options: [
+        "Indexes only",
+        "Key-value pairs",
+        "Characters",
+        "Rows only"
+      ],
+
+      answer: 1
+    },
+
+
+    {
+      id: "python-12",
+      module: "Module 12",
+      title: "File Handling",
+
+      concept: `
+        File handling allows Python programs to read and
+        write data stored in files.
+      `,
+
+      explanation: `
+        The open() function is commonly used.
+        Common modes include r, w, a and x.
+      `,
+
+      code: `# Write a file
+
+with open("student.txt", "w") as file:
+    file.write("Priyanshu Kumar\\n")
+    file.write("Python Developer")
+
+
+# Read a file
+
+with open("student.txt", "r") as file:
+    content = file.read()
+
+print(content)`,
+
+      practice: [
+        "Create a text file.",
+        "Write your profile into it.",
+        "Read the file.",
+        "Append another line."
+      ],
+
+      question: "Which mode is commonly used for reading?",
+
+      options: [
+        "w",
+        "a",
+        "r",
+        "x"
+      ],
+
+      answer: 2
+    },
+
+
+    {
+      id: "python-13",
+      module: "Module 13",
+      title: "Exception Handling",
+
+      concept: `
+        Exception handling prevents a program from crashing
+        unexpectedly when an error occurs.
+      `,
+
+      explanation: `
+        Python uses try, except, else and finally
+        to handle exceptions.
+      `,
+
+      code: `try:
+    number = int(input("Enter number: "))
+    result = 100 / number
+    print(result)
+
+except ValueError:
+    print("Please enter a valid number")
+
+except ZeroDivisionError:
+    print("Cannot divide by zero")
+
+finally:
+    print("Program finished")`,
+
+      practice: [
+        "Handle invalid integer input.",
+        "Handle division by zero.",
+        "Create a safe calculator.",
+        "Use finally in your program."
+      ],
+
+      question: "Which block handles an exception?",
+
+      options: [
+        "catch",
+        "except",
+        "error",
+        "handle"
+      ],
+
+      answer: 1
+    },
+
+
+    {
+      id: "python-14",
+      module: "Module 14",
+      title: "Object Oriented Programming",
+
+      concept: `
+        Object-Oriented Programming organizes software around
+        objects and classes.
+      `,
+
+      explanation: `
+        Important concepts include classes, objects,
+        constructors, inheritance, encapsulation and polymorphism.
+      `,
+
+      code: `class Student:
+
+    def __init__(self, name, branch):
+        self.name = name
+        self.branch = branch
+
+    def introduce(self):
+        print(
+            "My name is",
+            self.name,
+            "and I study",
+            self.branch
+        )
+
+
+student = Student("Priyanshu", "CSE")
+
+student.introduce()`,
+
+      practice: [
+        "Create a Car class.",
+        "Create a Student class.",
+        "Add methods to your class.",
+        "Create multiple objects."
+      ],
+
+      question: "Which keyword creates a class?",
+
+      options: [
+        "object",
+        "class",
+        "struct",
+        "define"
+      ],
+
+      answer: 1
+    },
+
+
+    {
+      id: "python-15",
+      module: "Module 15",
+      title: "Modules & Packages",
+
+      concept: `
+        Modules allow code to be divided into reusable files.
+        Packages organize multiple modules together.
+      `,
+
+      explanation: `
+        Python includes many built-in modules such as math,
+        random, datetime and os.
+      `,
+
+      code: `import math
+import random
+from datetime import datetime
+
+print(math.sqrt(81))
+
+print(random.randint(1, 100))
+
+print(datetime.now())`,
+
+      practice: [
+        "Use the math module.",
+        "Generate random numbers.",
+        "Display the current date.",
+        "Create your own Python module."
+      ],
+
+      question: "Which keyword is used to load a module?",
+
+      options: [
+        "include",
+        "require",
+        "import",
+        "load"
+      ],
+
+      answer: 2
+    },
+
+
+    {
+      id: "python-16",
+      module: "Module 16",
+      title: "Python APIs & JSON",
+
+      concept: `
+        APIs allow applications to communicate with each other.
+        Python applications frequently exchange JSON data.
+      `,
+
+      explanation: `
+        The requests library is commonly used for HTTP requests.
+        JSON represents structured data using objects and arrays.
+      `,
+
+      code: `import requests
+
+url = "https://api.example.com/data"
+
+response = requests.get(url)
+
+print(response.status_code)
+
+data = response.json()
+
+print(data)`,
+
+      practice: [
+        "Understand GET requests.",
+        "Understand POST requests.",
+        "Learn HTTP status codes.",
+        "Practice reading JSON responses."
+      ],
+
+      question: "Which format is commonly used for API data exchange?",
+
+      options: [
+        "JSON",
+        "TXT",
+        "EXE",
+        "PNG"
+      ],
+
+      answer: 0
+    },
+
+
+    {
+      id: "python-17",
+      module: "Module 17",
+      title: "NumPy",
+
+      concept: `
+        NumPy is a Python library designed for numerical
+        computing and efficient array operations.
+      `,
+
+      explanation: `
+        NumPy arrays are widely used in data science,
+        scientific computing and machine learning.
+      `,
+
+      code: `import numpy as np
+
+numbers = np.array([10, 20, 30, 40])
+
+print(numbers)
+
+print(numbers.mean())
+print(numbers.max())
+print(numbers.min())
+
+print(numbers * 2)`,
+
+      practice: [
+        "Create a NumPy array.",
+        "Calculate mean.",
+        "Find maximum and minimum.",
+        "Perform arithmetic on an array."
+      ],
+
+      question: "What is NumPy mainly used for?",
+
+      options: [
+        "Video editing",
+        "Numerical computing",
+        "Web hosting",
+        "Email"
+      ],
+
+      answer: 1
+    },
+
+
+    {
+      id: "python-18",
+      module: "Module 18",
+      title: "Pandas",
+
+      concept: `
+        Pandas is a powerful Python library for data
+        manipulation and analysis.
+      `,
+
+      explanation: `
+        DataFrame is one of the most important Pandas structures.
+        It behaves like a table with rows and columns.
+      `,
+
+      code: `import pandas as pd
+
+data = {
+    "Name": ["Aman", "Rahul", "Priyanshu"],
+    "Marks": [78, 85, 91]
+}
+
+df = pd.DataFrame(data)
+
+print(df)
+
+print(df["Marks"].mean())
+
+print(df[df["Marks"] > 80])`,
+
+      practice: [
+        "Create a DataFrame.",
+        "Read a CSV file.",
+        "Filter rows.",
+        "Calculate average values."
+      ],
+
+      question: "What is a common Pandas tabular structure?",
+
+      options: [
+        "DataFrame",
+        "Tensor",
+        "Canvas",
+        "Component"
+      ],
+
+      answer: 0
+    },
+
+
+    {
+      id: "python-19",
+      module: "Module 19",
+      title: "Python Projects",
+
+      concept: `
+        Projects combine programming concepts into real
+        applications. Building projects is essential for
+        understanding how individual concepts work together.
+      `,
+
+      explanation: `
+        Start with small projects and gradually increase
+        complexity.
+      `,
+
+      code: `# Simple Calculator
+
+def calculator(a, b, operator):
+
+    if operator == "+":
+        return a + b
+
+    if operator == "-":
+        return a - b
+
+    if operator == "*":
+        return a * b
+
+    if operator == "/":
+        return a / b
+
+    return "Invalid operator"
+
+
+print(calculator(20, 5, "+"))`,
+
+      practice: [
+        "Calculator",
+        "Number Guessing Game",
+        "To-Do Application",
+        "Student Management System",
+        "Expense Tracker",
+        "Quiz Application"
+      ],
+
+      question: "What is the main purpose of a project?",
+
+      options: [
+        "Only writing code",
+        "Combining concepts into a real application",
+        "Avoiding practice",
+        "Memorizing syntax"
+      ],
+
+      answer: 1
+    },
+
+
+    {
+      id: "python-20",
+      module: "Module 20",
+      title: "Final Python Project",
+
+      concept: `
+        Your final challenge is to build a complete
+        Student Developer Management System using Python.
+      `,
+
+      explanation: `
+        The application should combine variables, conditions,
+        loops, functions, collections, file handling,
+        exception handling and OOP.
+      `,
+
+      code: `class Student:
+
+    def __init__(self, name, course):
+        self.name = name
+        self.course = course
+
+    def show_profile(self):
+        print("Name:", self.name)
+        print("Course:", self.course)
+
+
+student = Student(
+    "Priyanshu",
+    "Computer Science & Engineering"
+)
+
+student.show_profile()`,
+
+      practice: [
+        "Create student registration.",
+        "Store multiple students.",
+        "Search students.",
+        "Update student information.",
+        "Delete student records.",
+        "Save records into a file.",
+        "Add exception handling.",
+        "Create a menu-driven interface.",
+        "Add login functionality.",
+        "Create a final README for GitHub."
+      ],
+
+      question: "What should you do after completing the final project?",
+
+      options: [
+        "Delete the project",
+        "Upload it to GitHub with documentation",
+        "Stop learning programming",
+        "Only take screenshots"
+      ],
+
+      answer: 1
+    }
+
+  ];
+
+
+  /* ==========================================
+     STATE
+  ========================================== */
+
+  let currentIndex = 0;
+
+  let completed = JSON.parse(
+    localStorage.getItem("pk_python_completed") || "[]"
+  );
+
+
+  /* ==========================================
+     AUTH
+  ========================================== */
+
+  async function checkAuth() {
+
+    const token =
+      sessionStorage.getItem("priynashu_access_token");
+
+    if (!token) {
+      window.location.href = "index.html";
+      return false;
+    }
+
+    try {
+
+      const response = await fetch(
+        "https://priyanshu-secure-auth.onrender.com/api/me",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (!response.ok) {
+        sessionStorage.removeItem("priynashu_access_token");
+        sessionStorage.removeItem("priynashu_user");
+
+        window.location.href = "index.html";
+        return false;
+      }
+
+      return true;
+
+    } catch (error) {
+
+      console.error("Authentication check failed:", error);
+
+      return true;
+    }
+  }
+
+
+  /* ==========================================
+     BUILD MODULE SIDEBAR
+  ========================================== */
+
+  function buildSidebar() {
+
+    const container =
+      document.getElementById("moduleList");
+
+    container.innerHTML = "";
+
+    lessons.forEach((lesson, index) => {
+
+      const module = document.createElement("div");
+      module.className = "module";
+
+      const completedMark =
+        completed.includes(lesson.id) ? "✓" : "";
+
+      module.innerHTML = `
+        <button
+          class="module-title"
+          onclick="openLesson(${index})"
+        >
+          <span>
+            ${lesson.module}
+          </span>
+
+          <span>
+            ${completedMark}
+          </span>
+        </button>
+
+        <div class="lessons">
+
+          <button
+            class="lesson-btn ${
+              index === currentIndex ? "active" : ""
+            } ${
+              completed.includes(lesson.id) ? "completed" : ""
+            }"
+            onclick="openLesson(${index})"
+          >
+
+            <span>
+              ${
+                completed.includes(lesson.id)
+                ? "✓"
+                : "○"
+              }
+            </span>
+
+            ${lesson.title}
+
+          </button>
+
+        </div>
+      `;
+
+      container.appendChild(module);
+
+    });
+
+  }
+
+
+  /* ==========================================
+     RENDER LESSON
+  ========================================== */
+
+  function renderLesson() {
+
+    const lesson = lessons[currentIndex];
+
+    document.getElementById("lessonNumber").textContent =
+      lesson.module;
+
+    document.getElementById("lessonTitle").textContent =
+      lesson.title;
+
+    const body =
+      document.getElementById("lessonBody");
+
+    body.innerHTML = `
+
+      <div class="content-section">
+
+        <h3>📚 Concept</h3>
+
+        <p>
+          ${lesson.concept}
+        </p>
+
+      </div>
+
+
+      <div class="content-section">
+
+        <h3>💡 Easy Explanation</h3>
+
+        <p>
+          ${lesson.explanation}
+        </p>
+
+      </div>
+
+
+      <div class="content-section">
+
+        <h3>💻 Code Example</h3>
+
+        <pre><code id="codeBlock">${escapeHTML(
+          lesson.code
+        )}</code></pre>
+
+        <button
+          class="copy-btn"
+          onclick="copyCode()"
+        >
+          📋 Copy Code
+        </button>
+
+      </div>
+
+
+      <div class="content-section">
+
+        <h3>🧠 Practice</h3>
+
+        <div class="practice">
+
+          <ol>
+            ${lesson.practice.map(
+              task => `<li>${task}</li>`
+            ).join("")}
+          </ol>
+
+        </div>
+
+      </div>
+
+
+      <div class="content-section">
+
+        <h3>🎯 Quick Quiz</h3>
+
+        <div class="quiz">
+
+          <div class="quiz-question">
+            ${lesson.question}
+          </div>
+
+          ${lesson.options.map(
+            (option,index) => `
+              <button
+                class="quiz-option"
+                onclick="checkAnswer(${index}, this)"
+              >
+                ${option}
+              </button>
+            `
+          ).join("")}
+
+          <div
+            class="quiz-result"
+            id="quizResult"
+          ></div>
+
+        </div>
+
+      </div>
+
+    `;
+
+    updateCompleteButton();
+
+    buildSidebar();
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+
+  /* ==========================================
+     OPEN LESSON
+  ========================================== */
+
+  function openLesson(index) {
+
+    currentIndex = index;
+
+    renderLesson();
+
+    document.getElementById("sidebar")
+      .classList.remove("open");
+  }
+
+
+  /* ==========================================
+     COMPLETE
+  ========================================== */
+
+  function completeLesson() {
+
+    const id = lessons[currentIndex].id;
+
+    if (!completed.includes(id)) {
+
+      completed.push(id);
+
+      localStorage.setItem(
+        "pk_python_completed",
+        JSON.stringify(completed)
+      );
+
+    }
+
+    updateProgress();
+
+    updateCompleteButton();
+
+    buildSidebar();
+
+  }
+
+
+  function updateCompleteButton() {
+
+    const btn =
+      document.getElementById("completeBtn");
+
+    const id =
+      lessons[currentIndex].id;
+
+    if (completed.includes(id)) {
+
+      btn.textContent = "✓ Completed";
+
+      btn.classList.add("complete");
+
+    } else {
+
+      btn.textContent = "✓ Mark Complete";
+
+      btn.classList.remove("complete");
+
+    }
+
+  }
+
+
+  /* ==========================================
+     PROGRESS
+  ========================================== */
+
+  function updateProgress() {
+
+    const total = lessons.length;
+
+    const done = completed.filter(
+      id => lessons.some(
+        lesson => lesson.id === id
+      )
+    ).length;
+
+    const percent =
+      Math.round((done / total) * 100);
+
+    document.getElementById(
+      "progressPercent"
+    ).textContent = percent + "%";
+
+    document.getElementById(
+      "progressFill"
+    ).style.width = percent + "%";
+
+  }
+
+
+  /* ==========================================
+     NAVIGATION
+  ========================================== */
+
+  function nextLesson() {
+
+    if (currentIndex < lessons.length - 1) {
+
+      currentIndex++;
+
+      renderLesson();
+
+    }
+
+  }
+
+
+  function previousLesson() {
+
+    if (currentIndex > 0) {
+
+      currentIndex--;
+
+      renderLesson();
+
+    }
+
+  }
+
+
+  /* ==========================================
+     QUIZ
+  ========================================== */
+
+  function checkAnswer(selected, button) {
+
+    const lesson = lessons[currentIndex];
+
+    const buttons =
+      document.querySelectorAll(".quiz-option");
+
+    buttons.forEach(btn => {
+      btn.disabled = true;
+    });
+
+    const result =
+      document.getElementById("quizResult");
+
+    if (selected === lesson.answer) {
+
+      button.classList.add("correct");
+
+      result.textContent =
+        "✓ Correct! Great job.";
+
+      result.style.color =
+        "var(--success)";
+
+    } else {
+
+      button.classList.add("wrong");
+
+      buttons[lesson.answer]
+        .classList.add("correct");
+
+      result.textContent =
+        "✗ Not quite. The correct answer is highlighted.";
+
+      result.style.color =
+        "var(--danger)";
+
+    }
+
+  }
+
+
+  /* ==========================================
+     COPY CODE
+  ========================================== */
+
+  async function copyCode() {
+
+    const code =
+      document.getElementById("codeBlock").innerText;
+
+    try {
+
+      await navigator.clipboard.writeText(code);
+
+      const buttons =
+        document.querySelectorAll(".copy-btn");
+
+      buttons[0].textContent =
+        "✓ Copied!";
+
+      setTimeout(() => {
+        buttons[0].textContent =
+          "📋 Copy Code";
+      }, 1500);
+
+    } catch (error) {
+
+      alert("Copy failed. Please copy manually.");
+
+    }
+
+  }
+
+
+  /* ==========================================
+     MOBILE SIDEBAR
+  ========================================== */
+
+  function toggleSidebar() {
+
+    document.getElementById("sidebar")
+      .classList.toggle("open");
+
+  }
+
+
+  /* ==========================================
+     HTML ESCAPE
+  ========================================== */
+
+  function escapeHTML(text) {
+
+    return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  /* ==========================================
+     INITIALIZE
+  ========================================== */
+
+  async function init() {
+
+    const authenticated =
+      await checkAuth();
+
+    if (!authenticated) return;
+
+    document.getElementById(
+      "moduleCount"
+    ).textContent = lessons.length;
+
+    document.getElementById(
+      "lessonCount"
+    ).textContent = lessons.length;
+
+    updateProgress();
+
+    renderLesson();
+
+  }
+
+
+  init();
+
+</script>
+
+</body>
+</html>
