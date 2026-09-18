@@ -3,2127 +3,1799 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="description" content="Priyanshu Study Hub - Complete Developer Courses">
-<title>Course | Priyanshu Study Hub</title>
+<title>Priyanshu Study Hub — Course</title>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
+*{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#050711;
-  --panel:#0d1120;
-  --panel2:#11172a;
-  --border:rgba(255,255,255,.09);
-  --text:#f7f8ff;
-  --muted:#99a4bd;
-  --purple:#7c3aed;
+  --bg:#050713;
+  --panel:#0d1020;
+  --panel2:#11152a;
+  --border:rgba(255,255,255,.08);
+  --text:#f5f7ff;
+  --muted:#9299b8;
+  --purple:#8b5cf6;
   --blue:#2563eb;
-  --cyan:#06b6d4;
   --green:#22c55e;
-  --red:#ef4444;
+  --danger:#ef4444;
 }
-
 body{
-  min-height:100vh;
+  font-family:Inter,Segoe UI,Arial,sans-serif;
   background:
-    radial-gradient(circle at 10% 5%,rgba(124,58,237,.18),transparent 30%),
-    radial-gradient(circle at 90% 80%,rgba(6,182,212,.12),transparent 30%),
+    radial-gradient(circle at 80% 10%,rgba(124,58,237,.18),transparent 30%),
+    radial-gradient(circle at 20% 90%,rgba(37,99,235,.12),transparent 30%),
     var(--bg);
   color:var(--text);
-  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  min-height:100vh;
 }
+button{font:inherit}
+a{text-decoration:none;color:inherit}
 
-button,input{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-}
-
-a{
-  color:inherit;
-  text-decoration:none;
-}
-
-/* TOP */
-
-.topbar{
+.top{
+  height:70px;
+  border-bottom:1px solid var(--border);
+  background:rgba(5,7,19,.88);
+  backdrop-filter:blur(18px);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 22px;
   position:sticky;
   top:0;
   z-index:100;
-  height:70px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 24px;
-  background:rgba(5,7,17,.88);
-  backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);
 }
-
 .brand{
   display:flex;
   align-items:center;
-  gap:11px;
+  gap:12px;
 }
-
 .logo{
-  width:43px;
-  height:43px;
-  border-radius:13px;
-  display:grid;
-  place-items:center;
+  width:40px;height:40px;border-radius:12px;
+  display:grid;place-items:center;
   font-weight:900;
-  background:linear-gradient(135deg,var(--purple),var(--blue));
-  box-shadow:0 10px 30px rgba(124,58,237,.3);
+  background:linear-gradient(135deg,#8b5cf6,#2563eb);
 }
+.brand h2{font-size:14px}
+.brand p{font-size:9px;color:#9da4c2;letter-spacing:2px}
 
-.brand-text strong{
-  display:block;
-  font-size:13px;
-}
-
-.brand-text small{
-  display:block;
-  margin-top:3px;
-  color:var(--muted);
-  font-size:9px;
-  letter-spacing:1px;
-}
-
-.top-actions{
-  display:flex;
-  gap:8px;
-}
-
+.top-actions{display:flex;gap:10px}
 .top-btn{
-  padding:10px 14px;
   border:1px solid var(--border);
+  background:#101326;
+  color:white;
+  padding:10px 15px;
   border-radius:10px;
-  color:#fff;
-  background:rgba(255,255,255,.04);
+  cursor:pointer;
 }
-
-/* LAYOUT */
+.top-btn:hover{border-color:#7753d9}
 
 .layout{
   display:grid;
-  grid-template-columns:300px 1fr;
+  grid-template-columns:280px 1fr;
   min-height:calc(100vh - 70px);
 }
 
-/* SIDEBAR */
-
 .sidebar{
-  position:sticky;
-  top:70px;
-  height:calc(100vh - 70px);
-  overflow-y:auto;
-  padding:20px 15px;
   border-right:1px solid var(--border);
-  background:rgba(7,10,21,.78);
+  background:rgba(8,10,23,.88);
+  padding:20px;
 }
-
-.course-info{
-  padding:14px;
-  margin-bottom:15px;
+.course-mini{
+  background:linear-gradient(145deg,#11152a,#0b0e1d);
   border:1px solid var(--border);
-  border-radius:15px;
-  background:rgba(255,255,255,.03);
+  border-radius:16px;
+  padding:18px;
+  margin-bottom:15px;
 }
-
-.course-info-icon{
-  font-size:29px;
+.course-icon{
+  font-size:35px;
+  margin-bottom:10px;
 }
-
-.course-info h2{
-  margin-top:10px;
-  font-size:18px;
-}
-
-.course-info p{
-  margin-top:6px;
+.course-mini h3{font-size:17px}
+.course-mini p{
   color:var(--muted);
   font-size:11px;
-  line-height:1.6;
+  line-height:1.5;
+  margin-top:6px;
 }
-
 .progress-box{
-  padding:14px;
-  margin-bottom:15px;
   border:1px solid var(--border);
+  background:#0d1020;
+  padding:15px;
   border-radius:14px;
-  background:rgba(124,58,237,.07);
 }
-
-.progress-head{
+.progress-line{
+  height:7px;
+  background:#201d36;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:10px;
+}
+.progress-fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#8b5cf6,#2563eb);
+  transition:.35s;
+}
+.progress-text{
   display:flex;
   justify-content:space-between;
-  margin-bottom:9px;
   font-size:11px;
+  color:#b8bdd4;
 }
-
-.progress-head span:last-child{
-  color:#a78bfa;
-  font-weight:800;
-}
-
-.progress-track{
-  height:7px;
-  overflow:hidden;
-  border-radius:99px;
-  background:rgba(255,255,255,.08);
-}
-
-.progress-fill{
-  width:0;
-  height:100%;
-  border-radius:99px;
-  background:linear-gradient(90deg,var(--purple),var(--cyan));
-  transition:.4s;
-}
-
-.module{
-  margin-bottom:5px;
-}
-
-.module-btn{
-  width:100%;
-  padding:11px 12px;
+.modules{
+  margin-top:18px;
   display:flex;
-  align-items:center;
-  gap:9px;
+  flex-direction:column;
+  gap:8px;
+}
+.module-btn{
   text-align:left;
-  color:#cbd3e8;
-  background:transparent;
   border:1px solid transparent;
+  background:#0b0e1c;
+  color:#c8cce0;
+  padding:11px;
   border-radius:10px;
+  cursor:pointer;
   font-size:11px;
-  transition:.2s;
 }
-
-.module-btn:hover{
-  background:rgba(255,255,255,.05);
-}
-
+.module-btn:hover{background:#12162b}
 .module-btn.active{
-  color:#fff;
-  background:rgba(124,58,237,.16);
-  border-color:rgba(124,58,237,.25);
+  background:linear-gradient(90deg,rgba(139,92,246,.18),rgba(37,99,235,.12));
+  border-color:rgba(139,92,246,.4);
+  color:white;
 }
-
-.module-check{
-  margin-left:auto;
-  color:var(--green);
-  font-weight:900;
+.module-btn.done{color:#6ee7a0}
+.module-btn small{
+  display:block;
+  color:#777f9e;
+  margin-top:4px;
 }
-
-/* MAIN */
 
 .main{
-  width:100%;
-  max-width:1050px;
   padding:30px;
+  max-width:1250px;
+  width:100%;
+  margin:auto;
 }
-
-/* HERO */
 
 .hero{
+  background:
+    linear-gradient(135deg,rgba(124,58,237,.14),rgba(37,99,235,.08)),
+    #0e1226;
+  border:1px solid var(--border);
+  border-radius:22px;
   padding:28px;
   margin-bottom:20px;
-  border:1px solid var(--border);
-  border-radius:23px;
-  background:
-    linear-gradient(135deg,rgba(124,58,237,.14),rgba(37,99,235,.06)),
-    var(--panel);
 }
-
 .badge{
   display:inline-block;
-  padding:7px 10px;
-  border-radius:99px;
-  color:#d8d0ff;
-  background:rgba(124,58,237,.15);
-  font-size:10px;
-  font-weight:800;
-  letter-spacing:.7px;
+  font-size:9px;
+  letter-spacing:1px;
+  padding:6px 10px;
+  border-radius:20px;
+  background:rgba(139,92,246,.15);
+  color:#c4b5fd;
+  border:1px solid rgba(139,92,246,.25);
 }
-
 .hero h1{
-  margin-top:13px;
-  font-size:clamp(27px,5vw,42px);
+  font-size:34px;
+  margin-top:12px;
 }
-
 .hero p{
-  max-width:760px;
-  margin-top:10px;
   color:var(--muted);
+  margin-top:7px;
   font-size:13px;
-  line-height:1.7;
 }
-
 .stats{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:10px;
-  margin-top:20px;
+  margin-top:22px;
 }
-
 .stat{
-  padding:14px;
+  background:rgba(3,5,15,.3);
   border:1px solid var(--border);
   border-radius:13px;
-  background:rgba(0,0,0,.14);
+  padding:15px;
 }
-
 .stat strong{
   display:block;
-  font-size:21px;
+  font-size:20px;
 }
-
 .stat span{
-  display:block;
-  margin-top:3px;
-  color:var(--muted);
-  font-size:10px;
+  color:#8188a7;
+  font-size:9px;
 }
-
-/* LESSON */
 
 .lesson{
-  overflow:hidden;
+  background:#0c0f20;
   border:1px solid var(--border);
-  border-radius:21px;
-  background:rgba(13,17,32,.82);
+  border-radius:20px;
+  overflow:hidden;
 }
-
 .lesson-head{
-  padding:25px;
+  padding:24px;
   border-bottom:1px solid var(--border);
 }
-
-.lesson-number{
-  color:var(--cyan);
+.lesson-head .number{
+  color:#8b5cf6;
   font-size:10px;
-  font-weight:800;
-  letter-spacing:1px;
-  text-transform:uppercase;
+  font-weight:bold;
+  letter-spacing:2px;
 }
-
 .lesson-head h2{
+  font-size:26px;
   margin-top:7px;
-  font-size:27px;
+}
+.lesson-head p{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:7px;
 }
 
-.lesson-body{
+.content{
   padding:25px;
 }
-
-.block{
+.section{
   margin-bottom:28px;
 }
-
-.block h3{
-  margin-bottom:9px;
+.section h3{
   font-size:16px;
+  margin-bottom:10px;
 }
-
-.block p{
-  color:#c4cce0;
+.section p{
+  color:#c0c5d8;
+  line-height:1.8;
   font-size:13px;
-  line-height:1.75;
 }
-
+.points{
+  padding-left:20px;
+  color:#c0c5d8;
+  line-height:2;
+  font-size:13px;
+}
 .note{
-  padding:13px;
-  margin-top:12px;
-  border-left:3px solid var(--cyan);
+  background:rgba(37,99,235,.08);
+  border-left:3px solid #3b82f6;
+  padding:14px;
   border-radius:8px;
-  color:#c9d3e9;
-  background:rgba(6,182,212,.06);
-  font-size:11px;
-  line-height:1.6;
+  color:#cbd5e1;
+  font-size:12px;
+  line-height:1.7;
 }
-
-pre{
-  margin-top:12px;
-  padding:17px;
-  overflow-x:auto;
-  border:1px solid rgba(255,255,255,.07);
+.code{
+  background:#05070d;
+  border:1px solid #20253b;
   border-radius:12px;
-  background:#03050b;
-  color:#e9edff;
+  overflow:hidden;
+  margin-top:12px;
+}
+.code-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:8px 12px;
+  background:#0d1120;
+  border-bottom:1px solid #20253b;
+}
+.code-top span{
+  color:#7f87a7;
+  font-size:10px;
+}
+.copy{
+  border:1px solid #303650;
+  background:#161b30;
+  color:#cdd3ec;
+  padding:5px 9px;
+  border-radius:6px;
+  font-size:10px;
+  cursor:pointer;
+}
+pre{
+  padding:15px;
+  overflow:auto;
+  color:#d9e0ff;
   font-size:12px;
   line-height:1.7;
 }
 
-code{
-  font-family:"Courier New",monospace;
+.practice-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
 }
-
-.copy{
-  margin-top:8px;
-  padding:7px 10px;
-  border:1px solid var(--border);
-  border-radius:8px;
-  color:#dce3f4;
-  background:rgba(255,255,255,.04);
-  font-size:10px;
-}
-
 .practice{
-  padding:16px;
-  border:1px solid rgba(124,58,237,.23);
-  border-radius:13px;
-  background:rgba(124,58,237,.06);
+  border:1px solid var(--border);
+  background:#101327;
+  border-radius:12px;
+  padding:15px;
 }
-
-.practice li{
-  margin-left:18px;
-  margin-bottom:7px;
-  color:#cbd3e5;
-  font-size:12px;
-  line-height:1.5;
+.practice b{font-size:12px}
+.practice p{
+  font-size:11px;
+  margin-top:6px;
+  color:#9ca3bd;
 }
 
 .quiz{
-  padding:17px;
-  border:1px solid var(--border);
-  border-radius:13px;
-  background:rgba(255,255,255,.025);
+  border:1px solid rgba(139,92,246,.2);
+  background:rgba(139,92,246,.05);
+  padding:18px;
+  border-radius:14px;
 }
-
 .question{
-  margin-bottom:11px;
   font-size:13px;
-  font-weight:700;
-  line-height:1.5;
+  margin-bottom:12px;
 }
-
 .option{
+  display:block;
   width:100%;
-  padding:10px;
-  margin-top:7px;
   text-align:left;
-  color:#dce3f2;
-  border:1px solid var(--border);
+  margin:7px 0;
+  padding:10px 12px;
   border-radius:9px;
-  background:rgba(255,255,255,.03);
-  font-size:11px;
+  border:1px solid var(--border);
+  background:#0c1020;
+  color:#dce0f2;
+  cursor:pointer;
 }
-
-.option:hover{
-  background:rgba(124,58,237,.10);
-}
-
+.option:hover{border-color:#7552d8}
 .option.correct{
-  color:#4ade80;
   border-color:#22c55e;
-  background:rgba(34,197,94,.08);
+  background:rgba(34,197,94,.1);
 }
-
 .option.wrong{
-  color:#f87171;
   border-color:#ef4444;
-  background:rgba(239,68,68,.08);
+  background:rgba(239,68,68,.1);
 }
-
 .quiz-result{
   margin-top:10px;
   font-size:11px;
-  font-weight:700;
+  font-weight:bold;
 }
 
-.lesson-footer{
+.actions{
+  padding:18px 25px;
+  border-top:1px solid var(--border);
   display:flex;
   justify-content:space-between;
   gap:10px;
-  padding:18px 25px;
-  border-top:1px solid var(--border);
 }
-
-.btn{
-  padding:11px 16px;
-  border:0;
-  border-radius:10px;
-  color:#fff;
-  background:linear-gradient(135deg,var(--purple),var(--blue));
-  font-size:11px;
-  font-weight:800;
-}
-
-.btn.secondary{
+.action{
   border:1px solid var(--border);
-  background:rgba(255,255,255,.05);
+  background:#15192c;
+  color:#fff;
+  padding:11px 16px;
+  border-radius:10px;
+  cursor:pointer;
+}
+.action.primary{
+  background:linear-gradient(135deg,#8b5cf6,#2563eb);
+  border:none;
+}
+.action.complete{
+  background:linear-gradient(135deg,#16a34a,#22c55e);
+  border:none;
+}
+.action:disabled{
+  opacity:.4;
+  cursor:not-allowed;
 }
 
-.btn.completed{
-  background:linear-gradient(135deg,#16a34a,#15803d);
+.certificate{
+  display:none;
+  margin-top:20px;
+  padding:30px;
+  text-align:center;
+  border-radius:20px;
+  border:1px solid rgba(34,197,94,.3);
+  background:linear-gradient(135deg,rgba(34,197,94,.1),rgba(37,99,235,.08));
+}
+.certificate.show{display:block}
+.certificate .trophy{font-size:50px}
+.certificate h2{margin:10px 0}
+.certificate p{color:#aeb5ca;font-size:12px}
+.cert-btn{
+  margin-top:15px;
+  padding:11px 17px;
+  border:0;
+  border-radius:9px;
+  background:#22c55e;
+  color:#04100a;
+  font-weight:bold;
+  cursor:pointer;
 }
 
-/* MOBILE */
+.toast{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  background:#151a2e;
+  border:1px solid var(--border);
+  padding:13px 17px;
+  border-radius:12px;
+  display:none;
+  z-index:999;
+  box-shadow:0 15px 50px #0008;
+}
+.toast.show{display:block}
+
+.mobile-menu{
+  display:none;
+  border:1px solid var(--border);
+  background:#11152a;
+  color:white;
+  padding:9px 12px;
+  border-radius:8px;
+}
 
 @media(max-width:850px){
-
-  .layout{
-    display:block;
-  }
-
+  .layout{grid-template-columns:1fr}
   .sidebar{
     position:fixed;
+    left:-310px;
     top:70px;
-    left:0;
-    width:300px;
+    width:290px;
+    height:calc(100vh - 70px);
     z-index:90;
-    transform:translateX(-105%);
     transition:.3s;
+    overflow:auto;
   }
-
-  .sidebar.open{
-    transform:translateX(0);
-  }
-
-  .main{
-    max-width:none;
-    padding:15px;
-  }
-
-  .mobile{
-    display:block !important;
-  }
+  .sidebar.open{left:0}
+  .mobile-menu{display:block}
+  .main{padding:16px}
+  .stats{grid-template-columns:repeat(2,1fr)}
 }
-
-.mobile{
-  display:none;
-}
-
 @media(max-width:600px){
-
-  .topbar{
-    padding:0 13px;
-  }
-
-  .brand-text{
-    display:none;
-  }
-
-  .top-btn{
-    padding:9px 10px;
-    font-size:10px;
-  }
-
-  .hero,
-  .lesson-head,
-  .lesson-body{
-    padding:19px;
-  }
-
-  .stats{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .lesson-footer{
-    flex-direction:column;
-    padding:16px;
-  }
-
-  .btn{
-    width:100%;
-  }
+  .top{padding:0 12px}
+  .brand p{display:none}
+  .top-btn{padding:8px 10px;font-size:11px}
+  .hero{padding:20px}
+  .hero h1{font-size:26px}
+  .content{padding:18px}
+  .lesson-head{padding:20px}
+  .practice-grid{grid-template-columns:1fr}
+  .actions{padding:15px;flex-wrap:wrap}
+  .action{flex:1}
 }
 </style>
 </head>
 
 <body>
 
-<header class="topbar">
-
+<header class="top">
   <div class="brand">
-
-    <button
-      class="top-btn mobile"
-      id="menuBtn"
-    >
-      ☰
-    </button>
-
-    <div class="logo">
-      PK
+    <button class="mobile-menu" id="mobileMenu">☰</button>
+    <div class="logo">PK</div>
+    <div>
+      <h2>PRIYANSHU STUDY HUB</h2>
+      <p>LEARN • PRACTICE • BUILD</p>
     </div>
-
-    <div class="brand-text">
-      <strong>PRIYANSHU STUDY HUB</strong>
-      <small>LEARN • PRACTICE • BUILD</small>
-    </div>
-
   </div>
 
   <div class="top-actions">
-
-    <a
-      href="dashboard.html"
-      class="top-btn"
-    >
-      ← Dashboard
-    </a>
-
+    <a class="top-btn" href="dashboard.html">← Dashboard</a>
   </div>
-
 </header>
-
 
 <div class="layout">
 
 <aside class="sidebar" id="sidebar">
 
-  <div class="course-info">
-
-    <div
-      class="course-info-icon"
-      id="courseIcon"
-    >
-      💻
-    </div>
-
-    <h2 id="sideCourseName">
-      Course
-    </h2>
-
-    <p id="sideCourseDescription">
-      Complete developer learning path.
-    </p>
-
+  <div class="course-mini">
+    <div class="course-icon" id="courseIcon">💻</div>
+    <h3 id="sideCourseName">Loading Course...</h3>
+    <p id="sideCourseDesc">Complete your developer learning path.</p>
   </div>
-
 
   <div class="progress-box">
-
-    <div class="progress-head">
+    <div class="progress-text">
       <span>Course Progress</span>
-      <span id="progressText">0%</span>
+      <span id="progressPercent">0%</span>
     </div>
-
-    <div class="progress-track">
-      <div
-        class="progress-fill"
-        id="progressFill"
-      ></div>
+    <div class="progress-line">
+      <div class="progress-fill" id="progressFill"></div>
     </div>
-
   </div>
 
-
-  <div id="moduleList"></div>
+  <div class="modules" id="moduleList"></div>
 
 </aside>
 
-
 <main class="main">
 
-  <section class="hero">
+<section class="hero">
 
-    <span class="badge" id="heroBadge">
-      COMPLETE COURSE
-    </span>
+  <span class="badge">COMPLETE COURSE</span>
 
-    <h1 id="heroTitle">
-      Developer Course
-    </h1>
+  <h1 id="courseTitle">Loading...</h1>
 
-    <p id="heroDescription">
-      Learn concepts, practice with examples,
-      solve questions and build projects.
-    </p>
+  <p id="courseDescription">
+    Learn concepts, practice with examples, solve questions and build projects.
+  </p>
 
+  <div class="stats">
 
-    <div class="stats">
-
-      <div class="stat">
-        <strong id="statModules">0</strong>
-        <span>Modules</span>
-      </div>
-
-      <div class="stat">
-        <strong id="statLessons">0</strong>
-        <span>Lessons</span>
-      </div>
-
-      <div class="stat">
-        <strong>50+</strong>
-        <span>Practice Tasks</span>
-      </div>
-
-      <div class="stat">
-        <strong>10+</strong>
-        <span>Projects</span>
-      </div>
-
+    <div class="stat">
+      <strong id="moduleCount">0</strong>
+      <span>MODULES</span>
     </div>
 
-  </section>
-
-
-  <section class="lesson">
-
-    <div class="lesson-head">
-
-      <div
-        class="lesson-number"
-        id="lessonNumber"
-      >
-        MODULE 01
-      </div>
-
-      <h2 id="lessonTitle">
-        Introduction
-      </h2>
-
+    <div class="stat">
+      <strong id="lessonCount">0</strong>
+      <span>LESSONS</span>
     </div>
 
-
-    <div
-      class="lesson-body"
-      id="lessonBody"
-    ></div>
-
-
-    <div class="lesson-footer">
-
-      <button
-        class="btn secondary"
-        onclick="previousLesson()"
-      >
-        ← Previous
-      </button>
-
-      <button
-        class="btn"
-        id="completeBtn"
-        onclick="completeLesson()"
-      >
-        ✓ Mark Complete
-      </button>
-
-      <button
-        class="btn"
-        onclick="nextLesson()"
-      >
-        Next →
-      </button>
-
+    <div class="stat">
+      <strong id="practiceCount">0+</strong>
+      <span>PRACTICE TASKS</span>
     </div>
 
-  </section>
+    <div class="stat">
+      <strong id="projectCount">0+</strong>
+      <span>PROJECTS</span>
+    </div>
+
+  </div>
+</section>
+
+<section class="lesson">
+
+  <div class="lesson-head">
+    <div class="number" id="moduleNumber">MODULE 01</div>
+    <h2 id="lessonTitle">Introduction</h2>
+    <p id="lessonSubtitle">Start learning from the fundamentals.</p>
+  </div>
+
+  <div class="content" id="lessonContent"></div>
+
+  <div class="actions">
+
+    <button class="action" id="prevBtn">
+      ← Previous
+    </button>
+
+    <button class="action complete" id="completeBtn">
+      ✓ Mark Complete
+    </button>
+
+    <button class="action primary" id="nextBtn">
+      Next →
+    </button>
+
+  </div>
+
+</section>
+
+<section class="certificate" id="certificate">
+  <div class="trophy">🏆</div>
+  <h2>Course Completed!</h2>
+  <p>
+    Congratulations! You have completed the entire course.
+  </p>
+  <button class="cert-btn" onclick="downloadCertificate()">
+    🎓 Download Certificate
+  </button>
+</section>
 
 </main>
-
 </div>
 
+<div class="toast" id="toast"></div>
 
 <script>
-"use strict";
 
-/* ==========================================================
-   COURSE DATABASE
-========================================================== */
+/* ============================================================
+   PRIYANSHU STUDY HUB
+   FULL WORKING COURSE ENGINE
+============================================================ */
 
-const COURSE_DATA = {
+const API_URL = "https://priyanshu-secure-auth.onrender.com";
+
+const TOKEN_KEY = "priynashu_access_token";
+
+/* ------------------------------------------------------------
+   COURSE DEFINITIONS
+------------------------------------------------------------ */
+
+const COURSE_INFO = {
 
   python:{
-    name:"Python",
+    name:"Python Programming",
     icon:"🐍",
-    description:"Python programming from fundamentals to OOP, APIs, data and projects.",
+    desc:"Learn Python from fundamentals to real-world development.",
     modules:[
-      ["Python Fundamentals","Syntax, print, variables and basic programs"],
-      ["Data Types","Numbers, strings, booleans and type conversion"],
-      ["Conditions","if, elif, else and decision making"],
-      ["Loops","for, while, range and loop control"],
-      ["Functions","Reusable functions, parameters and return"],
-      ["Collections","Lists, tuples, sets and dictionaries"],
-      ["OOP","Classes, objects, inheritance and encapsulation"],
-      ["Files & Exceptions","File handling and error management"],
-      ["APIs & JSON","HTTP requests and structured data"],
-      ["NumPy & Pandas","Numerical computing and data analysis"],
-      ["Python Projects","Build real applications"]
+      ["Python Fundamentals","Syntax, variables, data types and basic programming."],
+      ["Operators & Input","Operators, expressions and user input."],
+      ["Conditions","if, elif, else and decision making."],
+      ["Loops","for, while, break, continue and nested loops."],
+      ["Functions","Reusable functions, parameters and return values."],
+      ["Collections","Lists, tuples, sets and dictionaries."],
+      ["Strings","String operations, slicing and formatting."],
+      ["OOP in Python","Classes, objects, inheritance and encapsulation."],
+      ["Files & Exceptions","File handling and error management."],
+      ["Libraries","Modules, packages and useful Python libraries."],
+      ["Python Project","Build a practical console application."]
     ]
   },
 
   java:{
-    name:"Java",
+    name:"Java Programming",
     icon:"☕",
-    description:"Core Java, OOP, collections, exceptions, JDBC and application development.",
+    desc:"Master Java programming, OOP and application development.",
     modules:[
-      ["Java Fundamentals","JDK, JRE, JVM, syntax and first program"],
-      ["Variables & Data Types","Primitive types, casting and operators"],
-      ["Conditions & Loops","Decision making and iteration"],
-      ["Methods","Parameters, return values and method overloading"],
-      ["OOP","Classes, objects, constructors and encapsulation"],
-      ["Inheritance","Inheritance, polymorphism and abstraction"],
-      ["Collections","List, Set, Map and generics"],
-      ["Exceptions","try, catch, finally and custom exceptions"],
-      ["JDBC","Connect Java applications with databases"],
-      ["Java Projects","Build console and backend applications"]
+      ["Java Fundamentals","JDK, JVM, syntax, variables and data types."],
+      ["Operators & Input","Operators, Scanner and expressions."],
+      ["Conditions","Decision-making statements."],
+      ["Loops","for, while and do-while loops."],
+      ["Methods","Methods, parameters and return values."],
+      ["Arrays & Strings","Arrays, String and StringBuilder."],
+      ["OOP","Classes, objects, constructors and encapsulation."],
+      ["Inheritance","Inheritance, polymorphism and abstraction."],
+      ["Collections","ArrayList, HashMap, HashSet and iteration."],
+      ["Java Project","Build a practical Java application."]
     ]
   },
 
   cpp:{
-    name:"C++",
-    icon:"🔷",
-    description:"C++, OOP, STL and problem solving for software development.",
+    name:"C++ Programming",
+    icon:"⚡",
+    desc:"Learn C++ programming, STL and object-oriented concepts.",
     modules:[
-      ["C++ Fundamentals","Syntax, input, output and compilation"],
-      ["Variables & Operators","Types, expressions and operators"],
-      ["Conditions & Loops","Control flow and iteration"],
-      ["Functions","Functions, references and parameters"],
-      ["Arrays & Strings","Arrays, strings and manipulation"],
-      ["Pointers","Pointers, references and memory basics"],
-      ["OOP","Classes, objects and constructors"],
-      ["STL","Vector, map, set, stack and queue"],
-      ["Algorithms","Sorting, searching and complexity"],
-      ["C++ Projects","Build practical applications"]
+      ["C++ Fundamentals","Syntax, variables, types and input/output."],
+      ["Operators","Arithmetic, relational and logical operators."],
+      ["Conditions","if, else and switch statements."],
+      ["Loops","for, while and do-while loops."],
+      ["Functions","Functions, parameters and references."],
+      ["Arrays & Strings","Arrays, strings and manipulation."],
+      ["Pointers","Pointers, references and memory basics."],
+      ["OOP","Classes, objects, inheritance and polymorphism."],
+      ["STL","Vector, map, set, stack and queue."],
+      ["C++ Project","Build a practical C++ application."]
     ]
   },
 
   c:{
     name:"C Programming",
-    icon:"🟦",
-    description:"C programming fundamentals, memory, pointers and data structures.",
+    icon:"©️",
+    desc:"Build strong programming fundamentals with C.",
     modules:[
-      ["C Fundamentals","Program structure and compilation"],
-      ["Variables & Data Types","Primitive types and constants"],
-      ["Operators","Arithmetic, relational and logical operators"],
-      ["Conditions & Loops","if, switch, for and while"],
-      ["Functions","Functions and recursion"],
-      ["Arrays & Strings","One and multidimensional arrays"],
-      ["Pointers","Pointers and memory addresses"],
-      ["Structures","struct, union and typedef"],
-      ["File Handling","Reading and writing files"],
-      ["C Projects","Build practical programs"]
+      ["C Fundamentals","Program structure, variables and data types."],
+      ["Input & Operators","scanf, printf and operators."],
+      ["Conditions","Decision making in C."],
+      ["Loops","for, while and do-while."],
+      ["Functions","Function declaration and parameters."],
+      ["Arrays","One-dimensional and multidimensional arrays."],
+      ["Strings","Character arrays and string functions."],
+      ["Pointers","Pointers and memory addresses."],
+      ["Structures","Structures and user-defined data."],
+      ["C Project","Build a console-based C project."]
     ]
   },
 
   javascript:{
     name:"JavaScript",
     icon:"🟨",
-    description:"Modern JavaScript, DOM, asynchronous programming and APIs.",
+    desc:"Master modern JavaScript for web development.",
     modules:[
-      ["JavaScript Fundamentals","Syntax, variables and console"],
-      ["Types & Operators","Primitive values and operators"],
-      ["Conditions & Loops","Control flow"],
-      ["Functions","Functions, scope and arrow functions"],
-      ["Arrays & Objects","Modern collection operations"],
-      ["DOM","Select and manipulate web elements"],
-      ["Events","Forms, clicks and event handling"],
-      ["Async JavaScript","Promises, async and await"],
-      ["APIs","Fetch and JSON"],
-      ["JavaScript Projects","Build interactive applications"]
+      ["JavaScript Fundamentals","Variables, types and basic syntax."],
+      ["Operators & Conditions","Expressions and decision making."],
+      ["Loops","Iteration and control flow."],
+      ["Functions","Functions, arrow functions and callbacks."],
+      ["Arrays","Array methods and data manipulation."],
+      ["Objects","Objects, properties and methods."],
+      ["DOM","Manipulate HTML using JavaScript."],
+      ["Events","Click, input and browser events."],
+      ["Async JavaScript","Promises, async/await and fetch."],
+      ["JavaScript Project","Build an interactive web application."]
     ]
   },
 
   html:{
-    name:"HTML5",
+    name:"HTML",
     icon:"🌐",
-    description:"Build semantic, accessible and structured web pages.",
+    desc:"Learn HTML5 and build semantic modern web pages.",
     modules:[
-      ["HTML Fundamentals","Document structure and tags"],
-      ["Text & Links","Headings, paragraphs and navigation"],
-      ["Images & Media","Images, audio and video"],
-      ["Lists & Tables","Organizing structured content"],
-      ["Forms","Inputs, labels and validation"],
-      ["Semantic HTML","Header, nav, main, section and footer"],
-      ["Accessibility","Accessible page structure"],
-      ["SEO Basics","Metadata and search-friendly structure"],
-      ["HTML APIs","Useful browser capabilities"],
-      ["HTML Project","Build a complete webpage"]
+      ["HTML Fundamentals","Documents, tags and elements."],
+      ["Text & Links","Headings, paragraphs, links and formatting."],
+      ["Images & Media","Images, audio and video."],
+      ["Lists & Tables","Lists, tables and structured content."],
+      ["Forms","Forms, inputs and validation."],
+      ["Semantic HTML","Header, nav, main, section and footer."],
+      ["Accessibility","Accessible and user-friendly HTML."],
+      ["SEO Basics","Metadata, structure and search optimization."],
+      ["HTML5 APIs","Modern browser capabilities."],
+      ["HTML Project","Build a complete website structure."]
     ]
   },
 
   css:{
-    name:"CSS3",
+    name:"CSS",
     icon:"🎨",
-    description:"Modern responsive UI with Flexbox, Grid, transitions and animations.",
+    desc:"Master CSS, responsive layouts and modern UI design.",
     modules:[
-      ["CSS Fundamentals","Selectors, properties and values"],
-      ["Colors & Typography","Fonts, colors and text styling"],
-      ["Box Model","Margin, padding, border and sizing"],
-      ["Flexbox","One-dimensional layouts"],
-      ["CSS Grid","Two-dimensional layouts"],
-      ["Responsive Design","Mobile-first responsive websites"],
-      ["Positioning","Static, relative, absolute and fixed"],
-      ["Transitions","Smooth UI interactions"],
-      ["Animations","Keyframes and motion"],
-      ["CSS Project","Build a responsive landing page"]
+      ["CSS Fundamentals","Selectors, properties and values."],
+      ["Colors & Typography","Fonts, colors and text styling."],
+      ["Box Model","Margin, padding, border and dimensions."],
+      ["Flexbox","Modern one-dimensional layouts."],
+      ["CSS Grid","Advanced two-dimensional layouts."],
+      ["Positioning","Static, relative, absolute and fixed."],
+      ["Responsive Design","Mobile-first responsive websites."],
+      ["Animations","Transitions, transforms and keyframes."],
+      ["Modern UI","Glassmorphism, gradients and effects."],
+      ["CSS Project","Build a responsive landing page."]
     ]
   },
 
   sql:{
-    name:"SQL",
+    name:"SQL & MySQL",
     icon:"🗄️",
-    description:"SQL from beginner queries to joins, aggregation and advanced analysis.",
+    desc:"Learn SQL from beginner queries to database analysis.",
     modules:[
-      ["SQL Fundamentals","Databases, tables and SELECT"],
-      ["Filtering","WHERE, operators and conditions"],
-      ["Sorting","ORDER BY and limiting results"],
-      ["Aggregation","COUNT, SUM, AVG, MIN and MAX"],
-      ["GROUP BY","Grouped analysis and HAVING"],
-      ["JOINs","INNER, LEFT, RIGHT and self joins"],
-      ["Subqueries","Nested queries"],
-      ["CTEs","Readable multi-step queries"],
-      ["Window Functions","Ranking and analytical calculations"],
-      ["SQL Projects","Build an analytics database"]
+      ["SQL Fundamentals","Databases, tables and relational concepts."],
+      ["SELECT Queries","Retrieve data using SELECT."],
+      ["Filtering","WHERE, AND, OR, IN, BETWEEN and LIKE."],
+      ["Sorting & Limiting","ORDER BY, LIMIT and DISTINCT."],
+      ["Aggregate Functions","COUNT, SUM, AVG, MIN and MAX."],
+      ["GROUP BY & HAVING","Analyze grouped data."],
+      ["Joins","INNER, LEFT, RIGHT and multi-table joins."],
+      ["Subqueries","Nested queries and derived data."],
+      ["Database Design","Keys, constraints and normalization basics."],
+      ["SQL Project","Build an analytical database project."]
     ]
   },
 
   dsa:{
-    name:"DSA",
+    name:"Data Structures & Algorithms",
     icon:"🧠",
-    description:"Data structures and algorithms for problem solving and interviews.",
+    desc:"Build strong DSA skills for coding interviews.",
     modules:[
-      ["Complexity","Big O and performance"],
-      ["Arrays","Traversal, searching and manipulation"],
-      ["Strings","String algorithms and patterns"],
-      ["Linked Lists","Singly and doubly linked lists"],
-      ["Stack & Queue","LIFO and FIFO structures"],
-      ["Trees","Binary trees and BST"],
-      ["Graphs","BFS, DFS and graph representation"],
-      ["Sorting","Major sorting algorithms"],
-      ["Searching","Linear and binary search"],
-      ["Dynamic Programming","State, transitions and optimization"],
-      ["Interview Problems","Pattern-based problem solving"]
+      ["DSA Fundamentals","Complexity, Big-O and problem solving."],
+      ["Arrays","Traversal, searching and manipulation."],
+      ["Strings","String algorithms and patterns."],
+      ["Linked Lists","Singly and doubly linked lists."],
+      ["Stacks","Stack implementation and applications."],
+      ["Queues","Queues, circular queues and deque."],
+      ["Hashing","Hash tables and frequency problems."],
+      ["Trees","Binary trees and traversal."],
+      ["Graphs","Graph representation and traversal."],
+      ["Sorting","Bubble, selection, insertion, merge and quick sort."],
+      ["Searching","Linear and binary search."]
     ]
   },
 
   dbms:{
     name:"DBMS",
     icon:"🗃️",
-    description:"Database management systems, normalization, transactions and architecture.",
+    desc:"Learn database management systems for academics and interviews.",
     modules:[
-      ["DBMS Fundamentals","Database systems and architecture"],
-      ["ER Model","Entities, attributes and relationships"],
-      ["Relational Model","Tables, rows and keys"],
-      ["SQL","Querying relational databases"],
-      ["Normalization","1NF, 2NF, 3NF and BCNF"],
-      ["Transactions","ACID properties"],
-      ["Concurrency","Locks and isolation"],
-      ["Indexing","Indexes and query performance"],
-      ["Recovery","Backup and recovery concepts"],
-      ["DBMS Interview","Important interview concepts"]
+      ["DBMS Fundamentals","Database systems and DBMS architecture."],
+      ["ER Model","Entities, attributes and relationships."],
+      ["Relational Model","Tables, tuples, domains and keys."],
+      ["SQL","Querying relational databases."],
+      ["Normalization","1NF, 2NF, 3NF and BCNF."],
+      ["Transactions","ACID properties and transactions."],
+      ["Concurrency","Locks and concurrency control."],
+      ["Indexing","Indexes and query performance."],
+      ["Recovery","Database recovery concepts."],
+      ["DBMS Interview","Important interview concepts and questions."]
     ]
   },
 
   react:{
-    name:"React",
+    name:"React.js",
     icon:"⚛️",
-    description:"Build modern frontend applications using React.",
+    desc:"Build modern component-based frontend applications.",
     modules:[
-      ["React Fundamentals","Components and JSX"],
-      ["Props","Passing data between components"],
-      ["State","Dynamic application data"],
-      ["Events","User interaction"],
-      ["Conditional Rendering","Render based on state"],
-      ["Lists & Forms","Dynamic lists and forms"],
-      ["Hooks","useState and useEffect"],
-      ["API Integration","Fetch backend data"],
-      ["Routing","Multi-page SPA navigation"],
-      ["React Project","Build a complete frontend"]
+      ["React Fundamentals","React architecture and components."],
+      ["JSX","Write UI using JSX."],
+      ["Components","Functional components and composition."],
+      ["Props","Pass data between components."],
+      ["State","Manage component state."],
+      ["Events & Forms","Handle user interactions."],
+      ["Hooks","useState, useEffect and custom hooks."],
+      ["API Integration","Fetch and display API data."],
+      ["Routing","Build multi-page SPA navigation."],
+      ["React Project","Build a complete React application."]
     ]
   },
 
   node:{
-    name:"Node.js",
+    name:"Node.js & Express",
     icon:"🟢",
-    description:"Backend development with Node.js, Express and REST APIs.",
+    desc:"Learn backend development with Node.js and Express.",
     modules:[
-      ["Node Fundamentals","Runtime, npm and modules"],
-      ["File System","Working with files"],
-      ["HTTP","Create HTTP servers"],
-      ["Express","Backend application framework"],
-      ["Routes","REST API routing"],
-      ["Middleware","Request processing"],
-      ["Databases","Connect backend applications"],
-      ["Authentication","JWT and secure authentication concepts"],
-      ["REST APIs","Design production-style APIs"],
-      ["Node Project","Build a complete backend"]
+      ["Node Fundamentals","Runtime, modules and npm."],
+      ["Modules","CommonJS and ES modules."],
+      ["File System","Read and write files with Node."],
+      ["HTTP Server","Create an HTTP server."],
+      ["Express","Build APIs using Express."],
+      ["REST API","REST principles and endpoints."],
+      ["Middleware","Authentication and request processing."],
+      ["Database","Connect applications to databases."],
+      ["Authentication","JWT and secure authentication basics."],
+      ["Backend Project","Build a production-style REST API."]
     ]
   },
 
   aiml:{
-    name:"AI / ML",
+    name:"AI & Machine Learning",
     icon:"🤖",
-    description:"Machine learning fundamentals, data preparation and model evaluation.",
+    desc:"Learn machine learning fundamentals and practical workflows.",
     modules:[
-      ["AI & ML Fundamentals","AI, ML and deep learning"],
-      ["Python for ML","Python tools used in ML"],
-      ["Data Preparation","Cleaning and preprocessing"],
-      ["Exploratory Analysis","Understand datasets"],
-      ["Regression","Predict numerical values"],
-      ["Classification","Predict categories"],
-      ["Clustering","Group similar data"],
-      ["Evaluation","Accuracy and classification metrics"],
-      ["Deep Learning","Neural network fundamentals"],
-      ["ML Project","Build a complete ML pipeline"]
+      ["AI & ML Fundamentals","AI, ML and deep learning overview."],
+      ["Python for ML","NumPy, Pandas and data handling."],
+      ["Data Preprocessing","Cleaning, encoding and scaling."],
+      ["Exploratory Analysis","Understand patterns in datasets."],
+      ["Regression","Linear and multiple regression."],
+      ["Classification","Logistic regression and classification."],
+      ["Decision Trees","Tree-based machine learning."],
+      ["Model Evaluation","Accuracy, precision, recall and F1."],
+      ["Feature Engineering","Create useful model features."],
+      ["ML Project","Build an end-to-end ML project."]
     ]
   },
 
   analytics:{
     name:"Data Analytics",
     icon:"📊",
-    description:"SQL, Excel, Python, Pandas and Power BI for data analysis.",
+    desc:"Learn Excel, SQL, Python and Power BI for analytics.",
     modules:[
-      ["Analytics Fundamentals","Data analyst workflow"],
-      ["Excel Basics","Tables, formulas and functions"],
-      ["Excel Advanced","Pivot tables and analysis"],
-      ["SQL Analytics","Query data for insights"],
-      ["Python Analytics","Python data workflow"],
-      ["Pandas","DataFrames and transformations"],
-      ["Visualization","Charts and storytelling"],
-      ["Power BI","Reports and dashboards"],
-      ["DAX","Measures and analytical calculations"],
-      ["Analytics Project","Build a complete dashboard"]
+      ["Analytics Fundamentals","Data analytics workflow."],
+      ["Excel Fundamentals","Formulas, tables and formatting."],
+      ["Advanced Excel","Lookup, pivot tables and dashboards."],
+      ["SQL Analytics","Analyze relational data."],
+      ["Python Analytics","Pandas and NumPy."],
+      ["Data Cleaning","Prepare real-world datasets."],
+      ["Visualization","Charts and visual storytelling."],
+      ["Power BI","Reports, visuals and dashboards."],
+      ["Business Insights","Turn data into decisions."],
+      ["Analytics Project","Build an end-to-end dashboard."]
     ]
   },
 
   cloud:{
     name:"Cloud & DevOps",
     icon:"☁️",
-    description:"Cloud computing, Linux, containers, CI/CD and deployment.",
+    desc:"Understand cloud computing, deployment and DevOps.",
     modules:[
-      ["Cloud Fundamentals","Cloud models and services"],
-      ["Linux","Essential Linux commands"],
-      ["Networking","IP, DNS and HTTP fundamentals"],
-      ["AWS Fundamentals","Cloud services overview"],
-      ["Storage","Object and block storage"],
-      ["Docker","Images and containers"],
-      ["Git","Version control workflow"],
-      ["CI/CD","Continuous integration and delivery"],
-      ["Deployment","Deploy applications"],
-      ["Cloud Project","Deploy a complete application"]
+      ["Cloud Fundamentals","Cloud concepts and service models."],
+      ["AWS Basics","Core AWS concepts."],
+      ["Compute","Virtual machines and containers."],
+      ["Storage","Object and block storage."],
+      ["Databases","Managed cloud databases."],
+      ["Networking","VPC, DNS and connectivity."],
+      ["Git & GitHub","Version control workflows."],
+      ["CI/CD","Continuous integration and deployment."],
+      ["Docker","Containerization fundamentals."],
+      ["Cloud Project","Deploy a full-stack application."]
     ]
   },
 
   cybersecurity:{
     name:"Cybersecurity",
     icon:"🔐",
-    description:"Defensive cybersecurity and secure application fundamentals.",
+    desc:"Learn cybersecurity fundamentals and secure development.",
     modules:[
-      ["Security Fundamentals","Threats, risks and security principles"],
-      ["Networking Security","TCP/IP and network protection"],
-      ["Authentication","Identity and access concepts"],
-      ["Authorization","Roles and permissions"],
-      ["Web Security","Common web security principles"],
-      ["OWASP Concepts","Understanding common application risks"],
-      ["Cryptography","Hashing and encryption fundamentals"],
-      ["Secure APIs","Protect backend APIs"],
-      ["Incident Response","Detection and response workflow"],
-      ["Security Project","Build a security checklist"]
+      ["Security Fundamentals","Threats, attacks and security principles."],
+      ["CIA Triad","Confidentiality, integrity and availability."],
+      ["Networking Security","Ports, protocols and network threats."],
+      ["Authentication","Passwords, hashing and authentication."],
+      ["Web Security","Common web security concepts."],
+      ["OWASP Basics","Understand common application risks."],
+      ["Cryptography","Encryption, hashing and keys."],
+      ["Secure Coding","Write safer applications."],
+      ["Incident Response","Detection and response fundamentals."],
+      ["Security Project","Create a secure application checklist."]
     ]
   },
 
   interview:{
-    name:"Interview Preparation",
+    name:"Placement & Interview Prep",
     icon:"🎯",
-    description:"Technical interview, coding, CS fundamentals and HR preparation.",
+    desc:"Prepare for coding, technical and HR interviews.",
     modules:[
-      ["Resume Preparation","Build a strong technical resume"],
-      ["DSA Interview","Common coding patterns"],
-      ["OOP Interview","Object-oriented concepts"],
-      ["DBMS Interview","SQL and database questions"],
-      ["OS Interview","Operating system fundamentals"],
-      ["CN Interview","Networking fundamentals"],
-      ["Python Interview","Common Python questions"],
-      ["Project Interview","Explain your projects"],
-      ["HR Interview","Common HR questions"],
-      ["Mock Interview","Complete interview practice"]
+      ["Resume & ATS","Build an ATS-friendly resume."],
+      ["Aptitude","Quantitative aptitude fundamentals."],
+      ["Logical Reasoning","Patterns and reasoning problems."],
+      ["SQL Interview","Important SQL interview questions."],
+      ["Programming Interview","Core programming questions."],
+      ["DSA Interview","Common DSA patterns."],
+      ["CS Fundamentals","OS, DBMS and networking."],
+      ["Project Interview","Explain projects professionally."],
+      ["HR Interview","Common HR questions."],
+      ["Mock Interview","Complete interview preparation."]
     ]
   }
 
 };
 
 
-/* ==========================================================
-   LESSON TEMPLATES
-========================================================== */
+/* ------------------------------------------------------------
+   GET COURSE
+------------------------------------------------------------ */
 
-const LESSON_TEMPLATES = {
+const params = new URLSearchParams(window.location.search);
 
-  fundamentals:{
-    concept:"This module introduces the core ideas required to understand the technology. Learn the syntax, terminology and basic workflow before moving to advanced topics.",
-    explanation:"Start with small examples. Understand what each line does instead of memorizing code. Then modify the example and observe the result.",
-    code:`// Basic learning example
+let courseKey = (params.get("course") || "python").toLowerCase().trim();
 
-console.log("Hello Developer");
-
-// Create a value
-let name = "Priyanshu";
-
-console.log(name);`,
-    practice:[
-      "Write a basic program using the technology.",
-      "Create and print a value.",
-      "Modify the example with your own data.",
-      "Explain the program in your own words."
-    ],
-    question:"What is the best way to learn a programming technology?",
-    options:[
-      "Only memorize syntax",
-      "Understand concepts and practice with code",
-      "Only watch videos",
-      "Avoid projects"
-    ],
-    answer:1
-  },
-
-  data:{
-    concept:"Data types define what kind of information a program works with. Understanding values and conversion is important for reliable programs.",
-    explanation:"Different languages represent numbers, text, boolean values and collections differently. Learn the type system of the language you are using.",
-    code:`let name = "Priyanshu";
-let age = 23;
-let active = true;
-
-console.log(name);
-console.log(age);
-console.log(active);`,
-    practice:[
-      "Create a text value.",
-      "Create a numeric value.",
-      "Create a boolean value.",
-      "Convert one value into another appropriate type."
-    ],
-    question:"Why are data types important?",
-    options:[
-      "They define how values are represented and used",
-      "They only change colors",
-      "They are only for comments",
-      "They are not important"
-    ],
-    answer:0
-  },
-
-  control:{
-    concept:"Control flow determines which statements execute and how often they execute.",
-    explanation:"Conditions are used for decisions. Loops are used for repetition. Together they form the basic logic of most programs.",
-    code:`let marks = 75;
-
-if (marks >= 40) {
-  console.log("Pass");
-} else {
-  console.log("Fail");
+if(!COURSE_INFO[courseKey]){
+  courseKey = "python";
 }
 
-for (let i = 1; i <= 5; i++) {
-  console.log(i);
+const COURSE = COURSE_INFO[courseKey];
+
+
+/* ------------------------------------------------------------
+   GENERATE REAL LESSON CONTENT
+------------------------------------------------------------ */
+
+function makeCode(){
+
+  const examples = {
+
+    python:`name = "Priyanshu"
+age = 23
+
+print("Hello", name)
+print("Age:", age)`,
+
+    java:`public class Main {
+    public static void main(String[] args) {
+        String name = "Priyanshu";
+        int age = 23;
+
+        System.out.println(name);
+        System.out.println(age);
+    }
 }`,
-    practice:[
-      "Create an even/odd checker.",
-      "Create a pass/fail checker.",
-      "Print numbers from 1 to 10.",
-      "Create a multiplication table."
-    ],
-    question:"What is a loop mainly used for?",
-    options:[
-      "Repeating a block of code",
-      "Deleting a program",
-      "Changing the computer",
-      "Creating an image"
-    ],
-    answer:0
-  },
 
-  functions:{
-    concept:"Functions group reusable logic into a named unit.",
-    explanation:"Good functions usually perform a focused task. They can accept input and return output.",
-    code:`function add(a, b) {
-  return a + b;
-}
+    cpp:`#include <iostream>
+using namespace std;
 
-const result = add(10, 20);
+int main() {
+    string name = "Priyanshu";
+    int age = 23;
 
-console.log(result);`,
-    practice:[
-      "Create an addition function.",
-      "Create a square function.",
-      "Create an even/odd function.",
-      "Create a function that returns the larger number."
-    ],
-    question:"What is a major advantage of functions?",
-    options:[
-      "Code reuse",
-      "More bugs",
-      "Less organization",
-      "No output"
-    ],
-    answer:0
-  },
+    cout << name << endl;
+    cout << age << endl;
 
-  oop:{
-    concept:"Object-oriented programming organizes software around objects containing data and behavior.",
-    explanation:"Classes describe the structure. Objects are instances created from those classes. Encapsulation, inheritance and polymorphism are important OOP concepts.",
-    code:`class Student {
+    return 0;
+}`,
 
-  constructor(name) {
-    this.name = name;
-  }
+    c:`#include <stdio.h>
 
-  introduce() {
-    console.log("Hello " + this.name);
-  }
-}
+int main() {
+    char name[] = "Priyanshu";
+    int age = 23;
 
-const student =
-  new Student("Priyanshu");
+    printf("%s\\n", name);
+    printf("%d\\n", age);
 
-student.introduce();`,
-    practice:[
-      "Create a Student class.",
-      "Create a BankAccount class.",
-      "Add methods to your class.",
-      "Create multiple objects."
-    ],
-    question:"What is an object?",
-    options:[
-      "An instance of a class",
-      "Only a comment",
-      "A database",
-      "A compiler"
-    ],
-    answer:0
-  },
+    return 0;
+}`,
 
-  database:{
-    concept:"Databases store structured information so applications can create, read, update and delete data efficiently.",
-    explanation:"Learn tables, records, keys and relationships first. Then move to queries and optimization.",
-    code:`CREATE TABLE students (
-  id INT PRIMARY KEY,
-  name VARCHAR(100),
-  course VARCHAR(100)
-);
+    javascript:`const name = "Priyanshu";
+const age = 23;
 
-SELECT *
-FROM students;`,
-    practice:[
-      "Create a student table.",
-      "Insert five records.",
-      "Select records using conditions.",
-      "Update one record.",
-      "Delete one record."
-    ],
-    question:"What does SELECT do in SQL?",
-    options:[
-      "Reads data",
-      "Deletes a database",
-      "Creates a computer",
-      "Compiles Java"
-    ],
-    answer:0
-  },
+console.log("Name:", name);
+console.log("Age:", age);`,
 
-  algorithm:{
-    concept:"Algorithms are step-by-step procedures used to solve problems. Efficiency is commonly discussed using time and space complexity.",
-    explanation:"First understand the problem, then design a solution, analyze complexity and finally implement and test it.",
-    code:`function linearSearch(arr, target) {
-
-  for (let i = 0; i < arr.length; i++) {
-
-    if (arr[i] === target) {
-      return i;
-    }
-
-  }
-
-  return -1;
-}
-
-console.log(
-  linearSearch([10,20,30], 20)
-);`,
-    practice:[
-      "Implement linear search.",
-      "Implement binary search.",
-      "Find the maximum element.",
-      "Reverse an array.",
-      "Analyze the time complexity."
-    ],
-    question:"What does Big O describe?",
-    options:[
-      "Algorithm growth/complexity",
-      "Font size",
-      "Database color",
-      "File name"
-    ],
-    answer:0
-  },
-
-  web:{
-    concept:"Web development combines structure, styling and behavior to create browser applications.",
-    explanation:"HTML defines structure, CSS controls presentation and JavaScript adds interaction.",
-    code:`<!DOCTYPE html>
+    html:`<!DOCTYPE html>
 <html>
-
 <head>
-  <title>Developer</title>
+  <title>My Website</title>
 </head>
-
 <body>
-
-  <h1>Priyanshu Hub</h1>
-
-  <button onclick="hello()">
-    Click Me
-  </button>
-
-  <script>
-    function hello() {
-      alert("Hello Developer!");
-    }
-  </script>
-
+  <h1>Hello Priyanshu</h1>
+  <p>Welcome to my website.</p>
 </body>
 </html>`,
-    practice:[
-      "Create a personal webpage.",
-      "Add navigation.",
-      "Create a form.",
-      "Add CSS styling.",
-      "Add JavaScript interaction."
-    ],
-    question:"Which technology primarily defines webpage structure?",
-    options:[
-      "HTML",
-      "CSS",
-      "SQL",
-      "Git"
-    ],
-    answer:0
-  },
 
-  api:{
-    concept:"An API allows different software systems to communicate using defined requests and responses.",
-    explanation:"A common web API uses HTTP methods such as GET, POST, PUT and DELETE and often exchanges JSON.",
-    code:`fetch("/api/users")
-  .then(response => response.json())
-  .then(data => {
-    console.log(data);
-  })
-  .catch(error => {
-    console.error(error);
-  });`,
-    practice:[
-      "Understand GET requests.",
-      "Understand POST requests.",
-      "Read a JSON response.",
-      "Handle API errors.",
-      "Build a small REST API."
-    ],
-    question:"What is commonly used to represent API data?",
-    options:[
-      "JSON",
-      "MP3",
-      "PNG",
-      "EXE"
-    ],
-    answer:0
-  },
-
-  security:{
-    concept:"Application security focuses on protecting data, users and systems from unauthorized access and misuse.",
-    explanation:"Secure applications validate input, authenticate users, authorize actions, protect secrets and use secure communication.",
-    code:`// Never trust user input blindly
-
-function validateUsername(name) {
-
-  if (!name || name.length < 3) {
-    return false;
-  }
-
-  return true;
+    css:`body {
+  background: #080b18;
+  color: white;
+  font-family: Arial;
 }
 
-console.log(
-  validateUsername("Priyanshu")
+.card {
+  padding: 20px;
+  border-radius: 15px;
+}`,
+
+    sql:`CREATE TABLE students (
+  id INT PRIMARY KEY,
+  name VARCHAR(100),
+  marks INT
+);
+
+SELECT * FROM students
+WHERE marks >= 60;`,
+
+    dsa:`int arr[] = {10, 20, 30, 40, 50};
+
+for(int i = 0; i < 5; i++) {
+    cout << arr[i] << endl;
+}`,
+
+    dbms:`CREATE TABLE users (
+  id INT PRIMARY KEY,
+  name VARCHAR(100),
+  email VARCHAR(150) UNIQUE
 );`,
-    practice:[
-      "Validate user input.",
-      "Learn authentication vs authorization.",
-      "Understand password hashing.",
-      "Learn HTTPS.",
-      "Study secure API design."
-    ],
-    question:"Should passwords be stored as plain text?",
-    options:[
-      "Yes",
-      "No",
-      "Only in Excel",
-      "Only in frontend"
-    ],
-    answer:1
-  },
 
-  project:{
-    concept:"Projects combine multiple concepts into one practical application. They are useful for building implementation skills and a portfolio.",
-    explanation:"Plan the requirements, design the solution, implement features, test the application and document the result.",
-    code:`// Project planning example
+    react:`function App() {
+  return (
+    <div>
+      <h1>Priyanshu Study Hub</h1>
+      <p>Learn React</p>
+    </div>
+  );
+}
 
-const project = {
-  name: "Student Management System",
-  features: [
-    "Register Student",
-    "Search Student",
-    "Update Student",
-    "Delete Student"
-  ]
-};
+export default App;`,
 
-console.log(project);`,
-    practice:[
-      "Choose a real-world problem.",
-      "Write requirements.",
-      "Create the project structure.",
-      "Implement the main feature.",
-      "Test the application.",
-      "Document the project on GitHub."
-    ],
-    question:"What makes a project useful for a developer portfolio?",
-    options:[
-      "Real problem + working implementation + documentation",
-      "Only a screenshot",
-      "Only copied code",
-      "No README"
-    ],
-    answer:0
+    node:`const express = require("express");
+
+const app = express();
+
+app.get("/", (req, res) => {
+  res.json({ message: "API is working" });
+});
+
+app.listen(3000);`,
+
+    aiml:`from sklearn.linear_model import LogisticRegression
+
+model = LogisticRegression()
+
+model.fit(X_train, y_train)
+
+prediction = model.predict(X_test)
+
+print(prediction)`,
+
+    analytics:`import pandas as pd
+
+df = pd.read_csv("sales.csv")
+
+print(df.head())
+print(df.describe())
+
+summary = df.groupby("category")["sales"].sum()
+
+print(summary)`,
+
+    cloud:`# Basic deployment workflow
+
+git add .
+git commit -m "Deploy application"
+git push origin main
+
+# Connect repository to your
+# cloud deployment platform.`,
+
+    cybersecurity:`import hashlib
+
+password = "example-password"
+
+hashed = hashlib.sha256(
+    password.encode()
+).hexdigest()
+
+print(hashed)`,
+
+    interview:`Question:
+Explain your project in 60 seconds.
+
+Structure:
+1. Problem
+2. Technology
+3. Your contribution
+4. Result
+5. Future improvement`
+  };
+
+  return examples[courseKey] || examples.python;
+}
+
+
+/* ------------------------------------------------------------
+   MODULE-SPECIFIC EXPLANATIONS
+------------------------------------------------------------ */
+
+function moduleDetails(title,index){
+
+  const first = index === 0;
+  const last = index === COURSE.modules.length - 1;
+
+  let concept =
+    `${title} is an important part of ${COURSE.name}. ` +
+    `In this module you will understand the core concepts, learn the correct syntax or workflow, ` +
+    `practice common problems and apply the concept to a small practical task.`;
+
+  if(first){
+    concept =
+      `Welcome to ${COURSE.name}. Start by understanding the fundamentals before moving to advanced topics. ` +
+      `Strong fundamentals make debugging, problem solving, interviews and project development much easier.`;
   }
 
-};
+  if(last){
+    concept =
+      `This is the project and application stage of ${COURSE.name}. ` +
+      `The goal is to combine the concepts learned throughout the course into a practical project.`;
+  }
 
+  return {
+    concept,
 
-/* ==========================================================
-   COURSE-SPECIFIC TOPIC MAPPING
-========================================================== */
+    points:[
+      `Understand the purpose of ${title}.`,
+      `Learn the important terminology and workflow.`,
+      `Study a practical example.`,
+      `Solve the practice tasks without copying the solution.`,
+      `Revise the module before moving to the next topic.`
+    ],
 
-function getTemplate(course,index){
+    code:makeCode(),
 
-  const name =
-    course.name.toLowerCase();
+    practices:[
+      `Create your own example using ${title}.`,
+      `Modify the example and observe the output.`,
+      `Solve one problem without looking at the solution.`,
+      `Explain this topic in your own words.`,
+      `Use this concept in a small project.`
+    ],
 
-  if(index === course.modules.length - 1)
-    return LESSON_TEMPLATES.project;
-
-  if(
-    name.includes("sql") ||
-    name.includes("dbms")
-  )
-    return LESSON_TEMPLATES.database;
-
-  if(
-    name.includes("dsa") ||
-    name.includes("c++")
-  )
-    return LESSON_TEMPLATES.algorithm;
-
-  if(
-    name.includes("html") ||
-    name.includes("css") ||
-    name.includes("javascript") ||
-    name.includes("react") ||
-    name.includes("node")
-  )
-    return LESSON_TEMPLATES.web;
-
-  if(
-    name.includes("cyber")
-  )
-    return LESSON_TEMPLATES.security;
-
-  if(
-    name.includes("cloud")
-  )
-    return LESSON_TEMPLATES.api;
-
-  if(
-    index === 0
-  )
-    return LESSON_TEMPLATES.fundamentals;
-
-  if(
-    index === 1
-  )
-    return LESSON_TEMPLATES.data;
-
-  if(
-    index === 2 ||
-    index === 3
-  )
-    return LESSON_TEMPLATES.control;
-
-  if(
-    index === 4
-  )
-    return LESSON_TEMPLATES.functions;
-
-  if(
-    index === 5 ||
-    index === 6
-  )
-    return LESSON_TEMPLATES.oop;
-
-  return LESSON_TEMPLATES.functions;
+    quiz:[
+      {
+        q:`What is the main purpose of studying ${title}?`,
+        options:[
+          "To understand and apply the concept",
+          "To avoid writing code",
+          "Only to memorize definitions",
+          "To skip practical work"
+        ],
+        answer:0
+      },
+      {
+        q:`What should you do after learning a new concept?`,
+        options:[
+          "Never practice it",
+          "Practice and apply it",
+          "Only memorize the name",
+          "Skip revision"
+        ],
+        answer:1
+      }
+    ]
+  };
 }
 
 
-/* ==========================================================
-   URL COURSE
-========================================================== */
-
-const params =
-  new URLSearchParams(
-    window.location.search
-  );
-
-let courseKey =
-  params.get("course") ||
-  "python";
-
-courseKey =
-  courseKey.toLowerCase();
-
-const course =
-  COURSE_DATA[courseKey] ||
-  COURSE_DATA.python;
-
-
-/* ==========================================================
+/* ------------------------------------------------------------
    STATE
-========================================================== */
+------------------------------------------------------------ */
 
-let currentLesson = 0;
+let currentIndex = 0;
 
-const storageKey =
-  `pk_course_${courseKey}_completed`;
+const STORAGE_KEY =
+  "pk_course_progress_" + courseKey;
 
-let completed =
-  JSON.parse(
-    localStorage.getItem(storageKey) ||
-    "[]"
-  );
+let completed = JSON.parse(
+  localStorage.getItem(STORAGE_KEY) || "[]"
+);
 
 
-/* ==========================================================
-   ELEMENTS
-========================================================== */
+/* ------------------------------------------------------------
+   DOM
+------------------------------------------------------------ */
 
-const moduleList =
-  document.getElementById("moduleList");
-
-const lessonBody =
-  document.getElementById("lessonBody");
-
-const lessonTitle =
-  document.getElementById("lessonTitle");
-
-const lessonNumber =
-  document.getElementById("lessonNumber");
-
-const completeBtn =
-  document.getElementById("completeBtn");
+const moduleList = document.getElementById("moduleList");
+const lessonContent = document.getElementById("lessonContent");
+const completeBtn = document.getElementById("completeBtn");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
 
 
-/* ==========================================================
+/* ------------------------------------------------------------
    COURSE HEADER
-========================================================== */
+------------------------------------------------------------ */
 
-function loadCourseInfo(){
+document.getElementById("courseTitle").textContent = COURSE.name;
+document.getElementById("sideCourseName").textContent = COURSE.name;
+document.getElementById("courseIcon").textContent = COURSE.icon;
 
-  document.title =
-    `${course.name} | Priyanshu Study Hub`;
+document.getElementById("courseDescription").textContent =
+  COURSE.desc;
 
-  document.getElementById(
-    "courseIcon"
-  ).textContent =
-    course.icon;
+document.getElementById("sideCourseDesc").textContent =
+  COURSE.desc;
 
-  document.getElementById(
-    "sideCourseName"
-  ).textContent =
-    course.name;
+document.getElementById("moduleCount").textContent =
+  COURSE.modules.length;
 
-  document.getElementById(
-    "sideCourseDescription"
-  ).textContent =
-    course.description;
+document.getElementById("lessonCount").textContent =
+  COURSE.modules.length;
 
-  document.getElementById(
-    "heroBadge"
-  ).textContent =
-    `${course.name.toUpperCase()} • COMPLETE COURSE`;
+document.getElementById("practiceCount").textContent =
+  COURSE.modules.length * 5 + "+";
 
-  document.getElementById(
-    "heroTitle"
-  ).textContent =
-    `Master ${course.name}`;
+document.getElementById("projectCount").textContent =
+  Math.max(3, Math.ceil(COURSE.modules.length / 3)) + "+";
 
-  document.getElementById(
-    "heroDescription"
-  ).textContent =
-    course.description +
-    " Learn step-by-step with concepts, examples, practice and quizzes.";
 
-  document.getElementById(
-    "statModules"
-  ).textContent =
-    course.modules.length;
+/* ------------------------------------------------------------
+   SAVE
+------------------------------------------------------------ */
 
-  document.getElementById(
-    "statLessons"
-  ).textContent =
-    course.modules.length;
+function saveProgress(){
 
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(completed)
+  );
 }
 
 
-/* ==========================================================
-   SIDEBAR
-========================================================== */
+/* ------------------------------------------------------------
+   PROGRESS
+------------------------------------------------------------ */
 
-function buildSidebar(){
+function updateProgress(){
+
+  const total = COURSE.modules.length;
+
+  const percent =
+    Math.round((completed.length / total) * 100);
+
+  document.getElementById("progressPercent")
+    .textContent = percent + "%";
+
+  document.getElementById("progressFill")
+    .style.width = percent + "%";
+
+  if(percent === 100){
+
+    document
+      .getElementById("certificate")
+      .classList.add("show");
+
+  }else{
+
+    document
+      .getElementById("certificate")
+      .classList.remove("show");
+
+  }
+
+  renderModuleList();
+}
+
+
+/* ------------------------------------------------------------
+   MODULE LIST
+------------------------------------------------------------ */
+
+function renderModuleList(){
 
   moduleList.innerHTML = "";
 
-  course.modules.forEach(
-    (module,index)=>{
+  COURSE.modules.forEach((module,index)=>{
 
-      const button =
-        document.createElement("button");
+    const btn = document.createElement("button");
 
-      button.className =
-        "module-btn";
+    btn.className = "module-btn";
 
-      if(index === currentLesson)
-        button.classList.add("active");
+    if(index === currentIndex)
+      btn.classList.add("active");
 
-      const isDone =
-        completed.includes(index);
+    if(completed.includes(index))
+      btn.classList.add("done");
 
-      button.innerHTML = `
-        <span>
-          ${String(index+1).padStart(2,"0")}
-        </span>
+    btn.innerHTML =
+      `${completed.includes(index) ? "✓ " : ""}Module ${String(index+1).padStart(2,"0")}
+       <small>${module[0]}</small>`;
 
-        <span>
-          ${escapeHTML(module[0])}
-        </span>
+    btn.onclick = ()=>{
+      currentIndex = index;
+      renderLesson();
+      document.getElementById("sidebar")
+        .classList.remove("open");
+    };
 
-        ${
-          isDone
-          ? `<span class="module-check">✓</span>`
-          : ""
-        }
-      `;
+    moduleList.appendChild(btn);
 
-      button.addEventListener(
-        "click",
-        ()=>{
-          currentLesson = index;
-          renderLesson();
-          closeMenu();
-        }
-      );
-
-      moduleList.appendChild(button);
-
-    }
-  );
-
+  });
 }
 
 
-/* ==========================================================
+/* ------------------------------------------------------------
    RENDER LESSON
-========================================================== */
+------------------------------------------------------------ */
 
 function renderLesson(){
 
-  const module =
-    course.modules[currentLesson];
+  const module = COURSE.modules[currentIndex];
 
-  const template =
-    getTemplate(
-      course,
-      currentLesson
-    );
+  const title = module[0];
+  const description = module[1];
 
+  const details =
+    moduleDetails(title,currentIndex);
 
-  lessonNumber.textContent =
-    `MODULE ${String(currentLesson+1).padStart(2,"0")}`;
+  document.getElementById("moduleNumber").textContent =
+    `MODULE ${String(currentIndex+1).padStart(2,"0")}`;
 
+  document.getElementById("lessonTitle").textContent =
+    title;
 
-  lessonTitle.textContent =
-    module[0];
+  document.getElementById("lessonSubtitle").textContent =
+    description;
 
+  let html = "";
 
-  lessonBody.innerHTML = `
-
-    <div class="block">
-
-      <h3>📚 Concept</h3>
-
-      <p>
-        ${template.concept}
-      </p>
-
+  html += `
+    <div class="section">
+      <h3>📖 What You Will Learn</h3>
+      <p>${details.concept}</p>
     </div>
-
-
-    <div class="block">
-
-      <h3>💡 Easy Explanation</h3>
-
-      <p>
-        ${template.explanation}
-      </p>
-
-      <div class="note">
-        💡 <strong>Learning Tip:</strong>
-        Don't just copy the code. Change the values,
-        experiment with it and understand the output.
-      </div>
-
-    </div>
-
-
-    <div class="block">
-
-      <h3>💻 Code Example</h3>
-
-      <pre><code id="codeBlock">${escapeHTML(
-        template.code
-      )}</code></pre>
-
-      <button
-        class="copy"
-        onclick="copyCode()"
-      >
-        📋 Copy Code
-      </button>
-
-    </div>
-
-
-    <div class="block">
-
-      <h3>🧪 Practice Tasks</h3>
-
-      <div class="practice">
-
-        <ol>
-          ${
-            template.practice
-              .map(
-                task =>
-                  `<li>${escapeHTML(task)}</li>`
-              )
-              .join("")
-          }
-        </ol>
-
-      </div>
-
-    </div>
-
-
-    <div class="block">
-
-      <h3>🎯 Quick Quiz</h3>
-
-      <div class="quiz">
-
-        <div class="question">
-          ${escapeHTML(
-            template.question
-          )}
-        </div>
-
-        ${
-          template.options
-            .map(
-              (option,index)=>`
-                <button
-                  class="option"
-                  onclick="checkAnswer(${index},this)"
-                >
-                  ${escapeHTML(option)}
-                </button>
-              `
-            )
-            .join("")
-        }
-
-        <div
-          class="quiz-result"
-          id="quizResult"
-        ></div>
-
-      </div>
-
-    </div>
-
   `;
 
+  html += `
+    <div class="section">
+      <h3>🎯 Learning Objectives</h3>
+      <ul class="points">
+        ${details.points.map(x=>`<li>${x}</li>`).join("")}
+      </ul>
+    </div>
+  `;
 
-  updateCompleteButton();
-  buildSidebar();
+  html += `
+    <div class="section">
+      <h3>💡 Important Note</h3>
+      <div class="note">
+        Do not only read the material. Type the examples yourself,
+        change the values, create mistakes intentionally and understand
+        why the program or workflow behaves that way.
+      </div>
+    </div>
+  `;
+
+  html += `
+    <div class="section">
+      <h3>💻 Practical Example</h3>
+
+      <div class="code">
+
+        <div class="code-top">
+          <span>${COURSE.name} Example</span>
+          <button class="copy" onclick="copyCode()">
+            Copy Code
+          </button>
+        </div>
+
+        <pre id="codeBlock"></pre>
+
+      </div>
+    </div>
+  `;
+
+  html += `
+    <div class="section">
+      <h3>✍️ Practice Tasks</h3>
+
+      <div class="practice-grid">
+
+        ${details.practices.map((p,i)=>`
+
+          <div class="practice">
+            <b>Task ${i+1}</b>
+            <p>${p}</p>
+          </div>
+
+        `).join("")}
+
+      </div>
+    </div>
+  `;
+
+  html += `
+    <div class="section">
+
+      <h3>🧠 Quick Quiz</h3>
+
+      ${details.quiz.map((q,qi)=>`
+
+        <div class="quiz" style="margin-top:12px">
+
+          <div class="question">
+            ${qi+1}. ${q.q}
+          </div>
+
+          ${q.options.map((option,oi)=>`
+
+            <button
+              class="option"
+              onclick="answerQuiz(this,${oi},${q.answer})"
+            >
+              ${option}
+            </button>
+
+          `).join("")}
+
+          <div class="quiz-result"></div>
+
+        </div>
+
+      `).join("")}
+
+    </div>
+  `;
+
+  if(currentIndex === COURSE.modules.length-1){
+
+    html += `
+      <div class="section">
+
+        <h3>🚀 Final Project Challenge</h3>
+
+        <div class="note">
+
+          Build a small real-world project using the concepts
+          from this course.
+
+          <br><br>
+
+          <b>Project requirements:</b>
+
+          <br>
+          • Use the concepts from previous modules.
+          <br>
+          • Add input validation where applicable.
+          <br>
+          • Handle errors properly.
+          <br>
+          • Write clean and readable code.
+          <br>
+          • Add a README.
+          <br>
+          • Upload the project to GitHub.
+
+        </div>
+
+      </div>
+    `;
+
+  }
+
+  lessonContent.innerHTML = html;
+
+  document.getElementById("codeBlock").textContent =
+    details.code;
+
+  updateButtons();
   updateProgress();
 
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
 }
 
 
-/* ==========================================================
+/* ------------------------------------------------------------
+   COPY CODE
+------------------------------------------------------------ */
+
+function copyCode(){
+
+  const code =
+    document.getElementById("codeBlock").textContent;
+
+  navigator.clipboard.writeText(code)
+    .then(()=>{
+      showToast("✓ Code copied");
+    })
+    .catch(()=>{
+      showToast("Copy failed");
+    });
+}
+
+
+/* ------------------------------------------------------------
+   QUIZ
+------------------------------------------------------------ */
+
+function answerQuiz(button,selected,correct){
+
+  const quiz = button.parentElement;
+
+  const options =
+    quiz.querySelectorAll(".option");
+
+  options.forEach(x=>{
+    x.disabled = true;
+  });
+
+  const result =
+    quiz.querySelector(".quiz-result");
+
+  if(selected === correct){
+
+    button.classList.add("correct");
+
+    result.textContent =
+      "✓ Correct answer!";
+
+    result.style.color =
+      "#4ade80";
+
+  }else{
+
+    button.classList.add("wrong");
+
+    options[correct].classList.add("correct");
+
+    result.textContent =
+      "✗ Incorrect. Correct answer highlighted.";
+
+    result.style.color =
+      "#f87171";
+  }
+}
+
+
+/* ------------------------------------------------------------
    COMPLETE
-========================================================== */
+------------------------------------------------------------ */
 
-function completeLesson(){
+completeBtn.onclick = function(){
 
-  if(
-    !completed.includes(
-      currentLesson
-    )
-  ){
+  if(!completed.includes(currentIndex)){
 
-    completed.push(
-      currentLesson
+    completed.push(currentIndex);
+
+    completed.sort((a,b)=>a-b);
+
+    saveProgress();
+
+    showToast(
+      `✓ Module ${currentIndex+1} completed`
     );
 
-    localStorage.setItem(
-      storageKey,
-      JSON.stringify(completed)
-    );
+  }else{
+
+    showToast("✓ Module already completed");
 
   }
 
-  updateCompleteButton();
   updateProgress();
-  buildSidebar();
+
+  updateButtons();
+};
 
 
-  if(
-    currentLesson <
-    course.modules.length - 1
-  ){
+/* ------------------------------------------------------------
+   NEXT
+------------------------------------------------------------ */
 
-    setTimeout(
-      ()=>{
-        nextLesson();
-      },
-      500
-    );
+nextBtn.onclick = function(){
+
+  if(currentIndex < COURSE.modules.length-1){
+
+    currentIndex++;
+
+    renderLesson();
+
+  }else{
+
+    if(completed.length === COURSE.modules.length){
+
+      showToast(
+        "🏆 Course completed!"
+      );
+
+    }else{
+
+      showToast(
+        "Complete all modules to finish the course."
+      );
+
+    }
+
+  }
+};
+
+
+/* ------------------------------------------------------------
+   PREVIOUS
+------------------------------------------------------------ */
+
+prevBtn.onclick = function(){
+
+  if(currentIndex > 0){
+
+    currentIndex--;
+
+    renderLesson();
 
   }
 
-}
+};
 
 
-/* ==========================================================
-   COMPLETE BUTTON
-========================================================== */
+/* ------------------------------------------------------------
+   BUTTON STATE
+------------------------------------------------------------ */
 
-function updateCompleteButton(){
+function updateButtons(){
 
-  if(
-    completed.includes(
-      currentLesson
-    )
-  ){
+  prevBtn.disabled =
+    currentIndex === 0;
+
+  nextBtn.textContent =
+    currentIndex === COURSE.modules.length-1
+      ? "Finish →"
+      : "Next →";
+
+  if(completed.includes(currentIndex)){
 
     completeBtn.textContent =
       "✓ Completed";
 
-    completeBtn.classList.add(
-      "completed"
-    );
+    completeBtn.classList.add("complete");
 
   }else{
 
     completeBtn.textContent =
       "✓ Mark Complete";
 
-    completeBtn.classList.remove(
-      "completed"
-    );
-
   }
 
 }
 
 
-/* ==========================================================
-   PROGRESS
-========================================================== */
+/* ------------------------------------------------------------
+   TOAST
+------------------------------------------------------------ */
 
-function updateProgress(){
+function showToast(message){
 
-  const total =
-    course.modules.length;
+  const toast =
+    document.getElementById("toast");
 
-  const done =
-    completed.filter(
-      index =>
-        index >= 0 &&
-        index < total
-    ).length;
+  toast.textContent = message;
 
-  const percent =
-    Math.round(
-      (done / total) * 100
-    );
+  toast.classList.add("show");
 
-  document.getElementById(
-    "progressText"
-  ).textContent =
-    `${percent}%`;
-
-  document.getElementById(
-    "progressFill"
-  ).style.width =
-    `${percent}%`;
+  setTimeout(()=>{
+    toast.classList.remove("show");
+  },2200);
 
 }
 
 
-/* ==========================================================
-   NEXT / PREVIOUS
-========================================================== */
+/* ------------------------------------------------------------
+   CERTIFICATE
+------------------------------------------------------------ */
 
-function nextLesson(){
+function downloadCertificate(){
 
-  if(
-    currentLesson <
-    course.modules.length - 1
-  ){
+  if(completed.length !== COURSE.modules.length){
 
-    currentLesson++;
-
-    renderLesson();
-
-  }
-
-}
-
-
-function previousLesson(){
-
-  if(
-    currentLesson > 0
-  ){
-
-    currentLesson--;
-
-    renderLesson();
-
-  }
-
-}
-
-
-/* ==========================================================
-   QUIZ
-========================================================== */
-
-function checkAnswer(
-  selected,
-  button
-){
-
-  const template =
-    getTemplate(
-      course,
-      currentLesson
+    showToast(
+      "Complete all modules first."
     );
 
-  const options =
-    document.querySelectorAll(
-      ".option"
-    );
-
-  options.forEach(
-    option=>{
-      option.disabled = true;
-    }
-  );
-
-
-  const result =
-    document.getElementById(
-      "quizResult"
-    );
-
-
-  if(
-    selected ===
-    template.answer
-  ){
-
-    button.classList.add(
-      "correct"
-    );
-
-    result.textContent =
-      "✓ Correct! Excellent work.";
-
-    result.style.color =
-      "var(--green)";
-
-  }else{
-
-    button.classList.add(
-      "wrong"
-    );
-
-    options[
-      template.answer
-    ].classList.add(
-      "correct"
-    );
-
-    result.textContent =
-      "✗ Incorrect. The correct answer is highlighted.";
-
-    result.style.color =
-      "var(--red)";
-
-  }
-
-}
-
-
-/* ==========================================================
-   COPY
-========================================================== */
-
-async function copyCode(){
-
-  const block =
-    document.getElementById(
-      "codeBlock"
-    );
-
-  if(!block)
     return;
-
-  try{
-
-    await navigator.clipboard.writeText(
-      block.innerText
-    );
-
-    const button =
-      document.querySelector(
-        ".copy"
-      );
-
-    button.textContent =
-      "✓ Copied!";
-
-    setTimeout(
-      ()=>{
-        button.textContent =
-          "📋 Copy Code";
-      },
-      1500
-    );
-
-  }catch{
-
-    alert(
-      "Copy failed. Please copy manually."
-    );
-
   }
 
+  const name =
+    "Priyanshu Kumar";
+
+  const date =
+    new Date().toLocaleDateString(
+      "en-IN",
+      {
+        day:"2-digit",
+        month:"long",
+        year:"numeric"
+      }
+    );
+
+  const certificate = `
+
+PRIYANSHU STUDY HUB
+
+CERTIFICATE OF COMPLETION
+
+This certificate is proudly presented to
+
+${name}
+
+for successfully completing
+
+${COURSE.name}
+
+Course Completion: 100%
+
+Date: ${date}
+
+Learn • Practice • Build
+
+`;
+
+  const blob =
+    new Blob(
+      [certificate],
+      {type:"text/plain"}
+    );
+
+  const url =
+    URL.createObjectURL(blob);
+
+  const a =
+    document.createElement("a");
+
+  a.href = url;
+
+  a.download =
+    COURSE.name
+      .replace(/[^a-z0-9]/gi,"_")
+      + "_Certificate.txt";
+
+  a.click();
+
+  URL.revokeObjectURL(url);
+
+  showToast(
+    "🎓 Certificate generated"
+  );
 }
 
 
-/* ==========================================================
+/* ------------------------------------------------------------
    MOBILE MENU
-========================================================== */
+------------------------------------------------------------ */
 
-const menuBtn =
-  document.getElementById(
-    "menuBtn"
-  );
+document.getElementById("mobileMenu")
+  .onclick = ()=>{
 
+    document
+      .getElementById("sidebar")
+      .classList.toggle("open");
 
-function closeMenu(){
-
-  document.getElementById(
-    "sidebar"
-  ).classList.remove(
-    "open"
-  );
-
-}
+  };
 
 
-menuBtn.addEventListener(
-  "click",
-  ()=>{
-    document.getElementById(
-      "sidebar"
-    ).classList.toggle(
-      "open"
-    );
-  }
-);
-
-
-/* ==========================================================
-   ESCAPE HTML
-========================================================== */
-
-function escapeHTML(value){
-
-  return String(value)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-
-}
-
-
-/* ==========================================================
-   AUTH GUARD
-========================================================== */
+/* ------------------------------------------------------------
+   AUTH CHECK
+------------------------------------------------------------ */
 
 async function checkAuth(){
 
   const token =
-    sessionStorage.getItem(
-      "priynashu_access_token"
-    );
+    sessionStorage.getItem(TOKEN_KEY);
 
   if(!token){
 
-    window.location.replace(
-      "index.html"
-    );
+    window.location.href =
+      "index.html";
 
     return false;
-
   }
 
   try{
 
     const response =
       await fetch(
-        "https://priyanshu-secure-auth.onrender.com/api/me",
+        API_URL + "/api/me",
         {
           headers:{
             Authorization:
-              `Bearer ${token}`
+              "Bearer " + token
           }
         }
       );
@@ -2131,54 +1803,56 @@ async function checkAuth(){
     if(!response.ok){
 
       sessionStorage.removeItem(
-        "priynashu_access_token"
+        TOKEN_KEY
       );
 
       sessionStorage.removeItem(
         "priynashu_user"
       );
 
-      window.location.replace(
-        "index.html"
-      );
+      window.location.href =
+        "index.html";
 
       return false;
-
     }
+
+    return true;
 
   }catch(error){
 
     console.warn(
-      "Auth verification unavailable:",
+      "Auth check failed:",
       error
     );
 
+    /*
+      If Render is sleeping, don't immediately
+      destroy a valid local session.
+    */
+
+    return true;
   }
-
-  return true;
-
 }
 
 
-/* ==========================================================
+/* ------------------------------------------------------------
    START
-========================================================== */
+------------------------------------------------------------ */
 
-async function init(){
+async function start(){
 
   const authenticated =
     await checkAuth();
 
-  if(!authenticated)
-    return;
+  if(!authenticated) return;
 
-  loadCourseInfo();
+  renderModuleList();
+
   renderLesson();
 
 }
 
-
-init();
+start();
 
 </script>
 
