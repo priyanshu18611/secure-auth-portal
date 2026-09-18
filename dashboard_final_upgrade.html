@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Priyanshu Hub — Developer Learning OS">
+<title>Priyanshu Hub | Developer Learning OS</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#050711;--panel:#0d1120;--panel2:#11172a;--line:rgba(255,255,255,.09);--text:#f7f8ff;--muted:#8994ad;--purple:#7c3aed;--blue:#2563eb;--cyan:#06b6d4;--green:#22c55e;--yellow:#f59e0b;--red:#ef4444}
+html{scroll-behavior:smooth}body{min-height:100vh;background:radial-gradient(circle at 12% 0%,rgba(124,58,237,.2),transparent 28%),radial-gradient(circle at 90% 80%,rgba(6,182,212,.12),transparent 30%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,textarea,select{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:270px;padding:18px 13px;background:rgba(5,7,17,.96);border-right:1px solid var(--line);z-index:100;backdrop-filter:blur(24px);transition:.3s}
+.brand{display:flex;gap:11px;align-items:center;padding:4px 7px 18px}.logo,.avatar{display:grid;place-items:center;background:linear-gradient(135deg,var(--purple),var(--blue));font-weight:900;box-shadow:0 12px 35px rgba(124,58,237,.25)}
+.logo{width:46px;height:46px;border-radius:14px}.brand strong{font-size:12px}.brand small{display:block;color:var(--muted);font-size:8px;letter-spacing:1.3px;margin-top:3px}
+.nav{height:calc(100vh - 85px);overflow:auto}.nav-title{margin:16px 8px 7px;color:#505b73;font-size:8px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}.nav-btn{width:100%;display:flex;align-items:center;gap:10px;border:1px solid transparent;background:transparent;color:#8b95ab;padding:10px 11px;border-radius:10px;margin-bottom:3px;text-align:left;font-size:10px}.nav-btn:hover,.nav-btn.active{color:#fff;background:rgba(124,58,237,.15);border-color:rgba(124,58,237,.22)}.nav-icon{width:22px;text-align:center;font-size:14px}
+.main{margin-left:270px;min-height:100vh;padding:20px;max-width:1700px}.topbar{display:flex;gap:10px;align-items:center;margin-bottom:18px;position:sticky;top:10px;z-index:50}.mobile-menu{display:none;width:42px;height:42px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);color:#fff}.search{flex:1;position:relative}.search span{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#64708a}.search input{width:100%;padding:13px 15px 13px 42px;border:1px solid var(--line);border-radius:14px;background:rgba(9,12,24,.9);outline:none;color:#fff}.search input:focus{border-color:rgba(124,58,237,.55)}.top-actions{display:flex;gap:8px}.icon-btn{width:42px;height:42px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:#fff}.user{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:10px}.avatar{width:40px;height:40px;border-radius:12px;font-size:12px}
+.page{display:none}.page.active{display:block}
+.hero{position:relative;overflow:hidden;padding:30px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(135deg,rgba(124,58,237,.17),rgba(37,99,235,.07)),var(--panel);margin-bottom:15px}.hero:after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;right:-50px;top:-70px;background:rgba(124,58,237,.18);filter:blur(8px)}.eyebrow{color:#b7a1ff;font-size:9px;letter-spacing:1.5px;font-weight:900;text-transform:uppercase}.hero h1{font-size:clamp(27px,4vw,42px);line-height:1.1;margin-top:8px}.hero p{max-width:850px;margin-top:10px;color:var(--muted);font-size:12px;line-height:1.7}.hero-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}.btn{border:1px solid var(--line);background:rgba(255,255,255,.05);color:#fff;padding:11px 14px;border-radius:10px;font-size:10px;font-weight:800}.btn.primary{border:0;background:linear-gradient(135deg,var(--purple),var(--blue))}.btn.success{background:rgba(34,197,94,.13);border-color:rgba(34,197,94,.25)}.btn.danger{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.2)}
+.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px}.stat{padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--panel)}.stat-icon{font-size:19px}.stat strong{display:block;font-size:21px;margin-top:7px}.stat small{color:var(--muted);font-size:8px}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:22px 0 12px}.section-head h2{font-size:18px}.section-head p{color:var(--muted);font-size:10px;margin-top:4px}.section-head .mini{font-size:9px;color:#a78bfa}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.card{padding:18px;border:1px solid var(--line);border-radius:17px;background:var(--panel)}.card:hover,.course:hover,.tool:hover,.project:hover{border-color:rgba(124,58,237,.4);transform:translateY(-2px)}.card,.course,.tool,.project{transition:.22s}.card-title{display:flex;align-items:center;gap:9px}.card-title span{font-size:20px}.card-title strong{font-size:13px}.card p{color:var(--muted);font-size:10px;line-height:1.6;margin-top:7px}.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:11px}.tag{font-size:8px;color:#a5aec1;padding:5px 7px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.035);border-radius:7px}
+.course-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}.course{display:block;min-height:165px;padding:17px;border:1px solid var(--line);border-radius:17px;background:var(--panel);position:relative}.course-icon{width:45px;height:45px;display:grid;place-items:center;border-radius:13px;background:rgba(255,255,255,.055);font-size:22px}.course h3{font-size:13px;margin-top:12px}.course p{font-size:9px;color:var(--muted);line-height:1.5;margin-top:5px}.course-meta{display:flex;justify-content:space-between;margin-top:13px;color:#68738b;font-size:8px}.course-meta b{color:#a78bfa}.bar{height:5px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden;margin-top:9px}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--purple),var(--cyan));border-radius:99px;width:0}
+.feature-grid{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:11px}.tool{padding:17px;border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.02))}.tool .tool-icon{font-size:25px}.tool h3{font-size:13px;margin-top:9px}.tool p{font-size:9px;color:var(--muted);line-height:1.55;margin-top:5px}.tool button{margin-top:12px}
+.progress-card{display:grid;grid-template-columns:1fr 150px;gap:15px;align-items:center}.ring{width:110px;height:110px;border-radius:50%;display:grid;place-items:center;margin:auto;background:conic-gradient(var(--purple) var(--progress,0%),rgba(255,255,255,.07) 0)}.ring:before{content:"";position:absolute}.ring-inner{width:84px;height:84px;border-radius:50%;background:var(--panel);display:grid;place-items:center;font-size:17px;font-weight:900}.mission{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:10px}.mission:last-child{border-bottom:0}.mission input{accent-color:var(--purple)}.xp-row{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:9px}
+.project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.project{padding:17px;border:1px solid var(--line);border-radius:17px;background:var(--panel)}.project h3{font-size:13px}.project p{font-size:9px;color:var(--muted);line-height:1.6;margin-top:6px}.project-actions{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}.project-actions a,.project-actions button{font-size:8px;padding:7px 9px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:#cbd2df;border-radius:8px}
+.roadmap{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}.step{position:relative;padding:15px;border:1px solid var(--line);border-radius:14px;background:var(--panel);min-height:120px}.step-num{width:25px;height:25px;display:grid;place-items:center;border-radius:50%;background:rgba(124,58,237,.18);color:#c4b5fd;font-size:9px;font-weight:900}.step h4{font-size:11px;margin-top:10px}.step p{font-size:8px;color:var(--muted);line-height:1.5;margin-top:5px}.step.done{border-color:rgba(34,197,94,.3)}.step.done .step-num{background:rgba(34,197,94,.2);color:#86efac}
+.social-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.social{padding:18px;text-align:center;border:1px solid var(--line);border-radius:15px;background:var(--panel)}.social-icon{font-size:25px}.social span{display:block;margin-top:7px;color:#a5aec1;font-size:9px}
+.profile{padding:22px;border:1px solid var(--line);border-radius:20px;background:var(--panel)}.profile-top{display:flex;align-items:center;gap:14px}.profile-avatar{width:65px;height:65px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,var(--purple),var(--blue));font-weight:900;font-size:21px}.profile h2{font-size:20px}.profile-top p{color:var(--muted);font-size:10px;margin-top:4px}.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:18px}.info{padding:12px;border-radius:11px;background:rgba(255,255,255,.035)}.info label{display:block;color:#59647c;font-size:8px;text-transform:uppercase}.info span{display:block;margin-top:5px;font-size:10px}
+.modal{display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);padding:18px;align-items:center;justify-content:center}.modal.show{display:flex}.modal-box{width:min(760px,100%);max-height:90vh;overflow:auto;border:1px solid var(--line);border-radius:20px;background:#0b0f1d;box-shadow:0 30px 100px rgba(0,0,0,.55);padding:20px}.modal-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.modal-head h2{font-size:18px}.close{border:1px solid var(--line);background:rgba(255,255,255,.04);color:#fff;width:35px;height:35px;border-radius:10px}.modal-body{margin-top:15px}.modal-body p,.modal-body li{font-size:10px;color:var(--muted);line-height:1.7}.modal-body textarea,.modal-body input,.modal-body select{width:100%;border:1px solid var(--line);border-radius:10px;background:#080b16;color:#fff;padding:11px;outline:none}.modal-body textarea{min-height:130px;resize:vertical}.modal-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.result{margin-top:12px;padding:12px;border-radius:10px;background:#070a13;border:1px solid var(--line);white-space:pre-wrap;font:11px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;color:#cbd5e1}.answer{display:none;margin-top:10px;padding:12px;border-left:3px solid var(--purple);background:rgba(124,58,237,.08);border-radius:8px}.answer.show{display:block}.flash{padding:24px;text-align:center;border:1px solid var(--line);border-radius:15px;background:linear-gradient(135deg,rgba(124,58,237,.13),rgba(6,182,212,.05));min-height:170px;display:grid;place-items:center}.flash strong{font-size:18px}.flash small{display:block;color:var(--muted);margin-top:7px;font-size:9px}
+.toast{position:fixed;right:18px;bottom:18px;z-index:500;padding:12px 15px;border:1px solid var(--line);border-radius:12px;background:#101526;color:#fff;font-size:10px;box-shadow:0 15px 40px rgba(0,0,0,.35);transform:translateY(120px);opacity:0;transition:.25s}.toast.show{transform:none;opacity:1}
+.no-result{display:none;padding:30px;text-align:center;color:var(--muted)}.hidden{display:none!important}
+@media(max-width:1250px){.course-grid{grid-template-columns:repeat(3,1fr)}.stats{grid-template-columns:repeat(3,1fr)}.roadmap{grid-template-columns:repeat(3,1fr)}.feature-grid{grid-template-columns:1fr 1fr}.social-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:900px){.sidebar{transform:translateX(-105%)}.sidebar.open{transform:none}.main{margin-left:0;padding:14px}.mobile-menu{display:block}.overlay{display:none}.overlay.show{display:block;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:90}.course-grid,.project-grid{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:repeat(2,1fr)}.feature-grid{grid-template-columns:1fr}.topbar{top:4px}.user span{display:none}}
+@media(max-width:560px){.main{padding:10px}.hero{padding:21px}.hero h1{font-size:26px}.stats{grid-template-columns:repeat(2,1fr)}.course-grid,.project-grid,.grid{grid-template-columns:1fr}.roadmap{grid-template-columns:1fr}.social-grid{grid-template-columns:repeat(2,1fr)}.info-grid{grid-template-columns:1fr}.progress-card{grid-template-columns:1fr}.top-actions{display:none}.search input{padding-left:38px}.section-head{align-items:flex-start}.modal{padding:9px}}
+</style>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar">
+  <div class="brand"><div class="logo">PK</div><div><strong>PRIYANSHU HUB</strong><small>LEARN • PRACTICE • BUILD</small></div></div>
+  <nav class="nav">
+    <div class="nav-title">Main</div>
+    <button class="nav-btn active" data-page="home"><span class="nav-icon">🏠</span>Dashboard</button>
+    <button class="nav-btn" data-page="study"><span class="nav-icon">📚</span>Study Hub</button>
+    <button class="nav-btn" data-page="tools"><span class="nav-icon">⚡</span>Developer Tools</button>
+    <div class="nav-title">Learning</div>
+    <button class="nav-btn" data-page="programming"><span class="nav-icon">💻</span>Programming</button>
+    <button class="nav-btn" data-page="dsa"><span class="nav-icon">🧠</span>DSA</button>
+    <button class="nav-btn" data-page="dbms"><span class="nav-icon">🗄️</span>DBMS & SQL</button>
+    <button class="nav-btn" data-page="web"><span class="nav-icon">🌐</span>Web Development</button>
+    <button class="nav-btn" data-page="ai"><span class="nav-icon">🤖</span>AI / ML</button>
+    <button class="nav-btn" data-page="cloud"><span class="nav-icon">☁️</span>Cloud & DevOps</button>
+    <button class="nav-btn" data-page="security"><span class="nav-icon">🔐</span>Cybersecurity</button>
+    <div class="nav-title">Developer</div>
+    <button class="nav-btn" data-page="projects"><span class="nav-icon">🚀</span>My Projects</button>
+    <button class="nav-btn" data-page="certificates"><span class="nav-icon">🏆</span>Certificates</button>
+    <button class="nav-btn" data-page="roadmap"><span class="nav-icon">🗺️</span>Career Roadmap</button>
+    <button class="nav-btn" data-page="profile"><span class="nav-icon">👤</span>My Profile</button>
+    <button class="nav-btn" data-page="socials"><span class="nav-icon">🔗</span>My Socials</button>
+    <div class="nav-title">Career</div>
+    <button class="nav-btn" onclick="openCourse('interview')"><span class="nav-icon">🎤</span>Interview Prep</button>
+  </nav>
+</aside>
+<div class="overlay" id="overlay"></div>
+
+<main class="main">
+<header class="topbar">
+  <button class="mobile-menu" id="menuBtn">☰</button>
+  <div class="search"><span>🔎</span><input id="searchInput" type="search" placeholder="Search courses, skills, labs, projects..."></div>
+  <div class="top-actions"><button class="icon-btn" title="Daily mission" onclick="openModal('missionModal')">🎯</button><button class="icon-btn" title="Focus mode" onclick="openModal('focusModal')">⏱️</button></div>
+  <div class="user"><div class="avatar" id="avatar">PK</div><span id="userName">Loading...</span></div>
+</header>
+
+<section class="page active" id="page-home">
+  <div class="hero">
+    <div class="eyebrow">PRIYANSHU DEVELOPER OS</div>
+    <h1>Welcome back, <span id="welcomeName">Developer</span> 👋</h1>
+    <p>Your personal learning command center. Learn concepts, solve practical labs, practice interviews, build projects and track your developer journey from one place.</p>
+    <div class="hero-actions"><a class="btn primary" href="course.html?course=python">🐍 Continue Python</a><button class="btn" onclick="openModal('assistantModal')">🤖 Study Assistant</button><button class="btn" onclick="showPage('roadmap')">🗺️ Career Roadmap</button></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-icon">⚡</div><strong id="xpStat">0</strong><small>XP Earned</small></div>
+    <div class="stat"><div class="stat-icon">🔥</div><strong id="streakStat">0</strong><small>Day Streak</small></div>
+    <div class="stat"><div class="stat-icon">📚</div><strong id="courseStat">0</strong><small>Courses Started</small></div>
+    <div class="stat"><div class="stat-icon">🧪</div><strong id="labStat">0</strong><small>Labs Completed</small></div>
+    <div class="stat"><div class="stat-icon">🧠</div><strong id="quizStat">0%</strong><small>Quiz Accuracy</small></div>
+    <div class="stat"><div class="stat-icon">🏆</div><strong id="badgeStat">0</strong><small>Badges</small></div>
+  </div>
+
+  <div class="section-head"><div><h2>🚀 Your Learning Mission</h2><p>Small actions every day create real progress.</p></div><span class="mini" id="todayLabel"></span></div>
+  <div class="feature-grid">
+    <div class="card progress-card">
+      <div><div class="card-title"><span>📈</span><strong>Learning Momentum</strong></div><p id="momentumText">Start your first course to build your learning history.</p><div class="bar"><i id="overallBar"></i></div><div class="xp-row"><span id="overallText">0% overall</span><b id="levelText">Level 1</b></div><div class="tags"><span class="tag">Learn</span><span class="tag">Practice</span><span class="tag">Quiz</span><span class="tag">Interview</span></div></div>
+      <div class="ring" id="ring"><div class="ring-inner" id="ringText">0%</div></div>
+    </div>
+    <div class="card"><div class="card-title"><span>🎯</span><strong>Today's Mission</strong></div><div id="missionList"></div><button class="btn success" onclick="openModal('missionModal')">Open Mission →</button></div>
+    <div class="card"><div class="card-title"><span>🧠</span><strong>Weak Topic Radar</strong></div><p id="weakTopics">Complete quizzes to discover topics that need revision.</p><div class="tags" id="weakTags"></div><button class="btn" onclick="openModal('revisionModal')">Start Revision →</button></div>
+  </div>
+
+  <div class="section-head"><div><h2>⚡ Quick Actions</h2><p>Tools that actually do something.</p></div></div>
+  <div class="feature-grid">
+    <div class="tool"><div class="tool-icon">🧪</div><h3>Practical Lab</h3><p>Open a course and complete hands-on module tasks with progress tracking.</p><button class="btn primary" onclick="openCourse('python')">Open Lab →</button></div>
+    <div class="tool"><div class="tool-icon">💻</div><h3>JS Coding Arena</h3><p>Run JavaScript directly in your browser with a lightweight test/output panel.</p><button class="btn" onclick="openModal('codingModal')">Start Coding →</button></div>
+    <div class="tool"><div class="tool-icon">🎤</div><h3>Interview Practice</h3><p>Practice questions, reveal model answers and mark what needs revision.</p><button class="btn" onclick="openCourse('interview')">Practice →</button></div>
+  </div>
+
+  <div class="section-head"><div><h2>🔥 Continue Learning</h2><p>Popular tracks from your Developer OS.</p></div><span class="mini">17 tracks</span></div>
+  <div class="course-grid" id="homeCourses"></div>
+
+  <div class="section-head"><div><h2>🗺️ Developer Journey</h2><p>A practical route from fundamentals to projects.</p></div><button class="btn" onclick="showPage('roadmap')">Full Roadmap →</button></div>
+  <div class="roadmap" id="miniRoadmap"></div>
+
+  <div class="section-head"><div><h2>🚀 Featured Projects</h2><p>Real projects connected to your developer profile.</p></div><button class="btn" onclick="showPage('projects')">View All →</button></div>
+  <div class="project-grid" id="homeProjects"></div>
+</section>
+
+<section class="page" id="page-study">
+  <div class="hero"><div class="eyebrow">STUDY HUB</div><h1>📚 Learn Everything You Need</h1><p>Programming, computer science, development, data, AI, cloud, security and placement preparation.</p></div>
+  <div class="grid" id="studyGrid"></div>
+</section>
+
+<section class="page" id="page-tools">
+  <div class="hero"><div class="eyebrow">WORKING TOOLS</div><h1>⚡ Developer Toolkit</h1><p>Useful tools are connected to real actions instead of being decorative cards.</p></div>
+  <div class="feature-grid">
+    <div class="tool"><div class="tool-icon">🤖</div><h3>Study Assistant</h3><p>Enter a topic and get a structured local study explanation, example and next step.</p><button class="btn primary" onclick="openModal('assistantModal')">Ask Assistant</button></div>
+    <div class="tool"><div class="tool-icon">💻</div><h3>JavaScript Playground</h3><p>Execute JavaScript in an isolated browser function and inspect output/errors.</p><button class="btn" onclick="openModal('codingModal')">Open Playground</button></div>
+    <div class="tool"><div class="tool-icon">📝</div><h3>Notes Vault</h3><p>Save personal study notes in your browser and access them again.</p><button class="btn" onclick="openModal('notesModal')">Open Notes</button></div>
+    <div class="tool"><div class="tool-icon">🃏</div><h3>Flashcards</h3><p>Use active recall and keep a small revision deck locally.</p><button class="btn" onclick="openModal('flashModal')">Study Cards</button></div>
+    <div class="tool"><div class="tool-icon">⏱️</div><h3>Focus Mode</h3><p>Start a 25-minute or custom study session with an active countdown.</p><button class="btn" onclick="openModal('focusModal')">Start Focus</button></div>
+    <div class="tool"><div class="tool-icon">🏆</div><h3>Achievements</h3><p>Unlock milestones from real local learning activity.</p><button class="btn" onclick="openModal('badgeModal')">View Badges</button></div>
+  </div>
+</section>
+
+<section class="page" id="page-programming"><div class="hero"><div class="eyebrow">PROGRAMMING</div><h1>💻 Programming Languages</h1><p>Start from fundamentals and move toward projects.</p></div><div class="course-grid" id="programmingGrid"></div></section>
+<section class="page" id="page-dsa"><div class="hero"><div class="eyebrow">PROBLEM SOLVING</div><h1>🧠 Data Structures & Algorithms</h1><p>Arrays, strings, linked lists, stacks, queues, trees, graphs, greedy and dynamic programming.</p><a class="btn primary" href="course.html?course=dsa">Open Complete DSA →</a></div><div class="grid"><div class="card"><div class="card-title"><span>📦</span><strong>Core Patterns</strong></div><p>Two pointers, sliding window, prefix sum, hashing and binary search.</p></div><div class="card"><div class="card-title"><span>🌳</span><strong>Trees & Graphs</strong></div><p>Traversal, BST, heap, BFS, DFS and shortest-path concepts.</p></div><div class="card"><div class="card-title"><span>🧩</span><strong>Advanced</strong></div><p>Greedy, backtracking and dynamic programming patterns.</p></div></div></section>
+<section class="page" id="page-dbms"><div class="hero"><div class="eyebrow">DATA SYSTEMS</div><h1>🗄️ DBMS & SQL</h1><p>Relational databases, normalization, transactions, indexes, joins and analytical SQL.</p><div class="hero-actions"><a class="btn primary" href="course.html?course=sql">SQL Course →</a><a class="btn" href="course.html?course=dbms">DBMS Course →</a></div></div><div class="grid"><div class="card"><div class="card-title"><span>🔎</span><strong>SQL</strong></div><p>SELECT, JOIN, GROUP BY, subqueries, CTEs and window functions.</p></div><div class="card"><div class="card-title"><span>🏗️</span><strong>DBMS</strong></div><p>Keys, relationships, normalization, ACID, transactions and recovery.</p></div><div class="card"><div class="card-title"><span>⚡</span><strong>Performance</strong></div><p>Indexes, query plans and practical database optimization concepts.</p></div></div></section>
+<section class="page" id="page-web"><div class="hero"><div class="eyebrow">FULL STACK</div><h1>🌐 Web Development</h1><p>Frontend to backend: HTML, CSS, JavaScript, React and Node.js.</p></div><div class="course-grid" id="webGrid"></div></section>
+<section class="page" id="page-ai"><div class="hero"><div class="eyebrow">INTELLIGENT SYSTEMS</div><h1>🤖 AI / ML & Analytics</h1><p>Python data stack, machine learning, deep learning and analytics.</p></div><div class="course-grid" id="aiGrid"></div></section>
+<section class="page" id="page-cloud"><div class="hero"><div class="eyebrow">DEPLOYMENT</div><h1>☁️ Cloud & DevOps</h1><p>Linux, AWS concepts, Docker, Git, CI/CD and deployment workflows.</p></div><div class="course-grid" id="cloudGrid"></div></section>
+<section class="page" id="page-security"><div class="hero"><div class="eyebrow">DEFENSIVE SECURITY</div><h1>🔐 Cybersecurity</h1><p>Secure applications, authentication, APIs, networking and cryptography fundamentals.</p></div><div class="course-grid" id="securityGrid"></div></section>
+
+<section class="page" id="page-projects"><div class="hero"><div class="eyebrow">BUILD</div><h1>🚀 My Projects</h1><p>Connect learning with real portfolio work.</p></div><div class="project-grid" id="projectGrid"></div></section>
+
+<section class="page" id="page-certificates"><div class="hero"><div class="eyebrow">ACHIEVEMENTS</div><h1>🏆 Certificates & Verification</h1><p>Open your course certificate from the course page or verify an issued certificate publicly.</p><div class="hero-actions"><a class="btn primary" href="verify.html">🔎 Verify Certificate →</a><a class="btn" href="course.html?course=python">Open Python Course →</a></div></div><div class="grid"><div class="card"><div class="card-title"><span>📜</span><strong>Course Certificate</strong></div><p>Complete the required course work and use the certificate action on the course page.</p></div><div class="card"><div class="card-title"><span>🔐</span><strong>Unique ID</strong></div><p>Issued certificates have a unique certificate ID stored by the backend.</p></div><div class="card"><div class="card-title"><span>🌐</span><strong>Verification</strong></div><p>Use the verification page to check an issued certificate.</p></div></div></section>
+
+<section class="page" id="page-roadmap"><div class="hero"><div class="eyebrow">CAREER ROADMAP</div><h1>🗺️ Developer Growth Map</h1><p>Select a path and use the connected courses and projects as your learning checklist.</p><div class="hero-actions"><button class="btn primary" onclick="openCourse('python')">Python Path</button><button class="btn" onclick="openCourse('dsa')">DSA Path</button><button class="btn" onclick="openCourse('analytics')">Analytics Path</button><button class="btn" onclick="openCourse('cloud')">Cloud Path</button></div></div><div class="roadmap" id="fullRoadmap"></div></section>
+
+<section class="page" id="page-profile"><div class="hero"><div class="eyebrow">DEVELOPER IDENTITY</div><h1>👤 My Profile</h1><p>Your authenticated account and learning identity.</p></div><div class="profile"><div class="profile-top"><div class="profile-avatar" id="profileAvatar">PK</div><div><h2 id="profileName">Priyanshu Kumar</h2><p id="profileEmail">Loading...</p></div></div><div class="info-grid"><div class="info"><label>Name</label><span id="infoName">—</span></div><div class="info"><label>Email</label><span id="infoEmail">—</span></div><div class="info"><label>Account ID</label><span id="infoId">—</span></div><div class="info"><label>Created</label><span id="infoCreated">—</span></div><div class="info"><label>Education</label><span>B.Tech — Computer Science & Engineering</span></div><div class="info"><label>Focus</label><span>Software • Python • Data • AI</span></div></div></div></section>
+
+<section class="page" id="page-socials"><div class="hero"><div class="eyebrow">CONNECT</div><h1>🔗 My Socials</h1><p>Developer and professional links.</p></div><div class="social-grid"><a class="social" href="https://github.com/priyanshu18611" target="_blank" rel="noopener"><div class="social-icon">💻</div><span>GitHub</span></a><a class="social" href="https://linkedin.com/in/priyanshuroy18" target="_blank" rel="noopener"><div class="social-icon">💼</div><span>LinkedIn</span></a><a class="social" href="https://www.instagram.com/thepriyanshuroy.ofc?stkn=eXR2YTh4djNicDhj" target="_blank" rel="noopener"><div class="social-icon">📸</div><span>Instagram</span></a><a class="social" href="https://www.facebook.com/share/1GmyKmd8PL/" target="_blank" rel="noopener"><div class="social-icon">📘</div><span>Facebook</span></a><a class="social" href="https://priyanshu18611.github.io/portfolio/" target="_blank" rel="noopener"><div class="social-icon">🌐</div><span>Portfolio</span></a></div></section>
+
+<div class="no-result" id="noResult">🔎 No matching result on this page.</div>
+</main>
+
+<!-- MODALS -->
+<div class="modal" id="assistantModal"><div class="modal-box"><div class="modal-head"><h2>🤖 Study Assistant</h2><button class="close" onclick="closeModal('assistantModal')">×</button></div><div class="modal-body"><p>Enter a topic. This browser-based assistant uses the portal's topic map to give a structured explanation; it does not pretend to be a remote AI API.</p><input id="assistantInput" placeholder="e.g. Python functions, SQL joins, recursion"><div class="modal-actions"><button class="btn primary" onclick="askAssistant()">Explain Topic</button></div><div class="result" id="assistantResult">Your explanation will appear here.</div></div></div></div>
+
+<div class="modal" id="codingModal"><div class="modal-box"><div class="modal-head"><h2>💻 JavaScript Coding Arena</h2><button class="close" onclick="closeModal('codingModal')">×</button></div><div class="modal-body"><p>Browser-side JavaScript playground. Use console.log() to inspect output. Do not paste sensitive information.</p><textarea id="codeInput">const numbers = [2, 4, 6, 8];
+const total = numbers.reduce((sum, n) => sum + n, 0);
+console.log("Total:", total);</textarea><div class="modal-actions"><button class="btn primary" onclick="runJS()">▶ Run Code</button><button class="btn" onclick="document.getElementById('codeInput').value=''">Clear</button></div><div class="result" id="codeResult">Output will appear here.</div></div></div></div>
+
+<div class="modal" id="notesModal"><div class="modal-box"><div class="modal-head"><h2>📝 Notes Vault</h2><button class="close" onclick="closeModal('notesModal')">×</button></div><div class="modal-body"><input id="noteTitle" placeholder="Topic title"><textarea id="noteBody" placeholder="Write your personal study notes..."></textarea><div class="modal-actions"><button class="btn primary" onclick="saveNote()">Save Note</button><button class="btn" onclick="clearNotes()">Clear Notes</button></div><div class="result" id="notesResult"></div></div></div></div>
+
+<div class="modal" id="flashModal"><div class="modal-box"><div class="modal-head"><h2>🃏 Flashcards</h2><button class="close" onclick="closeModal('flashModal')">×</button></div><div class="modal-body"><div class="flash" id="flashCard"><div><strong id="flashQuestion">What is a primary key?</strong><small id="flashAnswer">A column or set of columns that uniquely identifies each row.</small></div></div><div class="modal-actions"><button class="btn" onclick="flipFlash()">🔄 Flip</button><button class="btn success" onclick="nextFlash(true)">✅ Know</button><button class="btn" onclick="nextFlash(false)">🔁 Revise</button></div><div class="result" id="flashResult"></div></div></div></div>
+
+<div class="modal" id="focusModal"><div class="modal-box"><div class="modal-head"><h2>⏱️ Focus Mode</h2><button class="close" onclick="closeModal('focusModal')">×</button></div><div class="modal-body"><p>Choose a focus session.</p><select id="focusMinutes"><option value="25">25 minutes</option><option value="50">50 minutes</option><option value="5">5 minutes test</option></select><div class="flash"><strong id="timerText">25:00</strong></div><div class="modal-actions"><button class="btn primary" onclick="startFocus()">Start</button><button class="btn" onclick="pauseFocus()">Pause</button><button class="btn" onclick="resetFocus()">Reset</button></div></div></div></div>
+
+<div class="modal" id="missionModal"><div class="modal-box"><div class="modal-head"><h2>🎯 Daily Mission</h2><button class="close" onclick="closeModal('missionModal')">×</button></div><div class="modal-body"><div id="missionFull"></div><div class="modal-actions"><button class="btn primary" onclick="completeMission()">Claim Mission XP</button></div><div class="result" id="missionResult"></div></div></div></div>
+
+<div class="modal" id="revisionModal"><div class="modal-box"><div class="modal-head"><h2>🔄 Smart Revision</h2><button class="close" onclick="closeModal('revisionModal')">×</button></div><div class="modal-body"><p>Weak topics are derived from quiz results saved by this portal. If no quiz data exists yet, start a course quiz first.</p><div class="result" id="revisionResult"></div><div class="modal-actions"><button class="btn primary" onclick="openCourse('dsa')">Practice DSA</button><button class="btn" onclick="openCourse('sql')">Practice SQL</button></div></div></div></div>
+
+<div class="modal" id="badgeModal"><div class="modal-box"><div class="modal-head"><h2>🏆 Achievements</h2><button class="close" onclick="closeModal('badgeModal')">×</button></div><div class="modal-body"><div class="grid" id="badgeGrid"></div></div></div></div>
+
+
+<div class="modal" id="projectModal"><div class="modal-box"><div class="modal-head"><h2>🚀 Project Builder</h2><button class="close" onclick="closeModal('projectModal')">×</button></div><div class="modal-body"><p>Turn a project idea into a simple build checklist.</p><select id="projectSelect"><option>Secure Auth Portal</option><option>CareerPilot AI</option><option>Enterprise Sales Analytics</option><option>Brain Tumor Detection</option><option>EcoSentinel</option><option>Cricket Score Predictor</option></select><div class="result" id="projectPlan">1. Define requirements\n2. Choose architecture\n3. Create repository\n4. Build MVP\n5. Test and document\n6. Deploy\n7. Add project to portfolio</div><div class="modal-actions"><button class="btn primary" onclick="buildProjectPlan()">Generate Plan</button><button class="btn" onclick="copyProjectPlan()">Copy Plan</button></div></div></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+const API="https://priyanshu-secure-auth.onrender.com";
+const TOKEN_KEY="priynashu_access_token",USER_KEY="priynashu_user";
+const courses=[
+["python","🐍","Python","Fundamentals → OOP → APIs → projects",11],["java","☕","Java","Core Java → OOP → Collections → JDBC",10],["cpp","🔷","C++","C++ → OOP → STL → algorithms",10],["c","🟦","C","Basics → pointers → structures → files",10],["javascript","🟨","JavaScript","ES6 → DOM → async → APIs",10],["html","🌐","HTML5","Semantic HTML → forms → accessibility",10],["css","🎨","CSS3","Flexbox → Grid → responsive → animation",10],["sql","🗄️","SQL","Queries → joins → CTE → window functions",10],["dsa","🧠","DSA","Arrays → trees → graphs → DP",11],["dbms","🗃️","DBMS","Keys → normalization → transactions → indexing",10],["react","⚛️","React","Components → state → hooks → APIs",10],["node","🟢","Node.js","Express → REST → auth → backend",10],["aiml","🤖","AI / ML","Data prep → ML → evaluation → deep learning",10],["analytics","📊","Data Analytics","Excel → SQL → Python → Pandas → Power BI",10],["cloud","☁️","Cloud & DevOps","AWS → Linux → Docker → Git → CI/CD",10],["cybersecurity","🔐","Cybersecurity","Security → auth → APIs → cryptography",10],["interview","🎯","Interview Prep","DSA → CS fundamentals → technical → HR",10]
+];
+const projects=[
+["🔐","Secure Auth Portal","Express + PostgreSQL + JWT authentication platform.",["Node.js","PostgreSQL","JWT"],"https://github.com/priyanshu18611/secure-auth-portal"],
+["🤖","CareerPilot AI","AI-powered resume analysis and career intelligence platform.",["Python","FastAPI","AI"],"https://github.com/priyanshu18611/careerpilot-ai"],
+["📊","Enterprise Sales Analytics","Sales analytics with SQL, Python and Power BI.",["SQL","Python","Power BI"],null],
+["🧠","Brain Tumor Detection","MRI image classification using deep learning.",["Python","CNN","ML"],"https://github.com/priyanshu18611/brain-tumor-detection"],
+["🌿","EcoSentinel","IoT-focused environmental and monitoring platform.",["IoT","MERN","Socket.io"],"https://github.com/priyanshu18611/EcoSentinel"],
+["🏏","Cricket Score Predictor","Machine-learning project for cricket score prediction.",["Python","ML","Data"],"https://github.com/priyanshu18611/Cricket-Score-Predictor"]
+];
+const roadmap=[["01","Foundation","C / C++ / Java / Python basics","programming"],["02","Core CS","OOP + DBMS + SQL + OS + CN","dbms"],["03","Problem Solving","DSA + coding patterns + practice","dsa"],["04","Build","HTML + CSS + JS + React + Node","web"],["05","Specialize","AI/ML + Analytics + Cloud + Security","aiml"]];
+const topicMap={
+python:["Python","Start with syntax, variables, data types and control flow.","def add(a,b): return a+b","Build a CLI expense tracker."],
+"python functions":["Python Functions","Functions package reusable logic. Learn parameters, return values, scope, default arguments and *args/**kwargs.","def greet(name): return f\"Hello {name}\"","Practice 5 reusable utility functions."],
+"sql joins":["SQL Joins","JOIN combines related rows from tables. INNER JOIN returns matching rows; LEFT JOIN keeps every left-row and adds matches when available.","SELECT e.name,d.name FROM employees e JOIN departments d ON e.department_id=d.id;","Practice INNER, LEFT and self joins."],
+"recursion":["Recursion","A recursive function calls itself and needs a base case to stop. Always reason about stack depth and the smaller subproblem.","def fact(n): return 1 if n<=1 else n*fact(n-1)","Solve factorial, sum and binary-search variants."],
+dsa:["DSA","Data structures organize data; algorithms define steps to solve problems. Focus on complexity and reusable patterns.","for x in nums: print(x)","Solve array, string and search problems."],
+react:["React","React builds UIs from reusable components. Learn props, state, events, effects and data flow.","function App(){return <h1>Hello</h1>}","Build a task dashboard."],
+"machine learning":["Machine Learning","A model learns patterns from data to make predictions. Understand features, labels, training, validation and evaluation.","model.fit(X_train,y_train)","Build a small classification pipeline."],
+"career roadmap":["Career Roadmap","Build fundamentals first, then problem solving and development, then specialize through projects and interview practice.","Learn → Practice → Build → Interview","Choose one primary path and one supporting skill."]
+};
+let focusTimer=null,focusSeconds=1500,flashIndex=0,flashFlipped=false;
+const flashcards=[["What is a primary key?","A value or set of values that uniquely identifies a row."],["What is OOP?","A programming paradigm organized around objects containing state and behavior."],["What is Big-O?","A way to describe how time or space requirements grow with input size."],["What is an API?","A defined interface through which software components communicate."],["What is normalization?","A database design process that reduces redundancy and update anomalies."]];
+
+function qs(s){return document.querySelector(s)}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function openCourse(k){location.href=`course.html?course=${encodeURIComponent(k)}`}
+function showPage(page){
+  document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id==="page-"+page));
+  document.querySelectorAll(".nav-btn[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+  qs("#searchInput").value="";resetSearch();closeMenu();scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll(".nav-btn[data-page]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+function openModal(id){qs("#"+id).classList.add("show");if(id==="notesModal")loadNotes();if(id==="missionModal")renderMissionFull();if(id==="revisionModal")renderRevision();if(id==="badgeModal")renderBadges()}
+function closeModal(id){qs("#"+id).classList.remove("show")}
+document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)m.classList.remove("show")}));
+function toast(t){const x=qs("#toast");x.textContent=t;x.classList.add("show");setTimeout(()=>x.classList.remove("show"),2400)}
+function getUser(){try{return JSON.parse(sessionStorage.getItem(USER_KEY)||"{}")}catch{return {}}}
+function initials(n){return (n||"PK").trim().split(/\s+/).slice(0,2).map(x=>x[0]).join("").toUpperCase()||"PK"}
+
+function courseCard(c){return `<a class="course searchable" data-search="${esc(c[1]+" "+c[2]+" "+c[3])}" href="course.html?course=${c[0]}"><div class="course-icon">${c[1]}</div><h3>${esc(c[2])}</h3><p>${esc(c[3])}</p><div class="course-meta"><span>${c[4]} Modules</span><b>OPEN →</b></div><div class="bar"><i id="bar-${c[0]}"></i></div></a>`}
+function renderCourses(){
+  qs("#homeCourses").innerHTML=courses.slice(0,8).map(courseCard).join("");
+  qs("#programmingGrid").innerHTML=courses.filter(c=>["python","java","cpp","c","javascript","html","css","sql"].includes(c[0])).map(courseCard).join("");
+  qs("#webGrid").innerHTML=courses.filter(c=>["html","css","javascript","react","node"].includes(c[0])).map(courseCard).join("");
+  qs("#aiGrid").innerHTML=courses.filter(c=>["aiml","analytics","python"].includes(c[0])).map(courseCard).join("");
+  qs("#cloudGrid").innerHTML=courses.filter(c=>c[0]==="cloud").map(courseCard).join("");
+  qs("#securityGrid").innerHTML=courses.filter(c=>c[0]==="cybersecurity").map(courseCard).join("");
+  qs("#projectGrid").innerHTML=projects.map(projectHTML).join("");
+  qs("#homeProjects").innerHTML=projects.slice(0,3).map(projectHTML).join("");
+  courses.forEach(c=>updateCourseBar(c[0]));
+}
+function projectHTML(p){return `<div class="project searchable" data-search="${esc(p[1]+" "+p[2]+" "+p[3].join(" "))}"><h3>${p[0]} ${esc(p[1])}</h3><p>${esc(p[2])}</p><div class="tags">${p[3].map(x=>`<span class="tag">${esc(x)}</span>`).join("")}</div><div class="project-actions">${p[4]?`<a href="${p[4]}" target="_blank" rel="noopener">GitHub →</a>`:""}<button onclick="openModal('projectModal')">Plan Project</button></div></div>`}
+function updateCourseBar(key){
+  let done=0,total=0;
+  const raw=localStorage.getItem("pk_course_"+key+"_completed");
+  try{const a=JSON.parse(raw||"[]");done=Array.isArray(a)?a.length:0}catch{}
+  const c=courses.find(x=>x[0]===key);total=c?c[4]:10;
+  const pct=Math.min(100,Math.round(done/total*100));
+  const el=qs("#bar-"+key);if(el)el.style.width=pct+"%";
+}
+function studyData(){
+  const data=[
+  ["💻","Programming","C, C++, Java, Python and JavaScript fundamentals.",["C","C++","Java","Python","JS"]],
+  ["🧠","DSA","Problem solving, complexity, trees, graphs and DP.",["Arrays","Trees","Graphs","DP"]],
+  ["🗄️","Databases","SQL, DBMS, PostgreSQL, MySQL and MongoDB concepts.",["SQL","DBMS","PostgreSQL","MongoDB"]],
+  ["🌐","Web Development","Frontend, backend and full-stack application development.",["HTML","CSS","JS","React","Node"]],
+  ["🤖","AI / ML","Data preparation, machine learning and deep learning.",["NumPy","Pandas","ML","DL"]],
+  ["📊","Data Analytics","Excel, SQL, Python, Pandas, Power BI and DAX.",["Excel","SQL","Power BI","DAX"]],
+  ["☁️","Cloud & DevOps","Linux, cloud, Docker, Git, CI/CD and deployment.",["AWS","Linux","Docker","CI/CD"]],
+  ["🔐","Cybersecurity","Secure applications, authentication, APIs and crypto basics.",["OWASP","Auth","APIs","Crypto"]],
+  ["🎯","Placement","Coding practice, CS fundamentals, resume and interview prep.",["DSA","SQL","OOP","HR"]]
+  ];
+  qs("#studyGrid").innerHTML=data.map(d=>`<div class="card searchable" data-search="${esc(d[1]+" "+d[2]+" "+d[3].join(" "))}"><div class="card-title"><span>${d[0]}</span><strong>${d[1]}</strong></div><p>${d[2]}</p><div class="tags">${d[3].map(x=>`<span class="tag">${x}</span>`).join("")}</div></div>`).join("");
+}
+function roadmapHTML(r){return `<div class="step"><div class="step-num">${r[0]}</div><h4>${r[1]}</h4><p>${r[2]}</p><button class="btn" style="margin-top:9px;padding:7px 9px;font-size:8px" onclick="openRoad('${r[3]}')">Explore →</button></div>`}
+function renderRoadmap(){qs("#miniRoadmap").innerHTML=roadmap.slice(0,5).map(roadmapHTML).join("");qs("#fullRoadmap").innerHTML=roadmap.map(roadmapHTML).join("")}
+function openRoad(k){if(k==="web")openCourse("javascript");else if(k==="dbms")openCourse("dbms");else openCourse(k)}
+function openProjectPlan(){openModal("projectModal")}
+function renderStats(){
+  let xp=Number(localStorage.getItem("pk_xp")||0);
+  const streak=Number(localStorage.getItem("pk_streak")||0);
+  let started=0,labs=0,quizTotal=0,quizCount=0;
+  courses.forEach(c=>{
+    try{const a=JSON.parse(localStorage.getItem("pk_course_"+c[0]+"_completed")||"[]");if(a.length)started++;labs+=Number(localStorage.getItem("pk_lab_"+c[0])||0)}catch{}
+    try{const q=JSON.parse(localStorage.getItem("pk_quiz_"+c[0])||"[]");if(Array.isArray(q)){q.forEach(v=>{quizTotal+=Number(v.score||0);quizCount+=Number(v.total||0)})}}catch{}
+  });
+  const acc=quizCount?Math.round(quizTotal/quizCount*100):0;
+  const avg=started?Math.min(100,Math.round(started/courses.length*100)):0;
+  qs("#xpStat").textContent=xp;qs("#streakStat").textContent=streak;qs("#courseStat").textContent=started;qs("#labStat").textContent=labs;qs("#quizStat").textContent=acc+"%";qs("#badgeStat").textContent=countBadges(xp,started,labs,acc,streak);
+  qs("#overallBar").style.width=avg+"%";qs("#overallText").textContent=avg+"% overall";qs("#ringText").textContent=avg+"%";qs("#ring").style.setProperty("--progress",avg+"%");
+  qs("#levelText").textContent="Level "+(Math.floor(xp/250)+1);
+  qs("#momentumText").textContent=started?`You have started ${started} course${started>1?"s":""}. Keep one active path and finish its modules.`:"Start your first course to build your learning history.";
+}
+function dailyKey(){return new Date().toISOString().slice(0,10)}
+function renderMission(){
+  const key="pk_mission_"+dailyKey(),saved=JSON.parse(localStorage.getItem(key)||"{}");
+  const tasks=["Study one course module","Complete one practical task","Answer five quiz questions"];
+  qs("#missionList").innerHTML=tasks.map((t,i)=>`<label class="mission"><input type="checkbox" ${saved[i]?"checked":""} onchange="toggleMission(${i},this.checked)"> <span>${t}</span></label>`).join("");
+  qs("#missionFull").innerHTML=tasks.map((t,i)=>`<label class="mission"><input type="checkbox" ${saved[i]?"checked":""} onchange="toggleMission(${i},this.checked)"> <span>${t}</span></label>`).join("");
+  qs("#todayLabel").textContent=new Date().toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"});
+}
+function toggleMission(i,v){const k="pk_mission_"+dailyKey(),s=JSON.parse(localStorage.getItem(k)||"{}");s[i]=v;localStorage.setItem(k,JSON.stringify(s));renderMission()}
+function completeMission(){const s=JSON.parse(localStorage.getItem("pk_mission_"+dailyKey())||"{}");if(Object.keys(s).length<3||!Object.values(s).every(Boolean)){toast("Complete all 3 mission tasks first.");return}if(localStorage.getItem("pk_mission_claimed_"+dailyKey())){toast("Today's XP already claimed.");return}let xp=Number(localStorage.getItem("pk_xp")||0)+150;localStorage.setItem("pk_xp",xp);localStorage.setItem("pk_mission_claimed_"+dailyKey(),"1");qs("#missionResult").textContent="🎉 Mission complete! +150 XP";renderStats();toast("+150 XP earned")}
+function askAssistant(){
+  const q=qs("#assistantInput").value.trim().toLowerCase();if(!q){toast("Enter a topic.");return}
+  let d=Object.entries(topicMap).find(([k])=>q.includes(k)||k.includes(q));
+  if(!d)d=["general",[...courses.map(c=>c[2])].some(x=>q.includes(x.toLowerCase()))?q:"Developer Topic","Break the topic into definition → core concepts → example → practice → interview questions.","Search the matching course and complete its first module.","Use the course → practical lab → quiz → interview flow."];
+  const x=d[1];qs("#assistantResult").textContent=`TOPIC: ${x[0]||q}\n\nCONCEPT\n${x[1]||x}\n\nEXAMPLE\n${x[2]||"Open the related course for examples."}\n\nNEXT STEP\n${x[3]||"Practice the concept with a lab."}\n\nWORKFLOW\nLearn → Example → Practice → Quiz → Interview`;
+}
+function runJS(){
+  const code=qs("#codeInput").value;let out=[];const old=console.log;try{console.log=(...a)=>out.push(a.map(v=>typeof v==="object"?JSON.stringify(v):String(v)).join(" "));new Function(code)();qs("#codeResult").textContent=out.length?out.join("\n"):"✓ Code executed with no console output."}catch(e){qs("#codeResult").textContent="❌ "+e.name+": "+e.message}finally{console.log=old}
+}
+function saveNote(){const title=qs("#noteTitle").value.trim(),body=qs("#noteBody").value.trim();if(!title||!body){toast("Add title and note.");return}const notes=JSON.parse(localStorage.getItem("pk_notes")||"[]");notes.unshift({title,body,date:new Date().toISOString()});localStorage.setItem("pk_notes",JSON.stringify(notes.slice(0,50)));loadNotes();toast("Note saved")}
+function loadNotes(){const notes=JSON.parse(localStorage.getItem("pk_notes")||"[]");qs("#notesResult").innerHTML=notes.length?notes.map((n,i)=>`<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)"><b>${esc(n.title)}</b><br>${esc(n.body)}<br><button class="btn" style="margin-top:6px;padding:5px 7px;font-size:8px" onclick="deleteNote(${i})">Delete</button></div>`).join(""):"No notes saved yet."}
+function deleteNote(i){const n=JSON.parse(localStorage.getItem("pk_notes")||"[]");n.splice(i,1);localStorage.setItem("pk_notes",JSON.stringify(n));loadNotes()}
+function clearNotes(){localStorage.removeItem("pk_notes");loadNotes()}
+function renderFlash(){const f=flashcards[flashIndex];qs("#flashQuestion").textContent=f[0];qs("#flashAnswer").textContent=flashFlipped?f[1]:"Tap Flip to reveal the answer.";qs("#flashResult").textContent=`Card ${flashIndex+1} / ${flashcards.length}`}
+function flipFlash(){flashFlipped=!flashFlipped;renderFlash()}
+function nextFlash(known){flashIndex=(flashIndex+1)%flashcards.length;flashFlipped=false;renderFlash();if(known){let x=Number(localStorage.getItem("pk_flash_known")||0)+1;localStorage.setItem("pk_flash_known",x);toast("Card marked known.")}}
+function startFocus(){resetFocus();focusSeconds=Number(qs("#focusMinutes").value)*60;updateTimer();clearInterval(focusTimer);focusTimer=setInterval(()=>{focusSeconds--;updateTimer();if(focusSeconds<=0){clearInterval(focusTimer);localStorage.setItem("pk_focus_sessions",Number(localStorage.getItem("pk_focus_sessions")||0)+1);toast("Focus session complete!")}},1000)}
+function pauseFocus(){clearInterval(focusTimer)}
+function resetFocus(){clearInterval(focusTimer);focusSeconds=Number(qs("#focusMinutes").value||25)*60;updateTimer()}
+function updateTimer(){qs("#timerText").textContent=String(Math.floor(focusSeconds/60)).padStart(2,"0")+":"+String(focusSeconds%60).padStart(2,"0")}
+function renderRevision(){const weak=[];courses.forEach(c=>{try{const q=JSON.parse(localStorage.getItem("pk_quiz_"+c[0])||"[]");q.forEach(v=>{if(Number(v.score||0)<Math.ceil(Number(v.total||5)*.6))weak.push(c[2])})}catch{}});qs("#revisionResult").textContent=weak.length?`Topics needing revision:\n• ${[...new Set(weak)].join("\n• ")}`:"No weak topics detected yet. Complete module quizzes to build your revision radar."}
+function countBadges(xp,started,labs,acc,streak){return [xp>=250,started>=1,labs>=10,acc>=80,streak>=7].filter(Boolean).length}
+function renderBadges(){const xp=Number(localStorage.getItem("pk_xp")||0),streak=Number(localStorage.getItem("pk_streak")||0),started=Number(qs("#courseStat").textContent||0),labs=Number(qs("#labStat").textContent||0),acc=parseInt(qs("#quizStat").textContent)||0;const b=[["⚡","XP Explorer",xp>=250,"Earn 250 XP"],["📚","First Course",started>=1,"Start a course"],["🧪","Lab Builder",labs>=10,"Complete 10 labs"],["🧠","Quiz Master",acc>=80,"Reach 80% quiz accuracy"],["🔥","7 Day Streak",streak>=7,"Study for 7 days"]];qs("#badgeGrid").innerHTML=b.map(x=>`<div class="card" style="opacity:${x[2]?1:.45}"><div class="card-title"><span>${x[0]}</span><strong>${x[1]}</strong></div><p>${x[2]?"UNLOCKED":"LOCKED"} • ${x[3]}</p></div>`).join("")}
+
+function buildProjectPlan(){const n=qs("#projectSelect").value;const plan=`PROJECT: ${n}\n\nPHASE 1 — PLAN\n• Define user problem\n• Write feature list\n• Choose stack\n\nPHASE 2 — BUILD\n• Create repository\n• Build core functionality\n• Add validation and error handling\n\nPHASE 3 — TEST\n• Test happy paths\n• Test invalid inputs\n• Test responsive UI\n\nPHASE 4 — SHIP\n• Write README\n• Deploy\n• Add screenshots/demo\n• Add project to portfolio`;qs("#projectPlan").textContent=plan}
+function copyProjectPlan(){navigator.clipboard?.writeText(qs("#projectPlan").textContent).then(()=>toast("Project plan copied."))}
+
+function resetSearch(){document.querySelectorAll(".page.active .searchable").forEach(x=>x.style.display="");qs("#noResult").style.display="none"}
+qs("#searchInput").addEventListener("input",()=>{const q=qs("#searchInput").value.trim().toLowerCase(),page=document.querySelector(".page.active");const items=page?Array.from(page.querySelectorAll(".searchable")):[];let found=0;items.forEach(x=>{const t=(x.dataset.search||x.textContent).toLowerCase(),ok=!q||t.includes(q);x.style.display=ok?"":"none";if(ok)found++});qs("#noResult").style.display=q&&items.length&&!found?"block":"none"});
+qs("#menuBtn").addEventListener("click",()=>{qs("#sidebar").classList.toggle("open");qs("#overlay").classList.toggle("show")});qs("#overlay").addEventListener("click",closeMenu);function closeMenu(){qs("#sidebar").classList.remove("open");qs("#overlay").classList.remove("show")}
+function renderUser(user){const n=user.name||"Developer";qs("#welcomeName").textContent=n;qs("#userName").textContent=n;qs("#profileName").textContent=n;qs("#profileEmail").textContent=user.email||"—";qs("#infoName").textContent=n;qs("#infoEmail").textContent=user.email||"—";qs("#infoId").textContent=user.id?("#"+user.id):"—";if(user.created_at)qs("#infoCreated").textContent=new Date(user.created_at).toLocaleDateString("en-IN",{day:"numeric",month:"long",year:"numeric"});qs("#avatar").textContent=initials(n);qs("#profileAvatar").textContent=initials(n)}
+async function authenticate(){
+  const token=sessionStorage.getItem(TOKEN_KEY);if(!token){location.replace("index.html");return}
+  try{const r=await fetch(API+"/api/me",{headers:{Authorization:"Bearer "+token}});const d=await r.json();if(!r.ok||!d.success){sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(USER_KEY);location.replace("index.html");return}sessionStorage.setItem(USER_KEY,JSON.stringify(d.user));renderUser(d.user)}
+  catch(e){const u=getUser();if(u&&u.name)renderUser(u);else location.replace("index.html")}
+}
+renderCourses();studyData();renderRoadmap();renderMission();renderStats();renderFlash();authenticate();
+</script>
+</body>
+</html>
