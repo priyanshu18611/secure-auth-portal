@@ -3,1858 +3,562 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Priyanshu Study Hub — Course</title>
-
+<title>Priyanshu Study Hub — Deep Course</title>
+<meta name="theme-color" content="#070a16">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#050713;
-  --panel:#0d1020;
-  --panel2:#11152a;
-  --border:rgba(255,255,255,.08);
-  --text:#f5f7ff;
-  --muted:#9299b8;
-  --purple:#8b5cf6;
-  --blue:#2563eb;
-  --green:#22c55e;
-  --danger:#ef4444;
-}
-body{
-  font-family:Inter,Segoe UI,Arial,sans-serif;
-  background:
-    radial-gradient(circle at 80% 10%,rgba(124,58,237,.18),transparent 30%),
-    radial-gradient(circle at 20% 90%,rgba(37,99,235,.12),transparent 30%),
-    var(--bg);
-  color:var(--text);
-  min-height:100vh;
-}
-button{font:inherit}
-a{text-decoration:none;color:inherit}
-
-.top{
-  height:70px;
-  border-bottom:1px solid var(--border);
-  background:rgba(5,7,19,.88);
-  backdrop-filter:blur(18px);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 22px;
-  position:sticky;
-  top:0;
-  z-index:100;
-}
-.brand{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-.logo{
-  width:40px;height:40px;border-radius:12px;
-  display:grid;place-items:center;
-  font-weight:900;
-  background:linear-gradient(135deg,#8b5cf6,#2563eb);
-}
-.brand h2{font-size:14px}
-.brand p{font-size:9px;color:#9da4c2;letter-spacing:2px}
-
-.top-actions{display:flex;gap:10px}
-.top-btn{
-  border:1px solid var(--border);
-  background:#101326;
-  color:white;
-  padding:10px 15px;
-  border-radius:10px;
-  cursor:pointer;
-}
-.top-btn:hover{border-color:#7753d9}
-
-.layout{
-  display:grid;
-  grid-template-columns:280px 1fr;
-  min-height:calc(100vh - 70px);
-}
-
-.sidebar{
-  border-right:1px solid var(--border);
-  background:rgba(8,10,23,.88);
-  padding:20px;
-}
-.course-mini{
-  background:linear-gradient(145deg,#11152a,#0b0e1d);
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:18px;
-  margin-bottom:15px;
-}
-.course-icon{
-  font-size:35px;
-  margin-bottom:10px;
-}
-.course-mini h3{font-size:17px}
-.course-mini p{
-  color:var(--muted);
-  font-size:11px;
-  line-height:1.5;
-  margin-top:6px;
-}
-.progress-box{
-  border:1px solid var(--border);
-  background:#0d1020;
-  padding:15px;
-  border-radius:14px;
-}
-.progress-line{
-  height:7px;
-  background:#201d36;
-  border-radius:20px;
-  overflow:hidden;
-  margin-top:10px;
-}
-.progress-fill{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,#8b5cf6,#2563eb);
-  transition:.35s;
-}
-.progress-text{
-  display:flex;
-  justify-content:space-between;
-  font-size:11px;
-  color:#b8bdd4;
-}
-.modules{
-  margin-top:18px;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-.module-btn{
-  text-align:left;
-  border:1px solid transparent;
-  background:#0b0e1c;
-  color:#c8cce0;
-  padding:11px;
-  border-radius:10px;
-  cursor:pointer;
-  font-size:11px;
-}
-.module-btn:hover{background:#12162b}
-.module-btn.active{
-  background:linear-gradient(90deg,rgba(139,92,246,.18),rgba(37,99,235,.12));
-  border-color:rgba(139,92,246,.4);
-  color:white;
-}
-.module-btn.done{color:#6ee7a0}
-.module-btn small{
-  display:block;
-  color:#777f9e;
-  margin-top:4px;
-}
-
-.main{
-  padding:30px;
-  max-width:1250px;
-  width:100%;
-  margin:auto;
-}
-
-.hero{
-  background:
-    linear-gradient(135deg,rgba(124,58,237,.14),rgba(37,99,235,.08)),
-    #0e1226;
-  border:1px solid var(--border);
-  border-radius:22px;
-  padding:28px;
-  margin-bottom:20px;
-}
-.badge{
-  display:inline-block;
-  font-size:9px;
-  letter-spacing:1px;
-  padding:6px 10px;
-  border-radius:20px;
-  background:rgba(139,92,246,.15);
-  color:#c4b5fd;
-  border:1px solid rgba(139,92,246,.25);
-}
-.hero h1{
-  font-size:34px;
-  margin-top:12px;
-}
-.hero p{
-  color:var(--muted);
-  margin-top:7px;
-  font-size:13px;
-}
-.stats{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin-top:22px;
-}
-.stat{
-  background:rgba(3,5,15,.3);
-  border:1px solid var(--border);
-  border-radius:13px;
-  padding:15px;
-}
-.stat strong{
-  display:block;
-  font-size:20px;
-}
-.stat span{
-  color:#8188a7;
-  font-size:9px;
-}
-
-.lesson{
-  background:#0c0f20;
-  border:1px solid var(--border);
-  border-radius:20px;
-  overflow:hidden;
-}
-.lesson-head{
-  padding:24px;
-  border-bottom:1px solid var(--border);
-}
-.lesson-head .number{
-  color:#8b5cf6;
-  font-size:10px;
-  font-weight:bold;
-  letter-spacing:2px;
-}
-.lesson-head h2{
-  font-size:26px;
-  margin-top:7px;
-}
-.lesson-head p{
-  color:var(--muted);
-  font-size:12px;
-  margin-top:7px;
-}
-
-.content{
-  padding:25px;
-}
-.section{
-  margin-bottom:28px;
-}
-.section h3{
-  font-size:16px;
-  margin-bottom:10px;
-}
-.section p{
-  color:#c0c5d8;
-  line-height:1.8;
-  font-size:13px;
-}
-.points{
-  padding-left:20px;
-  color:#c0c5d8;
-  line-height:2;
-  font-size:13px;
-}
-.note{
-  background:rgba(37,99,235,.08);
-  border-left:3px solid #3b82f6;
-  padding:14px;
-  border-radius:8px;
-  color:#cbd5e1;
-  font-size:12px;
-  line-height:1.7;
-}
-.code{
-  background:#05070d;
-  border:1px solid #20253b;
-  border-radius:12px;
-  overflow:hidden;
-  margin-top:12px;
-}
-.code-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:8px 12px;
-  background:#0d1120;
-  border-bottom:1px solid #20253b;
-}
-.code-top span{
-  color:#7f87a7;
-  font-size:10px;
-}
-.copy{
-  border:1px solid #303650;
-  background:#161b30;
-  color:#cdd3ec;
-  padding:5px 9px;
-  border-radius:6px;
-  font-size:10px;
-  cursor:pointer;
-}
-pre{
-  padding:15px;
-  overflow:auto;
-  color:#d9e0ff;
-  font-size:12px;
-  line-height:1.7;
-}
-
-.practice-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-}
-.practice{
-  border:1px solid var(--border);
-  background:#101327;
-  border-radius:12px;
-  padding:15px;
-}
-.practice b{font-size:12px}
-.practice p{
-  font-size:11px;
-  margin-top:6px;
-  color:#9ca3bd;
-}
-
-.quiz{
-  border:1px solid rgba(139,92,246,.2);
-  background:rgba(139,92,246,.05);
-  padding:18px;
-  border-radius:14px;
-}
-.question{
-  font-size:13px;
-  margin-bottom:12px;
-}
-.option{
-  display:block;
-  width:100%;
-  text-align:left;
-  margin:7px 0;
-  padding:10px 12px;
-  border-radius:9px;
-  border:1px solid var(--border);
-  background:#0c1020;
-  color:#dce0f2;
-  cursor:pointer;
-}
-.option:hover{border-color:#7552d8}
-.option.correct{
-  border-color:#22c55e;
-  background:rgba(34,197,94,.1);
-}
-.option.wrong{
-  border-color:#ef4444;
-  background:rgba(239,68,68,.1);
-}
-.quiz-result{
-  margin-top:10px;
-  font-size:11px;
-  font-weight:bold;
-}
-
-.actions{
-  padding:18px 25px;
-  border-top:1px solid var(--border);
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-}
-.action{
-  border:1px solid var(--border);
-  background:#15192c;
-  color:#fff;
-  padding:11px 16px;
-  border-radius:10px;
-  cursor:pointer;
-}
-.action.primary{
-  background:linear-gradient(135deg,#8b5cf6,#2563eb);
-  border:none;
-}
-.action.complete{
-  background:linear-gradient(135deg,#16a34a,#22c55e);
-  border:none;
-}
-.action:disabled{
-  opacity:.4;
-  cursor:not-allowed;
-}
-
-.certificate{
-  display:none;
-  margin-top:20px;
-  padding:30px;
-  text-align:center;
-  border-radius:20px;
-  border:1px solid rgba(34,197,94,.3);
-  background:linear-gradient(135deg,rgba(34,197,94,.1),rgba(37,99,235,.08));
-}
-.certificate.show{display:block}
-.certificate .trophy{font-size:50px}
-.certificate h2{margin:10px 0}
-.certificate p{color:#aeb5ca;font-size:12px}
-.cert-btn{
-  margin-top:15px;
-  padding:11px 17px;
-  border:0;
-  border-radius:9px;
-  background:#22c55e;
-  color:#04100a;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-.toast{
-  position:fixed;
-  right:20px;
-  bottom:20px;
-  background:#151a2e;
-  border:1px solid var(--border);
-  padding:13px 17px;
-  border-radius:12px;
-  display:none;
-  z-index:999;
-  box-shadow:0 15px 50px #0008;
-}
-.toast.show{display:block}
-
-.mobile-menu{
-  display:none;
-  border:1px solid var(--border);
-  background:#11152a;
-  color:white;
-  padding:9px 12px;
-  border-radius:8px;
-}
-
-@media(max-width:850px){
-  .layout{grid-template-columns:1fr}
-  .sidebar{
-    position:fixed;
-    left:-310px;
-    top:70px;
-    width:290px;
-    height:calc(100vh - 70px);
-    z-index:90;
-    transition:.3s;
-    overflow:auto;
-  }
-  .sidebar.open{left:0}
-  .mobile-menu{display:block}
-  .main{padding:16px}
-  .stats{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:600px){
-  .top{padding:0 12px}
-  .brand p{display:none}
-  .top-btn{padding:8px 10px;font-size:11px}
-  .hero{padding:20px}
-  .hero h1{font-size:26px}
-  .content{padding:18px}
-  .lesson-head{padding:20px}
-  .practice-grid{grid-template-columns:1fr}
-  .actions{padding:15px;flex-wrap:wrap}
-  .action{flex:1}
-}
+:root{--bg:#060815;--panel:#0d1122;--panel2:#11172b;--line:rgba(255,255,255,.08);--text:#f5f7ff;--muted:#9aa3c2;--purple:#8b5cf6;--blue:#2563eb;--green:#22c55e;--red:#ef4444;--gold:#f59e0b}
+body{font-family:Inter,Segoe UI,Arial,sans-serif;background:radial-gradient(circle at 80% 0%,#28115a33,transparent 30%),radial-gradient(circle at 10% 100%,#123a7d22,transparent 30%),var(--bg);color:var(--text);min-height:100vh}
+button,input,textarea{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}
+.top{height:68px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:#070a16eF;border-bottom:1px solid var(--line);backdrop-filter:blur(18px)}
+.brand{display:flex;align-items:center;gap:10px}.logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-weight:900;background:linear-gradient(135deg,var(--purple),var(--blue));box-shadow:0 8px 30px #6d3fd544}.brand h2{font-size:14px}.brand p{font-size:8px;letter-spacing:2px;color:var(--muted)}
+.top-actions{display:flex;gap:8px}.top-btn,.menu-btn{border:1px solid var(--line);background:#11162a;color:#fff;padding:9px 12px;border-radius:9px}
+.layout{display:grid;grid-template-columns:285px 1fr;min-height:calc(100vh - 68px)}
+.sidebar{border-right:1px solid var(--line);background:#080b18dd;padding:16px;position:sticky;top:68px;height:calc(100vh - 68px);overflow:auto}
+.mini{background:linear-gradient(145deg,#11162c,#0a0d1b);border:1px solid var(--line);padding:16px;border-radius:16px;margin-bottom:12px}.mini-icon{font-size:32px}.mini h3{font-size:16px;margin-top:8px}.mini p{font-size:10px;color:var(--muted);line-height:1.5;margin-top:5px}
+.progress{border:1px solid var(--line);padding:13px;border-radius:13px;background:#0c1020}.phead{display:flex;justify-content:space-between;font-size:10px;color:#c8cde0}.bar{height:7px;background:#211d39;border-radius:20px;overflow:hidden;margin-top:9px}.fill{height:100%;width:0;background:linear-gradient(90deg,var(--purple),var(--blue));transition:.3s}
+.search{width:100%;margin:12px 0;padding:10px 11px;border:1px solid var(--line);border-radius:9px;background:#0b0f1e;color:white;outline:none}.modules{display:flex;flex-direction:column;gap:6px}.mod{border:1px solid transparent;background:#0b0f1e;color:#cbd0e1;text-align:left;padding:10px;border-radius:9px;font-size:10px}.mod:hover{background:#12172b}.mod.active{border-color:#8056dc66;background:#24164a55;color:white}.mod.done{color:#6ee7a0}.mod small{display:block;color:#707997;margin-top:3px}
+.main{width:100%;max-width:1250px;margin:auto;padding:25px}
+.hero{border:1px solid var(--line);border-radius:22px;padding:25px;background:linear-gradient(135deg,#27105e33,#102a6430),#0e1328;box-shadow:0 20px 70px #0003}.badge{font-size:9px;letter-spacing:1px;color:#c4b5fd;background:#8b5cf61b;border:1px solid #8b5cf633;padding:6px 9px;border-radius:20px}.hero h1{font-size:32px;margin-top:10px}.hero>p{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.6}.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:18px}.stat{border:1px solid var(--line);background:#080c19aa;border-radius:12px;padding:13px}.stat strong{font-size:19px;display:block}.stat span{font-size:8px;color:#7f88a8}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.tool{border:1px solid var(--line);background:#10152a;color:#dbe0f2;padding:8px 11px;border-radius:8px;font-size:10px}.tool:hover{border-color:#8b5cf655}
+.lesson{border:1px solid var(--line);border-radius:20px;background:#0b0f20;overflow:hidden}.lh{padding:23px;border-bottom:1px solid var(--line)}.num{color:#a78bfa;font-size:9px;letter-spacing:2px;font-weight:bold}.lh h2{font-size:25px;margin-top:6px}.lh p{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.6}
+.content{padding:23px}.section{margin-bottom:25px}.section h3{font-size:16px;margin-bottom:9px}.section p,.section li{font-size:12px;color:#c7ccde;line-height:1.85}.section ul{padding-left:19px}.deep{border:1px solid #8b5cf626;background:linear-gradient(135deg,#8b5cf60b,#2563eb08);padding:16px;border-radius:13px}.deep p{font-size:12px}
+.syntax{margin-top:10px;padding:13px;background:#05070d;border:1px solid #20263b;border-radius:10px;overflow:auto}.syntax code{white-space:pre;color:#dbe3ff;font:12px/1.7 Consolas,monospace}.codebar{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:#0e1322;border-bottom:1px solid #20263b;color:#7f89aa;font-size:9px}.copy{background:#171d31;color:#dce2f5;border:1px solid #303750;border-radius:6px;padding:5px 8px;font-size:9px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.card{background:#10152a;border:1px solid var(--line);border-radius:11px;padding:13px}.card b{font-size:11px}.card p{font-size:10px;margin-top:5px;color:#969fbd}.mistake{border-left:3px solid var(--red);background:#ef44440c;padding:11px;border-radius:7px;margin:7px 0}.best{border-left:3px solid var(--green);background:#22c55e0b;padding:11px;border-radius:7px;margin:7px 0}
+.quiz{background:#10152a;border:1px solid #8b5cf622;border-radius:13px;padding:15px;margin:9px 0}.q{font-size:12px;margin-bottom:9px}.opt{display:block;width:100%;text-align:left;background:#0a0e1d;border:1px solid var(--line);color:#d9def0;padding:9px;border-radius:8px;margin:6px 0;font-size:10px}.opt.correct{border-color:#22c55e;background:#22c55e12}.opt.wrong{border-color:#ef4444;background:#ef444412}.quizresult{font-size:10px;margin-top:7px;font-weight:bold}
+.actions{display:flex;justify-content:space-between;gap:8px;padding:16px 23px;border-top:1px solid var(--line)}.action{border:1px solid var(--line);background:#14192d;color:white;padding:10px 14px;border-radius:9px;font-size:10px}.primary{background:linear-gradient(135deg,var(--purple),var(--blue));border:0}.complete{background:linear-gradient(135deg,#15803d,var(--green));border:0}.action:disabled{opacity:.35;cursor:not-allowed}
+.cert{display:none;text-align:center;margin-top:16px;border:1px solid #f59e0b55;background:linear-gradient(135deg,#f59e0b10,#8b5cf610);border-radius:20px;padding:27px}.cert.show{display:block}.cert .cup{font-size:48px}.cert h2{margin:8px}.cert p{font-size:11px;color:var(--muted)}.cert button{margin-top:13px;padding:10px 15px;border:0;border-radius:8px;background:var(--gold);font-weight:800}
+.toast{position:fixed;right:18px;bottom:18px;z-index:999;background:#151a2e;border:1px solid var(--line);padding:12px 15px;border-radius:10px;display:none;font-size:11px;box-shadow:0 15px 50px #0008}.toast.show{display:block}
+.overlay{display:none}.menu-btn{display:none}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{position:fixed;left:-310px;top:68px;width:295px;height:calc(100vh - 68px);z-index:90;transition:.3s}.sidebar.open{left:0}.menu-btn{display:block}.stats{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.top{padding:0 10px}.brand p{display:none}.top-btn{font-size:10px}.main{padding:12px}.hero{padding:19px}.hero h1{font-size:25px}.stats{grid-template-columns:repeat(2,1fr)}.content,.lh{padding:18px}.grid2{grid-template-columns:1fr}.actions{padding:13px;flex-wrap:wrap}.action{flex:1}.toolbar{margin:10px 0}}
 </style>
 </head>
-
 <body>
 
 <header class="top">
   <div class="brand">
-    <button class="mobile-menu" id="mobileMenu">☰</button>
+    <button class="menu-btn" id="menuBtn">☰</button>
     <div class="logo">PK</div>
-    <div>
-      <h2>PRIYANSHU STUDY HUB</h2>
-      <p>LEARN • PRACTICE • BUILD</p>
-    </div>
+    <div><h2>PRIYANSHU STUDY HUB</h2><p>LEARN • PRACTICE • BUILD • MASTER</p></div>
   </div>
-
   <div class="top-actions">
     <a class="top-btn" href="dashboard.html">← Dashboard</a>
   </div>
 </header>
 
 <div class="layout">
-
 <aside class="sidebar" id="sidebar">
-
-  <div class="course-mini">
-    <div class="course-icon" id="courseIcon">💻</div>
-    <h3 id="sideCourseName">Loading Course...</h3>
-    <p id="sideCourseDesc">Complete your developer learning path.</p>
+  <div class="mini">
+    <div class="mini-icon" id="sideIcon">📚</div>
+    <h3 id="sideName">Loading...</h3>
+    <p id="sideDesc"></p>
   </div>
-
-  <div class="progress-box">
-    <div class="progress-text">
-      <span>Course Progress</span>
-      <span id="progressPercent">0%</span>
-    </div>
-    <div class="progress-line">
-      <div class="progress-fill" id="progressFill"></div>
-    </div>
+  <div class="progress">
+    <div class="phead"><span>Course Progress</span><b id="percent">0%</b></div>
+    <div class="bar"><div class="fill" id="fill"></div></div>
   </div>
-
+  <input class="search" id="moduleSearch" placeholder="🔎 Search modules...">
   <div class="modules" id="moduleList"></div>
-
 </aside>
 
 <main class="main">
-
 <section class="hero">
-
-  <span class="badge">COMPLETE COURSE</span>
-
-  <h1 id="courseTitle">Loading...</h1>
-
-  <p id="courseDescription">
-    Learn concepts, practice with examples, solve questions and build projects.
-  </p>
-
+  <span class="badge">DEEP • PRACTICAL • INTERVIEW READY</span>
+  <h1 id="title">Loading...</h1>
+  <p id="desc"></p>
   <div class="stats">
-
-    <div class="stat">
-      <strong id="moduleCount">0</strong>
-      <span>MODULES</span>
-    </div>
-
-    <div class="stat">
-      <strong id="lessonCount">0</strong>
-      <span>LESSONS</span>
-    </div>
-
-    <div class="stat">
-      <strong id="practiceCount">0+</strong>
-      <span>PRACTICE TASKS</span>
-    </div>
-
-    <div class="stat">
-      <strong id="projectCount">0+</strong>
-      <span>PROJECTS</span>
-    </div>
-
+    <div class="stat"><strong id="mc">0</strong><span>MODULES</span></div>
+    <div class="stat"><strong id="lc">0</strong><span>LESSONS</span></div>
+    <div class="stat"><strong id="pc">0+</strong><span>PRACTICE</span></div>
+    <div class="stat"><strong id="qc">0+</strong><span>QUIZ Qs</span></div>
+    <div class="stat"><strong id="prc">0+</strong><span>PROJECTS</span></div>
   </div>
 </section>
 
-<section class="lesson">
-
-  <div class="lesson-head">
-    <div class="number" id="moduleNumber">MODULE 01</div>
-    <h2 id="lessonTitle">Introduction</h2>
-    <p id="lessonSubtitle">Start learning from the fundamentals.</p>
-  </div>
-
-  <div class="content" id="lessonContent"></div>
-
-  <div class="actions">
-
-    <button class="action" id="prevBtn">
-      ← Previous
-    </button>
-
-    <button class="action complete" id="completeBtn">
-      ✓ Mark Complete
-    </button>
-
-    <button class="action primary" id="nextBtn">
-      Next →
-    </button>
-
-  </div>
-
-</section>
-
-<section class="certificate" id="certificate">
-  <div class="trophy">🏆</div>
-  <h2>Course Completed!</h2>
-  <p>
-    Congratulations! You have completed the entire course.
-  </p>
-  <button class="cert-btn" onclick="downloadCertificate()">
-    🎓 Download Certificate
-  </button>
-</section>
-
-</main>
+<div class="toolbar">
+  <button class="tool" onclick="markAll()">✓ Mark Current Complete</button>
+  <button class="tool" onclick="resetCourse()">↻ Reset Course</button>
+  <button class="tool" onclick="showRoadmap()">🗺️ Roadmap</button>
+  <button class="tool" onclick="showStudyTips()">⚡ Study Strategy</button>
 </div>
 
+<section class="lesson">
+  <div class="lh">
+    <div class="num" id="moduleNumber">MODULE 01</div>
+    <h2 id="lessonTitle">Loading...</h2>
+    <p id="lessonSubtitle"></p>
+  </div>
+  <div class="content" id="content"></div>
+  <div class="actions">
+    <button class="action" id="prev">← Previous</button>
+    <button class="action complete" id="complete">✓ Mark Complete</button>
+    <button class="action primary" id="next">Next →</button>
+  </div>
+</section>
+
+<section class="cert" id="cert">
+  <div class="cup">🏆</div>
+  <h2>Course Mastery Unlocked</h2>
+  <p>100% modules completed. Your certificate is ready.</p>
+  <button onclick="downloadCertificate()">🎓 Download Certificate</button>
+</section>
+</main>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
+const API_URL="https://priyanshu-secure-auth.onrender.com";
+const TOKEN_KEY="priynashu_access_token";
 
-/* ============================================================
-   PRIYANSHU STUDY HUB
-   FULL WORKING COURSE ENGINE
-============================================================ */
-
-const API_URL = "https://priyanshu-secure-auth.onrender.com";
-
-const TOKEN_KEY = "priynashu_access_token";
-
-/* ------------------------------------------------------------
-   COURSE DEFINITIONS
------------------------------------------------------------- */
-
-const COURSE_INFO = {
-
-  python:{
-    name:"Python Programming",
-    icon:"🐍",
-    desc:"Learn Python from fundamentals to real-world development.",
-    modules:[
-      ["Python Fundamentals","Syntax, variables, data types and basic programming."],
-      ["Operators & Input","Operators, expressions and user input."],
-      ["Conditions","if, elif, else and decision making."],
-      ["Loops","for, while, break, continue and nested loops."],
-      ["Functions","Reusable functions, parameters and return values."],
-      ["Collections","Lists, tuples, sets and dictionaries."],
-      ["Strings","String operations, slicing and formatting."],
-      ["OOP in Python","Classes, objects, inheritance and encapsulation."],
-      ["Files & Exceptions","File handling and error management."],
-      ["Libraries","Modules, packages and useful Python libraries."],
-      ["Python Project","Build a practical console application."]
-    ]
-  },
-
-  java:{
-    name:"Java Programming",
-    icon:"☕",
-    desc:"Master Java programming, OOP and application development.",
-    modules:[
-      ["Java Fundamentals","JDK, JVM, syntax, variables and data types."],
-      ["Operators & Input","Operators, Scanner and expressions."],
-      ["Conditions","Decision-making statements."],
-      ["Loops","for, while and do-while loops."],
-      ["Methods","Methods, parameters and return values."],
-      ["Arrays & Strings","Arrays, String and StringBuilder."],
-      ["OOP","Classes, objects, constructors and encapsulation."],
-      ["Inheritance","Inheritance, polymorphism and abstraction."],
-      ["Collections","ArrayList, HashMap, HashSet and iteration."],
-      ["Java Project","Build a practical Java application."]
-    ]
-  },
-
-  cpp:{
-    name:"C++ Programming",
-    icon:"⚡",
-    desc:"Learn C++ programming, STL and object-oriented concepts.",
-    modules:[
-      ["C++ Fundamentals","Syntax, variables, types and input/output."],
-      ["Operators","Arithmetic, relational and logical operators."],
-      ["Conditions","if, else and switch statements."],
-      ["Loops","for, while and do-while loops."],
-      ["Functions","Functions, parameters and references."],
-      ["Arrays & Strings","Arrays, strings and manipulation."],
-      ["Pointers","Pointers, references and memory basics."],
-      ["OOP","Classes, objects, inheritance and polymorphism."],
-      ["STL","Vector, map, set, stack and queue."],
-      ["C++ Project","Build a practical C++ application."]
-    ]
-  },
-
-  c:{
-    name:"C Programming",
-    icon:"©️",
-    desc:"Build strong programming fundamentals with C.",
-    modules:[
-      ["C Fundamentals","Program structure, variables and data types."],
-      ["Input & Operators","scanf, printf and operators."],
-      ["Conditions","Decision making in C."],
-      ["Loops","for, while and do-while."],
-      ["Functions","Function declaration and parameters."],
-      ["Arrays","One-dimensional and multidimensional arrays."],
-      ["Strings","Character arrays and string functions."],
-      ["Pointers","Pointers and memory addresses."],
-      ["Structures","Structures and user-defined data."],
-      ["C Project","Build a console-based C project."]
-    ]
-  },
-
-  javascript:{
-    name:"JavaScript",
-    icon:"🟨",
-    desc:"Master modern JavaScript for web development.",
-    modules:[
-      ["JavaScript Fundamentals","Variables, types and basic syntax."],
-      ["Operators & Conditions","Expressions and decision making."],
-      ["Loops","Iteration and control flow."],
-      ["Functions","Functions, arrow functions and callbacks."],
-      ["Arrays","Array methods and data manipulation."],
-      ["Objects","Objects, properties and methods."],
-      ["DOM","Manipulate HTML using JavaScript."],
-      ["Events","Click, input and browser events."],
-      ["Async JavaScript","Promises, async/await and fetch."],
-      ["JavaScript Project","Build an interactive web application."]
-    ]
-  },
-
-  html:{
-    name:"HTML",
-    icon:"🌐",
-    desc:"Learn HTML5 and build semantic modern web pages.",
-    modules:[
-      ["HTML Fundamentals","Documents, tags and elements."],
-      ["Text & Links","Headings, paragraphs, links and formatting."],
-      ["Images & Media","Images, audio and video."],
-      ["Lists & Tables","Lists, tables and structured content."],
-      ["Forms","Forms, inputs and validation."],
-      ["Semantic HTML","Header, nav, main, section and footer."],
-      ["Accessibility","Accessible and user-friendly HTML."],
-      ["SEO Basics","Metadata, structure and search optimization."],
-      ["HTML5 APIs","Modern browser capabilities."],
-      ["HTML Project","Build a complete website structure."]
-    ]
-  },
-
-  css:{
-    name:"CSS",
-    icon:"🎨",
-    desc:"Master CSS, responsive layouts and modern UI design.",
-    modules:[
-      ["CSS Fundamentals","Selectors, properties and values."],
-      ["Colors & Typography","Fonts, colors and text styling."],
-      ["Box Model","Margin, padding, border and dimensions."],
-      ["Flexbox","Modern one-dimensional layouts."],
-      ["CSS Grid","Advanced two-dimensional layouts."],
-      ["Positioning","Static, relative, absolute and fixed."],
-      ["Responsive Design","Mobile-first responsive websites."],
-      ["Animations","Transitions, transforms and keyframes."],
-      ["Modern UI","Glassmorphism, gradients and effects."],
-      ["CSS Project","Build a responsive landing page."]
-    ]
-  },
-
-  sql:{
-    name:"SQL & MySQL",
-    icon:"🗄️",
-    desc:"Learn SQL from beginner queries to database analysis.",
-    modules:[
-      ["SQL Fundamentals","Databases, tables and relational concepts."],
-      ["SELECT Queries","Retrieve data using SELECT."],
-      ["Filtering","WHERE, AND, OR, IN, BETWEEN and LIKE."],
-      ["Sorting & Limiting","ORDER BY, LIMIT and DISTINCT."],
-      ["Aggregate Functions","COUNT, SUM, AVG, MIN and MAX."],
-      ["GROUP BY & HAVING","Analyze grouped data."],
-      ["Joins","INNER, LEFT, RIGHT and multi-table joins."],
-      ["Subqueries","Nested queries and derived data."],
-      ["Database Design","Keys, constraints and normalization basics."],
-      ["SQL Project","Build an analytical database project."]
-    ]
-  },
-
-  dsa:{
-    name:"Data Structures & Algorithms",
-    icon:"🧠",
-    desc:"Build strong DSA skills for coding interviews.",
-    modules:[
-      ["DSA Fundamentals","Complexity, Big-O and problem solving."],
-      ["Arrays","Traversal, searching and manipulation."],
-      ["Strings","String algorithms and patterns."],
-      ["Linked Lists","Singly and doubly linked lists."],
-      ["Stacks","Stack implementation and applications."],
-      ["Queues","Queues, circular queues and deque."],
-      ["Hashing","Hash tables and frequency problems."],
-      ["Trees","Binary trees and traversal."],
-      ["Graphs","Graph representation and traversal."],
-      ["Sorting","Bubble, selection, insertion, merge and quick sort."],
-      ["Searching","Linear and binary search."]
-    ]
-  },
-
-  dbms:{
-    name:"DBMS",
-    icon:"🗃️",
-    desc:"Learn database management systems for academics and interviews.",
-    modules:[
-      ["DBMS Fundamentals","Database systems and DBMS architecture."],
-      ["ER Model","Entities, attributes and relationships."],
-      ["Relational Model","Tables, tuples, domains and keys."],
-      ["SQL","Querying relational databases."],
-      ["Normalization","1NF, 2NF, 3NF and BCNF."],
-      ["Transactions","ACID properties and transactions."],
-      ["Concurrency","Locks and concurrency control."],
-      ["Indexing","Indexes and query performance."],
-      ["Recovery","Database recovery concepts."],
-      ["DBMS Interview","Important interview concepts and questions."]
-    ]
-  },
-
-  react:{
-    name:"React.js",
-    icon:"⚛️",
-    desc:"Build modern component-based frontend applications.",
-    modules:[
-      ["React Fundamentals","React architecture and components."],
-      ["JSX","Write UI using JSX."],
-      ["Components","Functional components and composition."],
-      ["Props","Pass data between components."],
-      ["State","Manage component state."],
-      ["Events & Forms","Handle user interactions."],
-      ["Hooks","useState, useEffect and custom hooks."],
-      ["API Integration","Fetch and display API data."],
-      ["Routing","Build multi-page SPA navigation."],
-      ["React Project","Build a complete React application."]
-    ]
-  },
-
-  node:{
-    name:"Node.js & Express",
-    icon:"🟢",
-    desc:"Learn backend development with Node.js and Express.",
-    modules:[
-      ["Node Fundamentals","Runtime, modules and npm."],
-      ["Modules","CommonJS and ES modules."],
-      ["File System","Read and write files with Node."],
-      ["HTTP Server","Create an HTTP server."],
-      ["Express","Build APIs using Express."],
-      ["REST API","REST principles and endpoints."],
-      ["Middleware","Authentication and request processing."],
-      ["Database","Connect applications to databases."],
-      ["Authentication","JWT and secure authentication basics."],
-      ["Backend Project","Build a production-style REST API."]
-    ]
-  },
-
-  aiml:{
-    name:"AI & Machine Learning",
-    icon:"🤖",
-    desc:"Learn machine learning fundamentals and practical workflows.",
-    modules:[
-      ["AI & ML Fundamentals","AI, ML and deep learning overview."],
-      ["Python for ML","NumPy, Pandas and data handling."],
-      ["Data Preprocessing","Cleaning, encoding and scaling."],
-      ["Exploratory Analysis","Understand patterns in datasets."],
-      ["Regression","Linear and multiple regression."],
-      ["Classification","Logistic regression and classification."],
-      ["Decision Trees","Tree-based machine learning."],
-      ["Model Evaluation","Accuracy, precision, recall and F1."],
-      ["Feature Engineering","Create useful model features."],
-      ["ML Project","Build an end-to-end ML project."]
-    ]
-  },
-
-  analytics:{
-    name:"Data Analytics",
-    icon:"📊",
-    desc:"Learn Excel, SQL, Python and Power BI for analytics.",
-    modules:[
-      ["Analytics Fundamentals","Data analytics workflow."],
-      ["Excel Fundamentals","Formulas, tables and formatting."],
-      ["Advanced Excel","Lookup, pivot tables and dashboards."],
-      ["SQL Analytics","Analyze relational data."],
-      ["Python Analytics","Pandas and NumPy."],
-      ["Data Cleaning","Prepare real-world datasets."],
-      ["Visualization","Charts and visual storytelling."],
-      ["Power BI","Reports, visuals and dashboards."],
-      ["Business Insights","Turn data into decisions."],
-      ["Analytics Project","Build an end-to-end dashboard."]
-    ]
-  },
-
-  cloud:{
-    name:"Cloud & DevOps",
-    icon:"☁️",
-    desc:"Understand cloud computing, deployment and DevOps.",
-    modules:[
-      ["Cloud Fundamentals","Cloud concepts and service models."],
-      ["AWS Basics","Core AWS concepts."],
-      ["Compute","Virtual machines and containers."],
-      ["Storage","Object and block storage."],
-      ["Databases","Managed cloud databases."],
-      ["Networking","VPC, DNS and connectivity."],
-      ["Git & GitHub","Version control workflows."],
-      ["CI/CD","Continuous integration and deployment."],
-      ["Docker","Containerization fundamentals."],
-      ["Cloud Project","Deploy a full-stack application."]
-    ]
-  },
-
-  cybersecurity:{
-    name:"Cybersecurity",
-    icon:"🔐",
-    desc:"Learn cybersecurity fundamentals and secure development.",
-    modules:[
-      ["Security Fundamentals","Threats, attacks and security principles."],
-      ["CIA Triad","Confidentiality, integrity and availability."],
-      ["Networking Security","Ports, protocols and network threats."],
-      ["Authentication","Passwords, hashing and authentication."],
-      ["Web Security","Common web security concepts."],
-      ["OWASP Basics","Understand common application risks."],
-      ["Cryptography","Encryption, hashing and keys."],
-      ["Secure Coding","Write safer applications."],
-      ["Incident Response","Detection and response fundamentals."],
-      ["Security Project","Create a secure application checklist."]
-    ]
-  },
-
-  interview:{
-    name:"Placement & Interview Prep",
-    icon:"🎯",
-    desc:"Prepare for coding, technical and HR interviews.",
-    modules:[
-      ["Resume & ATS","Build an ATS-friendly resume."],
-      ["Aptitude","Quantitative aptitude fundamentals."],
-      ["Logical Reasoning","Patterns and reasoning problems."],
-      ["SQL Interview","Important SQL interview questions."],
-      ["Programming Interview","Core programming questions."],
-      ["DSA Interview","Common DSA patterns."],
-      ["CS Fundamentals","OS, DBMS and networking."],
-      ["Project Interview","Explain projects professionally."],
-      ["HR Interview","Common HR questions."],
-      ["Mock Interview","Complete interview preparation."]
-    ]
-  }
-
+/*
+  COURSE CATALOG
+  Each course has a subject-specific module list.
+*/
+const C={
+python:{name:"Python Programming",icon:"🐍",desc:"From absolute fundamentals to OOP, files, libraries and a portfolio-ready project.",mods:[
+["Python Fundamentals","syntax, variables, data types, print, comments, indentation"],
+["Operators & Input","arithmetic, comparison, logical, assignment and input"],
+["Conditions","if, elif, else, nested decisions and conditional expressions"],
+["Loops","for, while, range, break, continue, nested loops"],
+["Functions","parameters, return, scope, recursion, lambda and reusable design"],
+["Collections","list, tuple, set, dictionary, nesting and comprehensions"],
+["Strings","indexing, slicing, methods, formatting and text processing"],
+["OOP in Python","classes, objects, self, constructors, inheritance and polymorphism"],
+["Files & Exceptions","read/write files, with, try/except and custom errors"],
+["Modules & Libraries","import, packages, pip, virtual environments and useful libraries"],
+["Python Project","design, validation, persistence, testing and GitHub-ready project"]
+]},
+java:{name:"Java Programming",icon:"☕",desc:"Core Java, OOP, collections, exceptions and application development.",mods:[
+["Java Fundamentals","JDK, JVM, JRE, syntax, variables, primitive types"],
+["Operators & Input","operators, Scanner, expressions and type conversion"],
+["Conditions","if, else, switch and decision making"],
+["Loops","for, while, do-while, break and continue"],
+["Methods","parameters, return types, overloading and scope"],
+["Arrays & Strings","arrays, String, StringBuilder and common operations"],
+["OOP","class, object, constructor, this, encapsulation"],
+["Inheritance & Polymorphism","extends, overriding, abstract classes and interfaces"],
+["Collections & Exceptions","List, Set, Map, generics and exception handling"],
+["Java Project","layered design, validation, persistence and testing"]
+]},
+c:{name:"C Programming",icon:"©️",desc:"Programming fundamentals, arrays, pointers, structures and problem solving.",mods:[
+["C Fundamentals","program structure, compilation, variables and data types"],
+["Input & Operators","printf, scanf, operators and expressions"],
+["Conditions","if, else, switch and nested decisions"],
+["Loops","for, while, do-while, break and continue"],
+["Functions","declaration, definition, parameters, return and recursion"],
+["Arrays","1D, 2D arrays, traversal, searching and basic algorithms"],
+["Strings","character arrays, string functions and safe handling"],
+["Pointers","addresses, dereference, pointer arithmetic and arrays"],
+["Structures & Memory","struct, union, dynamic memory and memory safety"],
+["C Project","modular console application and debugging"]
+]},
+cpp:{name:"C++ Programming",icon:"⚡",desc:"Modern C++, OOP, STL and interview-oriented problem solving.",mods:[
+["C++ Fundamentals","syntax, types, streams, namespaces and compilation"],
+["Operators & Control","operators, if, switch and expressions"],
+["Loops & Functions","iteration, functions, references and overloading"],
+["Arrays & Strings","arrays, std::string and common algorithms"],
+["Pointers & References","memory, references, pointers and safe usage"],
+["Classes & Objects","constructors, destructors and encapsulation"],
+["Inheritance & Polymorphism","inheritance, virtual functions and abstraction"],
+["Templates & STL","templates, vector, map, set, stack and queue"],
+["Algorithms & Complexity","sorting, searching, iterators and Big-O"],
+["C++ Project","STL-based application with clean architecture"]
+]},
+javascript:{name:"JavaScript",icon:"🟨",desc:"Modern JavaScript, DOM, events, asynchronous programming and APIs.",mods:[
+["JS Fundamentals","variables, primitive types, coercion and strict equality"],
+["Operators & Conditions","expressions, if, switch and ternary"],
+["Loops & Iteration","for, while, for...of and array iteration"],
+["Functions","declarations, expressions, arrow functions and closures"],
+["Arrays","map, filter, reduce, find, sort and practical patterns"],
+["Objects","properties, methods, destructuring, spread and JSON"],
+["DOM","query selectors, element creation and manipulation"],
+["Events & Forms","event listeners, bubbling, validation and form handling"],
+["Async JavaScript","callbacks, promises, async/await and fetch"],
+["JavaScript Project","API-driven interactive web application"]
+]},
+html:{name:"HTML5",icon:"🌐",desc:"Semantic HTML, forms, accessibility, SEO and modern page structure.",mods:[
+["HTML Fundamentals","document structure, elements, attributes and nesting"],
+["Text & Links","headings, paragraphs, links and text semantics"],
+["Images & Media","images, audio, video, responsive media"],
+["Lists & Tables","ordered/unordered lists, tables and data structure"],
+["Forms","inputs, labels, validation, buttons and form semantics"],
+["Semantic HTML","header, nav, main, section, article, aside, footer"],
+["Accessibility","labels, landmarks, keyboard access and meaningful structure"],
+["SEO Fundamentals","title, description, headings, canonical concepts"],
+["HTML5 APIs","data attributes, storage concepts and browser capabilities"],
+["HTML Project","accessible responsive portfolio structure"]
+]},
+css:{name:"CSS",icon:"🎨",desc:"CSS from box model to Flexbox, Grid, responsive design and animation.",mods:[
+["CSS Fundamentals","selectors, cascade, inheritance and specificity"],
+["Colors & Typography","fonts, units, colors, line-height and readable UI"],
+["Box Model","content, padding, border, margin and box-sizing"],
+["Flexbox","main axis, cross axis, wrapping, alignment and layouts"],
+["CSS Grid","tracks, areas, gap, responsive two-dimensional layouts"],
+["Positioning","static, relative, absolute, fixed and sticky"],
+["Responsive Design","media queries, mobile-first and fluid layouts"],
+["Transitions & Animations","transform, transition, keyframes and performance"],
+["Modern UI","variables, gradients, glass effects and component systems"],
+["CSS Project","responsive professional landing page"]
+]},
+sql:{name:"SQL & MySQL",icon:"🗄️",desc:"Queries, joins, aggregation, subqueries, design and analytics.",mods:[
+["SQL Fundamentals","database, table, row, column, relational thinking"],
+["SELECT & DISTINCT","projection, aliases, expressions and unique values"],
+["Filtering","WHERE, AND, OR, IN, BETWEEN, LIKE and NULL"],
+["Sorting & Limiting","ORDER BY, LIMIT, pagination concepts"],
+["Aggregate Functions","COUNT, SUM, AVG, MIN, MAX and NULL behavior"],
+["GROUP BY & HAVING","grouped analysis and filtering aggregates"],
+["JOINs","inner, left, right, self and multi-table joins"],
+["Subqueries & CTEs","nested queries, EXISTS and common table expressions"],
+["Design & Constraints","primary keys, foreign keys, normalization and indexes"],
+["SQL Analytics Project","sales/student analytics with meaningful queries"]
+]},
+dsa:{name:"Data Structures & Algorithms",icon:"🧠",desc:"Problem solving, complexity, core data structures and interview patterns.",mods:[
+["Complexity & Problem Solving","Big-O, time-space tradeoffs and decomposition"],
+["Arrays","traversal, prefix sums, two pointers and frequency"],
+["Strings","frequency, palindrome, substring and pattern techniques"],
+["Linked Lists","nodes, traversal, insertion, deletion and reversal"],
+["Stacks & Queues","LIFO, FIFO, monotonic structures and applications"],
+["Hashing","hash maps, sets, frequency counting and lookup"],
+["Trees","binary trees, DFS, BFS and recursion"],
+["Graphs","adjacency structures, BFS, DFS and visited state"],
+["Sorting","selection, insertion, merge, quick and complexity"],
+["Searching","linear search, binary search and answer-space search"],
+["Interview Patterns","sliding window, recursion, greedy and mixed problems"]
+]},
+dbms:{name:"DBMS",icon:"🗃️",desc:"Database architecture, ER modeling, normalization, transactions and indexing.",mods:[
+["DBMS Fundamentals","DBMS purpose, architecture and data independence"],
+["ER Model","entities, attributes, relationships and cardinality"],
+["Relational Model","relations, tuples, domains and relational keys"],
+["SQL Layer","DDL, DML, DQL, constraints and query concepts"],
+["Normalization","1NF, 2NF, 3NF, BCNF and dependency reasoning"],
+["Transactions & ACID","atomicity, consistency, isolation and durability"],
+["Concurrency Control","locks, schedules and common anomalies"],
+["Indexing","B-tree concepts, indexes and query performance"],
+["Recovery","logging, checkpoints and failure recovery"],
+["DBMS Interview Mastery","common conceptual and scenario-based questions"]
+]},
+react:{name:"React.js",icon:"⚛️",desc:"Components, JSX, props, state, hooks, routing and API-driven apps.",mods:[
+["React Fundamentals","component model, SPA concept and project structure"],
+["JSX","expressions, rendering rules and JSX best practices"],
+["Components & Props","composition, props and reusable UI"],
+["State","useState, state updates and derived values"],
+["Events & Forms","controlled inputs, events and validation"],
+["Hooks","useEffect, useMemo, useCallback and custom hooks"],
+["Lists & Conditional UI","keys, map, conditional rendering and empty states"],
+["API Integration","fetch, loading, errors and async state"],
+["Routing & Architecture","routes, layouts and component organization"],
+["React Project","build a responsive dashboard application"]
+]},
+node:{name:"Node.js & Express",icon:"🟢",desc:"Backend fundamentals, REST APIs, middleware, databases and authentication.",mods:[
+["Node Fundamentals","runtime, event loop, modules and npm"],
+["Modules & Packages","CommonJS, ES modules, package management"],
+["File System","paths, reading/writing and async operations"],
+["HTTP Fundamentals","requests, responses, methods and status codes"],
+["Express","routes, middleware and application structure"],
+["REST API Design","resources, HTTP methods, status codes and validation"],
+["Middleware","logging, parsing, error handling and authorization"],
+["Database Integration","queries, connection pools and data access"],
+["Authentication & Security","hashing, JWT concepts, CORS and rate limits"],
+["Backend Project","production-style REST API architecture"]
+]},
+aiml:{name:"AI & Machine Learning",icon:"🤖",desc:"ML workflow, preprocessing, regression, classification and evaluation.",mods:[
+["AI & ML Fundamentals","AI vs ML vs deep learning and learning types"],
+["Python for ML","NumPy arrays, Pandas dataframes and workflow"],
+["Data Preprocessing","missing values, encoding, scaling and leakage"],
+["EDA","distributions, correlations, outliers and visual reasoning"],
+["Regression","linear regression, features, target and error"],
+["Classification","logistic regression, decision boundaries and labels"],
+["Trees & Ensembles","decision trees, overfitting and ensemble idea"],
+["Evaluation","accuracy, precision, recall, F1, confusion matrix"],
+["Feature Engineering","useful features, selection and transformation"],
+["ML Project","end-to-end model pipeline and responsible evaluation"]
+]},
+analytics:{name:"Data Analytics",icon:"📊",desc:"Excel, SQL, Python, visualization, Power BI and business insights.",mods:[
+["Analytics Fundamentals","business question, data, analysis and insight"],
+["Excel Foundations","formulas, tables, references and cleaning"],
+["Advanced Excel","XLOOKUP, IF, SUMIFS, pivots and dashboards"],
+["SQL for Analytics","filtering, joins, grouping and analytical queries"],
+["Pandas & NumPy","loading data, transformation and aggregation"],
+["Data Cleaning","duplicates, missing values, types and validation"],
+["Visualization","chart selection, storytelling and misleading charts"],
+["Power BI","Power Query, data model, visuals and reports"],
+["Business Metrics","KPIs, dimensions, measures and actionable insights"],
+["Analytics Project","complete sales analytics dashboard workflow"]
+]},
+cloud:{name:"Cloud & DevOps",icon:"☁️",desc:"Cloud fundamentals, Git, CI/CD, Docker and deployment thinking.",mods:[
+["Cloud Fundamentals","IaaS, PaaS, SaaS, regions and shared responsibility"],
+["AWS Concepts","compute, storage, database and identity overview"],
+["Compute & Containers","VMs, containers and scaling concepts"],
+["Storage","object, block and file storage concepts"],
+["Cloud Networking","VPC, DNS, ports and secure connectivity"],
+["Git & GitHub","branches, commits, pull requests and collaboration"],
+["CI/CD","build, test, deploy and environment separation"],
+["Docker","images, containers, Dockerfile and registry concepts"],
+["Monitoring & Security","logs, metrics, secrets and least privilege"],
+["Deployment Project","deploy a full-stack application with a pipeline"]
+]},
+cybersecurity:{name:"Cybersecurity",icon:"🔐",desc:"Security fundamentals, web security, cryptography and secure coding.",mods:[
+["Security Fundamentals","assets, threats, vulnerabilities and risk"],
+["CIA Triad","confidentiality, integrity, availability and controls"],
+["Networking Security","protocols, ports, segmentation and defensive thinking"],
+["Authentication","password hashing, MFA, sessions and authorization"],
+["Web Security","input validation, sessions, CORS and common risks"],
+["OWASP Concepts","injection, broken access control and security hygiene"],
+["Cryptography","hashing, encryption, keys and TLS concepts"],
+["Secure Coding","validation, secrets, dependencies and error handling"],
+["Incident Response","identify, contain, eradicate, recover and lessons"],
+["Security Project","security review and hardening plan for an app"]
+]},
+interview:{name:"Placement & Interview Prep",icon:"🎯",desc:"Resume, aptitude, coding, CS fundamentals, projects and HR preparation.",mods:[
+["Resume & ATS","achievement bullets, keywords, structure and truthfulness"],
+["Aptitude Fundamentals","percentages, ratios, averages and speed"],
+["Logical Reasoning","patterns, syllogisms, arrangements and inference"],
+["SQL Interview","joins, grouping, subqueries and practical questions"],
+["Programming Interview","OOP, language fundamentals and debugging"],
+["DSA Interview","arrays, strings, hashing, trees and complexity"],
+["CS Fundamentals","OS, DBMS, networking and software engineering"],
+["Project Interview","problem, architecture, contribution and tradeoffs"],
+["HR Interview","introduction, behavioral answers and STAR structure"],
+["Mock Interview","timed technical + project + HR simulation"]
+]}
 };
 
+const params=new URLSearchParams(location.search);
+let key=(params.get("course")||"python").toLowerCase();
+if(!C[key])key="python";
+const course=C[key];
+const mods=course.mods;
 
-/* ------------------------------------------------------------
-   GET COURSE
------------------------------------------------------------- */
+let index=0;
+const STORE="pk_deep_course_"+key;
+let done=JSON.parse(localStorage.getItem(STORE)||"[]");
+let quizScore=Number(localStorage.getItem(STORE+"_quiz")||0);
+let quizAnswered=Number(localStorage.getItem(STORE+"_qa")||0);
 
-const params = new URLSearchParams(window.location.search);
+const $=id=>document.getElementById(id);
 
-let courseKey = (params.get("course") || "python").toLowerCase().trim();
+$("title").textContent=course.name;
+$("desc").textContent=course.desc;
+$("sideName").textContent=course.name;
+$("sideDesc").textContent=course.desc;
+$("sideIcon").textContent=course.icon;
+$("mc").textContent=mods.length;
+$("lc").textContent=mods.length;
+$("pc").textContent=mods.length*5+"+";
+$("qc").textContent=mods.length*5+"+";
+$("prc").textContent=Math.max(3,Math.ceil(mods.length/3))+"+";
 
-if(!COURSE_INFO[courseKey]){
-  courseKey = "python";
+function save(){
+  localStorage.setItem(STORE,JSON.stringify(done));
+  localStorage.setItem(STORE+"_quiz",quizScore);
+  localStorage.setItem(STORE+"_qa",quizAnswered);
 }
 
-const COURSE = COURSE_INFO[courseKey];
-
-
-/* ------------------------------------------------------------
-   GENERATE REAL LESSON CONTENT
------------------------------------------------------------- */
-
-function makeCode(){
-
-  const examples = {
-
-    python:`name = "Priyanshu"
-age = 23
-
-print("Hello", name)
-print("Age:", age)`,
-
-    java:`public class Main {
-    public static void main(String[] args) {
-        String name = "Priyanshu";
-        int age = 23;
-
-        System.out.println(name);
-        System.out.println(age);
-    }
-}`,
-
-    cpp:`#include <iostream>
-using namespace std;
-
-int main() {
-    string name = "Priyanshu";
-    int age = 23;
-
-    cout << name << endl;
-    cout << age << endl;
-
-    return 0;
-}`,
-
-    c:`#include <stdio.h>
-
-int main() {
-    char name[] = "Priyanshu";
-    int age = 23;
-
-    printf("%s\\n", name);
-    printf("%d\\n", age);
-
-    return 0;
-}`,
-
-    javascript:`const name = "Priyanshu";
-const age = 23;
-
-console.log("Name:", name);
-console.log("Age:", age);`,
-
-    html:`<!DOCTYPE html>
-<html>
-<head>
-  <title>My Website</title>
-</head>
-<body>
-  <h1>Hello Priyanshu</h1>
-  <p>Welcome to my website.</p>
-</body>
-</html>`,
-
-    css:`body {
-  background: #080b18;
-  color: white;
-  font-family: Arial;
+function progress(){
+  const pct=Math.round(done.length/mods.length*100);
+  $("percent").textContent=pct+"%";
+  $("fill").style.width=pct+"%";
+  $("cert").classList.toggle("show",pct===100);
+  renderModules();
 }
 
-.card {
-  padding: 20px;
-  border-radius: 15px;
-}`,
-
-    sql:`CREATE TABLE students (
-  id INT PRIMARY KEY,
-  name VARCHAR(100),
-  marks INT
-);
-
-SELECT * FROM students
-WHERE marks >= 60;`,
-
-    dsa:`int arr[] = {10, 20, 30, 40, 50};
-
-for(int i = 0; i < 5; i++) {
-    cout << arr[i] << endl;
-}`,
-
-    dbms:`CREATE TABLE users (
-  id INT PRIMARY KEY,
-  name VARCHAR(100),
-  email VARCHAR(150) UNIQUE
-);`,
-
-    react:`function App() {
-  return (
-    <div>
-      <h1>Priyanshu Study Hub</h1>
-      <p>Learn React</p>
-    </div>
-  );
-}
-
-export default App;`,
-
-    node:`const express = require("express");
-
-const app = express();
-
-app.get("/", (req, res) => {
-  res.json({ message: "API is working" });
-});
-
-app.listen(3000);`,
-
-    aiml:`from sklearn.linear_model import LogisticRegression
-
-model = LogisticRegression()
-
-model.fit(X_train, y_train)
-
-prediction = model.predict(X_test)
-
-print(prediction)`,
-
-    analytics:`import pandas as pd
-
-df = pd.read_csv("sales.csv")
-
-print(df.head())
-print(df.describe())
-
-summary = df.groupby("category")["sales"].sum()
-
-print(summary)`,
-
-    cloud:`# Basic deployment workflow
-
-git add .
-git commit -m "Deploy application"
-git push origin main
-
-# Connect repository to your
-# cloud deployment platform.`,
-
-    cybersecurity:`import hashlib
-
-password = "example-password"
-
-hashed = hashlib.sha256(
-    password.encode()
-).hexdigest()
-
-print(hashed)`,
-
-    interview:`Question:
-Explain your project in 60 seconds.
-
-Structure:
-1. Problem
-2. Technology
-3. Your contribution
-4. Result
-5. Future improvement`
-  };
-
-  return examples[courseKey] || examples.python;
-}
-
-
-/* ------------------------------------------------------------
-   MODULE-SPECIFIC EXPLANATIONS
------------------------------------------------------------- */
-
-function moduleDetails(title,index){
-
-  const first = index === 0;
-  const last = index === COURSE.modules.length - 1;
-
-  let concept =
-    `${title} is an important part of ${COURSE.name}. ` +
-    `In this module you will understand the core concepts, learn the correct syntax or workflow, ` +
-    `practice common problems and apply the concept to a small practical task.`;
-
-  if(first){
-    concept =
-      `Welcome to ${COURSE.name}. Start by understanding the fundamentals before moving to advanced topics. ` +
-      `Strong fundamentals make debugging, problem solving, interviews and project development much easier.`;
-  }
-
-  if(last){
-    concept =
-      `This is the project and application stage of ${COURSE.name}. ` +
-      `The goal is to combine the concepts learned throughout the course into a practical project.`;
-  }
-
-  return {
-    concept,
-
-    points:[
-      `Understand the purpose of ${title}.`,
-      `Learn the important terminology and workflow.`,
-      `Study a practical example.`,
-      `Solve the practice tasks without copying the solution.`,
-      `Revise the module before moving to the next topic.`
-    ],
-
-    code:makeCode(),
-
-    practices:[
-      `Create your own example using ${title}.`,
-      `Modify the example and observe the output.`,
-      `Solve one problem without looking at the solution.`,
-      `Explain this topic in your own words.`,
-      `Use this concept in a small project.`
-    ],
-
-    quiz:[
-      {
-        q:`What is the main purpose of studying ${title}?`,
-        options:[
-          "To understand and apply the concept",
-          "To avoid writing code",
-          "Only to memorize definitions",
-          "To skip practical work"
-        ],
-        answer:0
-      },
-      {
-        q:`What should you do after learning a new concept?`,
-        options:[
-          "Never practice it",
-          "Practice and apply it",
-          "Only memorize the name",
-          "Skip revision"
-        ],
-        answer:1
-      }
-    ]
-  };
-}
-
-
-/* ------------------------------------------------------------
-   STATE
------------------------------------------------------------- */
-
-let currentIndex = 0;
-
-const STORAGE_KEY =
-  "pk_course_progress_" + courseKey;
-
-let completed = JSON.parse(
-  localStorage.getItem(STORAGE_KEY) || "[]"
-);
-
-
-/* ------------------------------------------------------------
-   DOM
------------------------------------------------------------- */
-
-const moduleList = document.getElementById("moduleList");
-const lessonContent = document.getElementById("lessonContent");
-const completeBtn = document.getElementById("completeBtn");
-const prevBtn = document.getElementById("prevBtn");
-const nextBtn = document.getElementById("nextBtn");
-
-
-/* ------------------------------------------------------------
-   COURSE HEADER
------------------------------------------------------------- */
-
-document.getElementById("courseTitle").textContent = COURSE.name;
-document.getElementById("sideCourseName").textContent = COURSE.name;
-document.getElementById("courseIcon").textContent = COURSE.icon;
-
-document.getElementById("courseDescription").textContent =
-  COURSE.desc;
-
-document.getElementById("sideCourseDesc").textContent =
-  COURSE.desc;
-
-document.getElementById("moduleCount").textContent =
-  COURSE.modules.length;
-
-document.getElementById("lessonCount").textContent =
-  COURSE.modules.length;
-
-document.getElementById("practiceCount").textContent =
-  COURSE.modules.length * 5 + "+";
-
-document.getElementById("projectCount").textContent =
-  Math.max(3, Math.ceil(COURSE.modules.length / 3)) + "+";
-
-
-/* ------------------------------------------------------------
-   SAVE
------------------------------------------------------------- */
-
-function saveProgress(){
-
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(completed)
-  );
-}
-
-
-/* ------------------------------------------------------------
-   PROGRESS
------------------------------------------------------------- */
-
-function updateProgress(){
-
-  const total = COURSE.modules.length;
-
-  const percent =
-    Math.round((completed.length / total) * 100);
-
-  document.getElementById("progressPercent")
-    .textContent = percent + "%";
-
-  document.getElementById("progressFill")
-    .style.width = percent + "%";
-
-  if(percent === 100){
-
-    document
-      .getElementById("certificate")
-      .classList.add("show");
-
-  }else{
-
-    document
-      .getElementById("certificate")
-      .classList.remove("show");
-
-  }
-
-  renderModuleList();
-}
-
-
-/* ------------------------------------------------------------
-   MODULE LIST
------------------------------------------------------------- */
-
-function renderModuleList(){
-
-  moduleList.innerHTML = "";
-
-  COURSE.modules.forEach((module,index)=>{
-
-    const btn = document.createElement("button");
-
-    btn.className = "module-btn";
-
-    if(index === currentIndex)
-      btn.classList.add("active");
-
-    if(completed.includes(index))
-      btn.classList.add("done");
-
-    btn.innerHTML =
-      `${completed.includes(index) ? "✓ " : ""}Module ${String(index+1).padStart(2,"0")}
-       <small>${module[0]}</small>`;
-
-    btn.onclick = ()=>{
-      currentIndex = index;
-      renderLesson();
-      document.getElementById("sidebar")
-        .classList.remove("open");
-    };
-
-    moduleList.appendChild(btn);
-
+function renderModules(filter=""){
+  $("moduleList").innerHTML="";
+  mods.forEach((m,i)=>{
+    if(filter && !(m[0]+" "+m[1]).toLowerCase().includes(filter.toLowerCase()))return;
+    const b=document.createElement("button");
+    b.className="mod"+(i===index?" active":"")+(done.includes(i)?" done":"");
+    b.innerHTML=(done.includes(i)?"✓ ":"")+`Module ${String(i+1).padStart(2,"0")}<small>${m[0]}</small>`;
+    b.onclick=()=>{index=i;render();$("sidebar").classList.remove("open")};
+    $("moduleList").appendChild(b);
   });
 }
 
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
 
-/* ------------------------------------------------------------
-   RENDER LESSON
------------------------------------------------------------- */
+function getDeep(title,desc){
+  const lower=(title+" "+desc).toLowerCase();
+  let domain=course.name;
+  let why=`This topic is a building block of ${domain}. Learn not only the definition, but also when to use it, why it works, what can go wrong, and how it appears in real projects and interviews.`;
+  let syntax="Study the syntax/rules shown in the example, then change the values and write the example again without looking.";
+  let code=`// ${course.name}: ${title}\n// Replace this example with your own values and test it.\n\nconsole.log("Practice: ${title}");`;
+  let concepts=[
+    `Definition and purpose of ${title}.`,
+    `How the concept fits into the larger ${domain} workflow.`,
+    `Inputs, outputs, rules and important edge cases.`,
+    `Where the concept is useful in real projects.`,
+    `How interviewers commonly test this concept.`
+  ];
 
-function renderLesson(){
-
-  const module = COURSE.modules[currentIndex];
-
-  const title = module[0];
-  const description = module[1];
-
-  const details =
-    moduleDetails(title,currentIndex);
-
-  document.getElementById("moduleNumber").textContent =
-    `MODULE ${String(currentIndex+1).padStart(2,"0")}`;
-
-  document.getElementById("lessonTitle").textContent =
-    title;
-
-  document.getElementById("lessonSubtitle").textContent =
-    description;
-
-  let html = "";
-
-  html += `
-    <div class="section">
-      <h3>📖 What You Will Learn</h3>
-      <p>${details.concept}</p>
-    </div>
-  `;
-
-  html += `
-    <div class="section">
-      <h3>🎯 Learning Objectives</h3>
-      <ul class="points">
-        ${details.points.map(x=>`<li>${x}</li>`).join("")}
-      </ul>
-    </div>
-  `;
-
-  html += `
-    <div class="section">
-      <h3>💡 Important Note</h3>
-      <div class="note">
-        Do not only read the material. Type the examples yourself,
-        change the values, create mistakes intentionally and understand
-        why the program or workflow behaves that way.
-      </div>
-    </div>
-  `;
-
-  html += `
-    <div class="section">
-      <h3>💻 Practical Example</h3>
-
-      <div class="code">
-
-        <div class="code-top">
-          <span>${COURSE.name} Example</span>
-          <button class="copy" onclick="copyCode()">
-            Copy Code
-          </button>
-        </div>
-
-        <pre id="codeBlock"></pre>
-
-      </div>
-    </div>
-  `;
-
-  html += `
-    <div class="section">
-      <h3>✍️ Practice Tasks</h3>
-
-      <div class="practice-grid">
-
-        ${details.practices.map((p,i)=>`
-
-          <div class="practice">
-            <b>Task ${i+1}</b>
-            <p>${p}</p>
-          </div>
-
-        `).join("")}
-
-      </div>
-    </div>
-  `;
-
-  html += `
-    <div class="section">
-
-      <h3>🧠 Quick Quiz</h3>
-
-      ${details.quiz.map((q,qi)=>`
-
-        <div class="quiz" style="margin-top:12px">
-
-          <div class="question">
-            ${qi+1}. ${q.q}
-          </div>
-
-          ${q.options.map((option,oi)=>`
-
-            <button
-              class="option"
-              onclick="answerQuiz(this,${oi},${q.answer})"
-            >
-              ${option}
-            </button>
-
-          `).join("")}
-
-          <div class="quiz-result"></div>
-
-        </div>
-
-      `).join("")}
-
-    </div>
-  `;
-
-  if(currentIndex === COURSE.modules.length-1){
-
-    html += `
-      <div class="section">
-
-        <h3>🚀 Final Project Challenge</h3>
-
-        <div class="note">
-
-          Build a small real-world project using the concepts
-          from this course.
-
-          <br><br>
-
-          <b>Project requirements:</b>
-
-          <br>
-          • Use the concepts from previous modules.
-          <br>
-          • Add input validation where applicable.
-          <br>
-          • Handle errors properly.
-          <br>
-          • Write clean and readable code.
-          <br>
-          • Add a README.
-          <br>
-          • Upload the project to GitHub.
-
-        </div>
-
-      </div>
-    `;
-
+  if(key==="python"){
+    code=`name = "Priyanshu"\nage = 23\n\nprint("Name:", name)\nprint("Age:", age)\nprint(type(name), type(age))`;
+    if(lower.includes("operator"))code=`a = 10\nb = 3\n\nprint(a + b)\nprint(a > b)\nprint(a == b)\nprint(a > 5 and b < 5)`;
+    if(lower.includes("condition"))code=`marks = 72\n\nif marks >= 80:\n    grade = "A"\nelif marks >= 60:\n    grade = "B"\nelse:\n    grade = "C"\n\nprint(grade)`;
+    if(lower.includes("loop"))code=`for number in range(1, 6):\n    if number == 4:\n        continue\n    print(number)`;
+    if(lower.includes("function"))code=`def calculate_total(price, tax=0.18):\n    return price + price * tax\n\nprint(calculate_total(1000))`;
+    if(lower.includes("collection"))code=`students = {"Aman": 80, "Priyanshu": 90}\n\nstudents["Rahul"] = 75\n\nfor name, marks in students.items():\n    print(name, marks)`;
+    if(lower.includes("string"))code=`text = "Python Programming"\n\nprint(text[0:6])\nprint(text.lower())\nprint(text.replace("Python", "AI"))\nprint(f"Length = {len(text)}")`;
+    if(lower.includes("oop"))code=`class Student:\n    def __init__(self, name, marks):\n        self.name = name\n        self.marks = marks\n\n    def result(self):\n        return self.marks >= 40\n\ns = Student("Priyanshu", 82)\nprint(s.name, s.result())`;
+    if(lower.includes("file"))code=`try:\n    with open("notes.txt", "w") as file:\n        file.write("Study Hub")\n\n    with open("notes.txt", "r") as file:\n        print(file.read())\nexcept OSError as error:\n    print("File error:", error)`;
+    if(lower.includes("module"))code=`import math\n\nradius = 5\narea = math.pi * radius ** 2\nprint(area)`;
+  } else if(key==="sql"||key==="dbms"){
+    code=`SELECT department, COUNT(*) AS students\nFROM students\nWHERE marks >= 60\nGROUP BY department\nHAVING COUNT(*) > 2\nORDER BY students DESC;`;
+  } else if(key==="javascript"){
+    code=`const students = [70, 85, 92, 61];\n\nconst passed = students\n  .filter(mark => mark >= 70)\n  .map(mark => mark + 5);\n\nconsole.log(passed);`;
+  } else if(key==="html"){
+    code=`<main>\n  <section aria-labelledby="title">\n    <h1 id="title">Student Dashboard</h1>\n    <p>Learn, practice and build.</p>\n    <a href="dashboard.html">Open Dashboard</a>\n  </section>\n</main>`;
+  } else if(key==="css"){
+    code=`.card {\n  display: grid;\n  gap: 1rem;\n  padding: 1.25rem;\n  border-radius: 1rem;\n  background: rgba(255,255,255,.06);\n}\n\n@media (max-width: 600px) {\n  .card { padding: 1rem; }\n}`;
+  } else if(key==="java"){
+    code=`class Student {\n    String name;\n    int marks;\n\n    Student(String name, int marks) {\n        this.name = name;\n        this.marks = marks;\n    }\n\n    boolean passed() {\n        return marks >= 40;\n    }\n}`;
+  } else if(key==="cpp"){
+    code=`#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<int> marks = {70, 82, 91};\n    for (int mark : marks) cout << mark << "\\n";\n}`;
+  } else if(key==="c"){
+    code=`#include <stdio.h>\n\nint main() {\n    int marks[] = {70, 82, 91};\n    int n = sizeof(marks) / sizeof(marks[0]);\n\n    for(int i=0; i<n; i++)\n        printf("%d\\n", marks[i]);\n\n    return 0;\n}`;
+  } else if(key==="dsa"){
+    code=`int left = 0, right = n - 1;\nwhile (left < right) {\n    if (arr[left] + arr[right] == target) {\n        // found pair\n        break;\n    }\n    if (arr[left] + arr[right] < target) left++;\n    else right--;\n}`;
+  } else if(key==="react"){
+    code=`function StudentCard({ name, marks }) {\n  const passed = marks >= 40;\n  return (\n    <article>\n      <h2>{name}</h2>\n      <p>{passed ? "Passed" : "Needs practice"}</p>\n    </article>\n  );\n}`;
+  } else if(key==="node"){
+    code=`const express = require("express");\nconst app = express();\napp.use(express.json());\n\napp.get("/api/health", (req, res) => {\n  res.json({ success: true });\n});\n\napp.listen(3000);`;
+  } else if(key==="aiml"){
+    code=`from sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LogisticRegression\n\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=42\n)\nmodel = LogisticRegression(max_iter=1000)\nmodel.fit(X_train, y_train)\nprint(model.score(X_test, y_test))`;
+  } else if(key==="analytics"){
+    code=`import pandas as pd\n\ndf = pd.read_csv("sales.csv")\nsummary = (df.groupby("category")["sales"]\n             .sum()\n             .sort_values(ascending=False))\nprint(summary)`;
+  } else if(key==="cloud"){
+    code=`git add .\ngit commit -m "Prepare deployment"\ngit push origin main\n\n# CI/CD then builds, tests and deploys\n# using the configured environment.`;
+  } else if(key==="cybersecurity"){
+    code=`// Defensive validation example\nconst email = String(input).trim();\nconst valid = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email);\n\nif (!valid) throw new Error("Invalid input");`;
+  } else if(key==="interview"){
+    code=`// 60-second project structure\n1. Problem solved\n2. Technology used\n3. Your contribution\n4. Important technical challenge\n5. Result\n6. What you would improve next`;
   }
-
-  lessonContent.innerHTML = html;
-
-  document.getElementById("codeBlock").textContent =
-    details.code;
-
-  updateButtons();
-  updateProgress();
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
+  return {why,syntax,code,concepts};
 }
 
-
-/* ------------------------------------------------------------
-   COPY CODE
------------------------------------------------------------- */
-
-function copyCode(){
-
-  const code =
-    document.getElementById("codeBlock").textContent;
-
-  navigator.clipboard.writeText(code)
-    .then(()=>{
-      showToast("✓ Code copied");
-    })
-    .catch(()=>{
-      showToast("Copy failed");
-    });
+function buildQuiz(title){
+  return [
+    {q:`Which statement best describes the role of ${title}?`,o:["Understand and apply the concept","Avoid practice","Only memorize syntax","Skip edge cases"],a:0},
+    {q:"What is the best way to learn a technical concept?",o:["Read once and forget","Practice with variations","Only watch videos","Copy every example"],a:1},
+    {q:"What should you check when code behaves unexpectedly?",o:["Inputs, assumptions and errors","Only the screen brightness","Nothing","Delete the project"],a:0},
+    {q:"Why are edge cases important?",o:["They reveal weaknesses in solutions","They are never tested","They make code unnecessary","They only matter in design"],a:0},
+    {q:"What improves interview readiness?",o:["Explaining the reasoning and complexity","Memorizing random answers","Avoiding projects","Skipping fundamentals"],a:0}
+  ];
 }
 
+function render(){
+  const [title,desc]=mods[index];
+  const d=getDeep(title,desc);
+  $("moduleNumber").textContent=`MODULE ${String(index+1).padStart(2,"0")}`;
+  $("lessonTitle").textContent=title;
+  $("lessonSubtitle").textContent=desc;
 
-/* ------------------------------------------------------------
-   QUIZ
------------------------------------------------------------- */
+  let h="";
+  h+=`<div class="section"><h3>📖 Concept Deep Dive</h3><div class="deep"><p>${d.why}</p><br><p><b>Core idea:</b> ${desc}. Start with the mental model, then learn the syntax, test small examples, identify edge cases and finally use the concept in a project.</p></div></div>`;
+  h+=`<div class="section"><h3>🧠 Core Concepts</h3><ul>${d.concepts.map(x=>`<li>${x}</li>`).join("")}</ul></div>`;
+  h+=`<div class="section"><h3>💻 Practical Example</h3><div class="syntax"><div class="codebar"><span>${esc(course.name)}</span><button class="copy" onclick="copyCode()">Copy Code</button></div><code id="code">${esc(d.code)}</code></div><p style="margin-top:9px">${d.syntax}</p></div>`;
 
-function answerQuiz(button,selected,correct){
+  const practices=[
+    `Write a basic example of ${title} from memory.`,
+    `Change the input values and predict the output before running it.`,
+    `Create one edge case that could break a beginner solution.`,
+    `Explain ${title} to another student in 60 seconds.`,
+    `Use ${title} inside a mini feature of a project.`
+  ];
+  h+=`<div class="section"><h3>🧩 Practice Lab</h3><div class="grid2">${practices.map((x,i)=>`<div class="card"><b>Task ${i+1}</b><p>${x}</p></div>`).join("")}</div></div>`;
 
-  const quiz = button.parentElement;
+  h+=`<div class="section"><h3>⚠️ Common Mistakes</h3>${[
+    `Memorizing syntax without understanding the reason behind it.`,
+    `Ignoring invalid input, empty values or boundary cases.`,
+    `Using a complicated solution when a simpler one is clear.`,
+    `Not testing after changing an example.`
+  ].map(x=>`<div class="mistake">${x}</div>`).join("")}</div>`;
 
-  const options =
-    quiz.querySelectorAll(".option");
+  h+=`<div class="section"><h3>✅ Best Practices</h3>${[
+    `Use meaningful names and keep code readable.`,
+    `Break large problems into small testable pieces.`,
+    `Validate assumptions and handle errors deliberately.`,
+    `Write a small test case before attempting a large feature.`
+  ].map(x=>`<div class="best">${x}</div>`).join("")}</div>`;
 
-  options.forEach(x=>{
-    x.disabled = true;
-  });
+  h+=`<div class="section"><h3>🎯 Real-World Application</h3><div class="deep"><p>Use <b>${title}</b> in a realistic feature: authentication, data processing, analytics, API development, UI interaction, automation or interview problem solving depending on the course. The goal is to move from “I know the definition” to “I can build with it.”</p></div></div>`;
 
-  const result =
-    quiz.querySelector(".quiz-result");
+  h+=`<div class="section"><h3>🧠 5-Question Quiz</h3>${buildQuiz(title).map((q,qi)=>`<div class="quiz"><div class="q">${qi+1}. ${q.q}</div>${q.o.map((o,oi)=>`<button class="opt" onclick="answer(this,${oi},${q.a})">${o}</button>`).join("")}<div class="quizresult"></div></div>`).join("")}</div>`;
 
-  if(selected === correct){
+  h+=`<div class="section"><h3>🎤 Interview Questions</h3><div class="grid2">${[
+    `What is ${title} and why is it useful?`,
+    `Explain a practical example of ${title}.`,
+    `What are common mistakes when using ${title}?`,
+    `When would you choose an alternative approach?`
+  ].map((x,i)=>`<div class="card"><b>Q${i+1}</b><p>${x}</p></div>`).join("")}</div></div>`;
 
-    button.classList.add("correct");
+  h+=`<div class="section"><h3>🚀 Mini Challenge</h3><div class="deep"><p><b>Challenge:</b> Build a small feature using <b>${title}</b> without copying the example. Add at least one validation rule, one edge-case test and one meaningful improvement of your own.</p></div></div>`;
 
-    result.textContent =
-      "✓ Correct answer!";
+  h+=`<div class="section"><h3>📝 Revision Notes</h3><ul>${[
+    `${title}: understand the purpose before memorizing syntax.`,
+    `Know the main rules, limitations and edge cases.`,
+    `Be able to write a small example without assistance.`,
+    `Be able to explain your approach and tradeoffs.`,
+    `Use the concept in a real project before marking the module complete.`
+  ].map(x=>`<li>${x}</li>`).join("")}</ul></div>`;
 
-    result.style.color =
-      "#4ade80";
-
-  }else{
-
-    button.classList.add("wrong");
-
-    options[correct].classList.add("correct");
-
-    result.textContent =
-      "✗ Incorrect. Correct answer highlighted.";
-
-    result.style.color =
-      "#f87171";
+  if(index===mods.length-1){
+    h+=`<div class="section"><h3>🏗️ Capstone Project</h3><div class="deep"><p>Build a complete <b>${course.name}</b> project. Include a clear README, clean structure, validation/error handling, screenshots or demo, test cases where appropriate, and GitHub documentation. Explain the architecture and your personal contribution.</p></div></div>`;
   }
+
+  $("content").innerHTML=h;
+  $("prev").disabled=index===0;
+  $("next").textContent=index===mods.length-1?"Finish →":"Next →";
+  $("complete").textContent=done.includes(index)?"✓ Completed":"✓ Mark Complete";
+  renderModules();
+  progress();
+  window.scrollTo({top:0,behavior:"smooth"});
 }
 
-
-/* ------------------------------------------------------------
-   COMPLETE
------------------------------------------------------------- */
-
-completeBtn.onclick = function(){
-
-  if(!completed.includes(currentIndex)){
-
-    completed.push(currentIndex);
-
-    completed.sort((a,b)=>a-b);
-
-    saveProgress();
-
-    showToast(
-      `✓ Module ${currentIndex+1} completed`
-    );
-
-  }else{
-
-    showToast("✓ Module already completed");
-
-  }
-
-  updateProgress();
-
-  updateButtons();
-};
-
-
-/* ------------------------------------------------------------
-   NEXT
------------------------------------------------------------- */
-
-nextBtn.onclick = function(){
-
-  if(currentIndex < COURSE.modules.length-1){
-
-    currentIndex++;
-
-    renderLesson();
-
-  }else{
-
-    if(completed.length === COURSE.modules.length){
-
-      showToast(
-        "🏆 Course completed!"
-      );
-
-    }else{
-
-      showToast(
-        "Complete all modules to finish the course."
-      );
-
-    }
-
-  }
-};
-
-
-/* ------------------------------------------------------------
-   PREVIOUS
------------------------------------------------------------- */
-
-prevBtn.onclick = function(){
-
-  if(currentIndex > 0){
-
-    currentIndex--;
-
-    renderLesson();
-
-  }
-
-};
-
-
-/* ------------------------------------------------------------
-   BUTTON STATE
------------------------------------------------------------- */
-
-function updateButtons(){
-
-  prevBtn.disabled =
-    currentIndex === 0;
-
-  nextBtn.textContent =
-    currentIndex === COURSE.modules.length-1
-      ? "Finish →"
-      : "Next →";
-
-  if(completed.includes(currentIndex)){
-
-    completeBtn.textContent =
-      "✓ Completed";
-
-    completeBtn.classList.add("complete");
-
-  }else{
-
-    completeBtn.textContent =
-      "✓ Mark Complete";
-
-  }
-
+function answer(btn,selected,correct){
+  const box=btn.parentElement;
+  const opts=box.querySelectorAll(".opt");
+  opts.forEach(x=>x.disabled=true);
+  if(selected===correct){btn.classList.add("correct");box.querySelector(".quizresult").textContent="✓ Correct!";box.querySelector(".quizresult").style.color="#4ade80";quizScore++}
+  else{btn.classList.add("wrong");opts[correct].classList.add("correct");box.querySelector(".quizresult").textContent="✗ Incorrect — correct answer highlighted.";box.querySelector(".quizresult").style.color="#f87171"}
+  quizAnswered++;save();
 }
 
-
-/* ------------------------------------------------------------
-   TOAST
------------------------------------------------------------- */
-
-function showToast(message){
-
-  const toast =
-    document.getElementById("toast");
-
-  toast.textContent = message;
-
-  toast.classList.add("show");
-
-  setTimeout(()=>{
-    toast.classList.remove("show");
-  },2200);
-
+function markAll(){
+  if(!done.includes(index))done.push(index);
+  done.sort((a,b)=>a-b);save();progress();render();showToast("✓ Module completed");
 }
 
+$("complete").onclick=markAll;
+$("next").onclick=()=>{if(index<mods.length-1){index++;render()}else if(done.length===mods.length){showToast("🏆 Course completed!")}else{showToast("Complete all modules first.")}};
+$("prev").onclick=()=>{if(index>0){index--;render()}};
+$("moduleSearch").oninput=e=>renderModules(e.target.value);
+$("menuBtn").onclick=()=>$("sidebar").classList.toggle("open");
 
-/* ------------------------------------------------------------
-   CERTIFICATE
------------------------------------------------------------- */
+function copyCode(){navigator.clipboard.writeText($("code").textContent).then(()=>showToast("✓ Code copied")).catch(()=>showToast("Copy failed"))}
+function resetCourse(){if(confirm("Reset this course progress?")){done=[];quizScore=0;quizAnswered=0;save();render();showToast("Course progress reset")}}
+function showRoadmap(){alert(`${course.name}\n\n1. Learn concept\n2. Write examples\n3. Solve practice tasks\n4. Take quiz\n5. Build mini feature\n6. Complete module\n7. Build capstone\n8. Add project to GitHub`)}
+function showStudyTips(){alert("Study Strategy\n\n• 45 min learning + 15 min practice\n• Type every important example yourself\n• Keep a mistake notebook\n• Solve problems without looking at solutions\n• Revise after 1 day, 7 days and 30 days\n• Build projects instead of only collecting certificates")}
+function showToast(msg){$("toast").textContent=msg;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),2200)}
 
 function downloadCertificate(){
-
-  if(completed.length !== COURSE.modules.length){
-
-    showToast(
-      "Complete all modules first."
-    );
-
-    return;
-  }
-
-  const name =
-    "Priyanshu Kumar";
-
-  const date =
-    new Date().toLocaleDateString(
-      "en-IN",
-      {
-        day:"2-digit",
-        month:"long",
-        year:"numeric"
-      }
-    );
-
-  const certificate = `
-
-PRIYANSHU STUDY HUB
-
-CERTIFICATE OF COMPLETION
-
-This certificate is proudly presented to
-
-${name}
-
-for successfully completing
-
-${COURSE.name}
-
-Course Completion: 100%
-
-Date: ${date}
-
-Learn • Practice • Build
-
-`;
-
-  const blob =
-    new Blob(
-      [certificate],
-      {type:"text/plain"}
-    );
-
-  const url =
-    URL.createObjectURL(blob);
-
-  const a =
-    document.createElement("a");
-
-  a.href = url;
-
-  a.download =
-    COURSE.name
-      .replace(/[^a-z0-9]/gi,"_")
-      + "_Certificate.txt";
-
-  a.click();
-
-  URL.revokeObjectURL(url);
-
-  showToast(
-    "🎓 Certificate generated"
-  );
+  if(done.length!==mods.length){showToast("Complete every module first");return}
+  const date=new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"long",year:"numeric"});
+  const txt=`PRIYANSHU STUDY HUB\n\nCERTIFICATE OF COMPLETION\n\nPresented to\nPRIYANSHU KUMAR\n\nfor successfully completing\n${course.name}\n\nCompletion: 100%\nDate: ${date}\n\nLEARN • PRACTICE • BUILD • MASTER`;
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type:"text/plain"}));a.download=course.name.replace(/[^a-z0-9]/gi,"_")+"_Certificate.txt";a.click();
 }
 
-
-/* ------------------------------------------------------------
-   MOBILE MENU
------------------------------------------------------------- */
-
-document.getElementById("mobileMenu")
-  .onclick = ()=>{
-
-    document
-      .getElementById("sidebar")
-      .classList.toggle("open");
-
-  };
-
-
-/* ------------------------------------------------------------
-   AUTH CHECK
------------------------------------------------------------- */
-
-async function checkAuth(){
-
-  const token =
-    sessionStorage.getItem(TOKEN_KEY);
-
-  if(!token){
-
-    window.location.href =
-      "index.html";
-
-    return false;
-  }
-
+async function auth(){
+  const token=sessionStorage.getItem(TOKEN_KEY);
+  if(!token){location.href="index.html";return false}
   try{
-
-    const response =
-      await fetch(
-        API_URL + "/api/me",
-        {
-          headers:{
-            Authorization:
-              "Bearer " + token
-          }
-        }
-      );
-
-    if(!response.ok){
-
-      sessionStorage.removeItem(
-        TOKEN_KEY
-      );
-
-      sessionStorage.removeItem(
-        "priynashu_user"
-      );
-
-      window.location.href =
-        "index.html";
-
-      return false;
-    }
-
-    return true;
-
-  }catch(error){
-
-    console.warn(
-      "Auth check failed:",
-      error
-    );
-
-    /*
-      If Render is sleeping, don't immediately
-      destroy a valid local session.
-    */
-
-    return true;
-  }
+    const r=await fetch(API_URL+"/api/me",{headers:{Authorization:"Bearer "+token}});
+    if(!r.ok){sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem("priynashu_user");location.href="index.html";return false}
+  }catch(e){}
+  return true;
 }
 
-
-/* ------------------------------------------------------------
-   START
------------------------------------------------------------- */
-
-async function start(){
-
-  const authenticated =
-    await checkAuth();
-
-  if(!authenticated) return;
-
-  renderModuleList();
-
-  renderLesson();
-
-}
-
-start();
-
+auth().then(ok=>{if(ok)render()});
 </script>
-
 </body>
 </html>
