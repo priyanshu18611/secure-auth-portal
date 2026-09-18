@@ -3,956 +3,727 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="description" content="Priyanshu Study and Developer Hub">
+<meta name="description" content="Priyanshu Study & Developer Hub">
 <title>Priyanshu Hub | Study & Developer Portal</title>
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+*{margin:0;padding:0;box-sizing:border-box}
 
 :root{
-    --bg:#060711;
-    --panel:rgba(17,18,34,.82);
-    --panel2:rgba(255,255,255,.045);
-    --border:rgba(255,255,255,.10);
-    --text:#fff;
-    --muted:rgba(255,255,255,.56);
-    --purple:#7c3aed;
-    --blue:#2563eb;
-    --cyan:#06b6d4;
-    --green:#22c55e;
-    --red:#ef4444;
+  --bg:#050711;
+  --panel:rgba(15,18,34,.86);
+  --panel2:rgba(255,255,255,.045);
+  --border:rgba(255,255,255,.09);
+  --text:#fff;
+  --muted:#8f9ab3;
+  --purple:#7c3aed;
+  --blue:#2563eb;
+  --cyan:#06b6d4;
+  --green:#22c55e;
 }
 
-html{
-    scroll-behavior:smooth;
-}
+html{scroll-behavior:smooth}
 
 body{
-    min-height:100vh;
-    color:var(--text);
-    background:
-        radial-gradient(circle at 10% 5%,rgba(124,58,237,.20),transparent 27%),
-        radial-gradient(circle at 90% 85%,rgba(37,99,235,.16),transparent 30%),
-        var(--bg);
-    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    overflow-x:hidden;
+  min-height:100vh;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 10% 5%,rgba(124,58,237,.18),transparent 28%),
+    radial-gradient(circle at 90% 85%,rgba(37,99,235,.13),transparent 30%),
+    var(--bg);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
 
-button,input{
-    font:inherit;
-}
+button,input{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
 
-button{
-    cursor:pointer;
-}
-
-a{
-    color:inherit;
-    text-decoration:none;
-}
-
-/* ================================
-   APP
-================================ */
-
-.app{
-    min-height:100vh;
-    display:flex;
-}
-
-/* ================================
-   SIDEBAR
-================================ */
+/* SIDEBAR */
 
 .sidebar{
-    position:fixed;
-    left:0;
-    top:0;
-    width:275px;
-    height:100vh;
-    z-index:100;
-    padding:20px 14px;
-    display:flex;
-    flex-direction:column;
-    background:rgba(7,8,18,.94);
-    border-right:1px solid var(--border);
-    backdrop-filter:blur(25px);
-    -webkit-backdrop-filter:blur(25px);
-    transition:.3s ease;
+  position:fixed;
+  inset:0 auto 0 0;
+  width:270px;
+  z-index:100;
+  padding:18px 13px;
+  background:rgba(6,8,18,.96);
+  border-right:1px solid var(--border);
+  backdrop-filter:blur(25px);
+  transition:.3s;
 }
 
 .brand{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:6px 8px 22px;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:5px 7px 22px;
 }
 
-.brand-logo{
-    width:48px;
-    height:48px;
-    border-radius:15px;
-    display:grid;
-    place-items:center;
-    font-size:16px;
-    font-weight:900;
-    background:linear-gradient(135deg,var(--purple),var(--blue));
-    box-shadow:0 12px 35px rgba(76,81,255,.32);
+.logo{
+  width:45px;
+  height:45px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  font-size:14px;
+  font-weight:900;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+  box-shadow:0 10px 30px rgba(124,58,237,.3);
 }
 
-.brand-text strong{
-    display:block;
-    font-size:13px;
-    letter-spacing:.6px;
+.brand strong{
+  display:block;
+  font-size:12px;
 }
 
-.brand-text span{
-    display:block;
-    margin-top:4px;
-    color:var(--muted);
-    font-size:9px;
-    letter-spacing:1px;
+.brand small{
+  display:block;
+  margin-top:4px;
+  color:var(--muted);
+  font-size:8px;
+  letter-spacing:1px;
 }
 
 .nav{
-    flex:1;
-    overflow-y:auto;
-    padding-right:3px;
+  height:calc(100vh - 100px);
+  overflow-y:auto;
 }
 
-.nav-section{
-    margin:18px 8px 8px;
-    color:rgba(255,255,255,.30);
-    font-size:9px;
-    font-weight:800;
-    letter-spacing:1.5px;
-    text-transform:uppercase;
+.nav-title{
+  margin:18px 8px 7px;
+  color:rgba(255,255,255,.28);
+  font-size:8px;
+  font-weight:800;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
 }
 
 .nav-btn{
-    width:100%;
-    display:flex;
-    align-items:center;
-    gap:11px;
-    padding:11px 12px;
-    margin-bottom:4px;
-    border:1px solid transparent;
-    border-radius:11px;
-    background:transparent;
-    color:rgba(255,255,255,.58);
-    text-align:left;
-    font-size:12px;
-    transition:.2s ease;
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 11px;
+  margin-bottom:3px;
+  border:1px solid transparent;
+  border-radius:10px;
+  color:#8993aa;
+  background:transparent;
+  text-align:left;
+  font-size:10px;
 }
 
-.nav-btn:hover{
-    background:rgba(255,255,255,.055);
-    color:#fff;
-}
-
+.nav-btn:hover,
 .nav-btn.active{
-    background:linear-gradient(
-        135deg,
-        rgba(124,58,237,.24),
-        rgba(37,99,235,.15)
-    );
-    border-color:rgba(124,58,237,.24);
-    color:#fff;
+  color:#fff;
+  background:rgba(124,58,237,.15);
+  border-color:rgba(124,58,237,.20);
 }
 
 .nav-icon{
-    width:24px;
-    text-align:center;
-    font-size:15px;
+  width:22px;
+  text-align:center;
+  font-size:14px;
 }
 
-.sidebar-bottom{
-    border-top:1px solid var(--border);
-    padding-top:12px;
-}
-
-.logout{
-    color:#fca5a5;
-}
-
-/* ================================
-   MAIN
-================================ */
+/* MAIN */
 
 .main{
-    width:calc(100% - 275px);
-    margin-left:275px;
-    min-height:100vh;
-    padding:24px;
+  min-height:100vh;
+  margin-left:270px;
+  padding:20px;
 }
 
-/* ================================
-   TOPBAR
-================================ */
+/* TOPBAR */
 
 .topbar{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:16px;
-    margin-bottom:24px;
+  display:flex;
+  align-items:center;
+  gap:13px;
+  margin-bottom:20px;
 }
 
 .mobile-menu{
-    display:none;
-    width:43px;
-    height:43px;
-    border:1px solid var(--border);
-    border-radius:12px;
-    background:var(--panel2);
-    color:#fff;
+  display:none;
+  width:42px;
+  height:42px;
+  border:1px solid var(--border);
+  border-radius:11px;
+  color:#fff;
+  background:var(--panel2);
 }
 
 .search{
-    flex:1;
-    max-width:680px;
-    position:relative;
+  position:relative;
+  flex:1;
+}
+
+.search span{
+  position:absolute;
+  left:15px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#68738d;
 }
 
 .search input{
-    width:100%;
-    padding:14px 18px 14px 45px;
-    border-radius:15px;
-    border:1px solid var(--border);
-    outline:none;
-    color:#fff;
-    background:rgba(255,255,255,.045);
-    transition:.2s;
+  width:100%;
+  padding:13px 15px 13px 42px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  outline:none;
+  color:#fff;
+  background:rgba(255,255,255,.04);
 }
 
 .search input:focus{
-    border-color:rgba(124,58,237,.55);
-    box-shadow:0 0 0 4px rgba(124,58,237,.08);
+  border-color:rgba(124,58,237,.5);
 }
 
-.search-icon{
-    position:absolute;
-    left:16px;
-    top:50%;
-    transform:translateY(-50%);
-    color:var(--muted);
-}
-
-.user-mini{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.avatar,
-.profile-avatar{
-    display:grid;
-    place-items:center;
-    font-weight:900;
-    color:#fff;
-    background:linear-gradient(135deg,var(--purple),var(--blue));
+.user{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:10px;
+  color:var(--muted);
 }
 
 .avatar{
-    width:43px;
-    height:43px;
-    border-radius:13px;
+  width:40px;
+  height:40px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  font-size:12px;
+  font-weight:900;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
 }
 
-.user-mini span{
-    color:var(--muted);
-    font-size:11px;
-}
+/* PAGES */
 
-/* ================================
-   PAGE
-================================ */
+.page{display:none}
+.page.active{display:block}
 
-.page-section{
-    display:none;
-}
-
-.page-section.active{
-    display:block;
-}
+/* HERO */
 
 .hero{
-    padding:30px;
-    margin-bottom:20px;
-    border:1px solid var(--border);
-    border-radius:25px;
-    background:
-        linear-gradient(
-            135deg,
-            rgba(124,58,237,.14),
-            rgba(37,99,235,.07)
-        ),
-        var(--panel);
-    backdrop-filter:blur(20px);
+  padding:28px;
+  margin-bottom:18px;
+  border:1px solid var(--border);
+  border-radius:23px;
+  background:
+    linear-gradient(135deg,rgba(124,58,237,.14),rgba(37,99,235,.06)),
+    var(--panel);
 }
 
 .hero h1{
-    font-size:clamp(27px,4vw,42px);
-    line-height:1.1;
+  font-size:clamp(26px,4vw,40px);
+  line-height:1.15;
 }
 
 .hero p{
-    margin-top:10px;
-    max-width:760px;
-    color:var(--muted);
-    font-size:13px;
-    line-height:1.7;
+  max-width:800px;
+  margin-top:10px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.7;
 }
 
-/* ================================
-   STATS
-================================ */
+.hero-btn{
+  display:inline-flex;
+  margin-top:18px;
+  padding:11px 15px;
+  border-radius:10px;
+  color:#fff;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+  font-size:10px;
+  font-weight:800;
+}
+
+/* STATS */
 
 .stats{
-    display:grid;
-    grid-template-columns:repeat(4,minmax(0,1fr));
-    gap:14px;
-    margin-bottom:22px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-bottom:20px;
 }
 
 .stat{
-    padding:20px;
-    border:1px solid var(--border);
-    border-radius:19px;
-    background:var(--panel);
-    transition:.25s;
+  padding:18px;
+  border:1px solid var(--border);
+  border-radius:17px;
+  background:var(--panel);
 }
 
-.stat:hover{
-    transform:translateY(-3px);
-}
-
-.stat-icon{
-    font-size:22px;
-}
+.stat-icon{font-size:21px}
 
 .stat strong{
-    display:block;
-    margin-top:12px;
-    font-size:25px;
+  display:block;
+  margin-top:8px;
+  font-size:23px;
 }
 
-.stat span{
-    color:var(--muted);
-    font-size:11px;
+.stat small{
+  color:var(--muted);
+  font-size:9px;
 }
 
-/* ================================
-   SECTION HEADER
-================================ */
+/* SECTION */
 
 .section-head{
-    display:flex;
-    align-items:end;
-    justify-content:space-between;
-    gap:15px;
-    margin:25px 0 15px;
+  margin:23px 0 13px;
 }
 
 .section-head h2{
-    font-size:20px;
+  font-size:18px;
 }
 
 .section-head p{
-    margin-top:5px;
-    color:var(--muted);
-    font-size:11px;
+  margin-top:4px;
+  color:var(--muted);
+  font-size:10px;
 }
 
-/* ================================
-   COURSE CARD
-================================ */
+/* COURSES */
 
 .course-grid{
-    display:grid;
-    grid-template-columns:repeat(4,minmax(0,1fr));
-    gap:14px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:13px;
 }
 
-.course-card{
-    position:relative;
-    padding:20px;
-    border:1px solid var(--border);
-    border-radius:19px;
-    background:var(--panel);
-    overflow:hidden;
-    transition:.25s ease;
+.course{
+  position:relative;
+  display:block;
+  min-height:170px;
+  padding:18px;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:var(--panel);
+  overflow:hidden;
+  transition:.25s;
 }
 
-.course-card:hover{
-    transform:translateY(-5px);
-    border-color:rgba(124,58,237,.45);
-    box-shadow:0 15px 45px rgba(0,0,0,.22);
+.course:hover{
+  transform:translateY(-5px);
+  border-color:rgba(124,58,237,.45);
+  box-shadow:0 15px 40px rgba(0,0,0,.25);
 }
 
-.course-card.clickable{
-    cursor:pointer;
-}
-
-.course-card.clickable::after{
-    content:"→";
-    position:absolute;
-    right:16px;
-    top:17px;
-    color:rgba(255,255,255,.45);
-    font-size:19px;
-    transition:.25s;
-}
-
-.course-card.clickable:hover::after{
-    color:#fff;
-    transform:translateX(5px);
+.course::after{
+  content:"→";
+  position:absolute;
+  right:16px;
+  top:15px;
+  color:#737e96;
+  font-size:18px;
 }
 
 .course-icon{
-    width:50px;
-    height:50px;
-    display:grid;
-    place-items:center;
-    border-radius:14px;
-    background:rgba(255,255,255,.06);
-    font-size:25px;
+  width:47px;
+  height:47px;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  background:rgba(255,255,255,.055);
+  font-size:23px;
 }
 
-.course-card h3{
-    margin-top:15px;
-    font-size:15px;
+.course h3{
+  margin-top:13px;
+  font-size:14px;
 }
 
-.course-card p{
-    margin-top:7px;
-    color:var(--muted);
-    font-size:11px;
-    line-height:1.55;
+.course p{
+  margin-top:6px;
+  color:var(--muted);
+  font-size:9px;
+  line-height:1.55;
 }
 
 .course-meta{
-    display:flex;
-    justify-content:space-between;
-    gap:8px;
-    margin-top:15px;
-    color:rgba(255,255,255,.43);
-    font-size:10px;
+  display:flex;
+  justify-content:space-between;
+  margin-top:14px;
+  color:#657089;
+  font-size:8px;
 }
 
-.progress{
-    height:5px;
-    margin-top:12px;
-    border-radius:99px;
-    background:rgba(255,255,255,.08);
-    overflow:hidden;
+.course-meta b{
+  color:#a78bfa;
 }
 
-.progress span{
-    display:block;
-    height:100%;
-    border-radius:99px;
-    background:linear-gradient(
-        90deg,
-        var(--purple),
-        var(--blue)
-    );
-    transition:.4s;
+/* CATEGORY */
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:13px;
 }
 
-/* ================================
-   CATEGORIES
-================================ */
-
-.category-grid{
-    display:grid;
-    grid-template-columns:repeat(3,minmax(0,1fr));
-    gap:14px;
+.card{
+  padding:19px;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:var(--panel);
 }
 
-.category{
-    padding:20px;
-    border:1px solid var(--border);
-    border-radius:19px;
-    background:var(--panel);
-    transition:.2s;
+.card-title{
+  display:flex;
+  align-items:center;
+  gap:9px;
 }
 
-.category:hover{
-    transform:translateY(-3px);
-    border-color:rgba(255,255,255,.16);
+.card-title span{
+  font-size:21px;
 }
 
-.category-title{
-    display:flex;
-    align-items:center;
-    gap:10px;
+.card-title strong{
+  font-size:13px;
 }
 
-.category-title span{
-    font-size:20px;
+.card p{
+  margin-top:8px;
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.6;
 }
 
-.category-title strong{
-    font-size:14px;
-}
-
-.category p{
-    margin-top:9px;
-    color:var(--muted);
-    font-size:11px;
-    line-height:1.55;
-}
-
-.tag-list{
-    display:flex;
-    flex-wrap:wrap;
-    gap:7px;
-    margin-top:14px;
+.tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:13px;
 }
 
 .tag{
-    padding:6px 9px;
-    border-radius:8px;
-    background:rgba(255,255,255,.055);
-    border:1px solid rgba(255,255,255,.07);
-    color:rgba(255,255,255,.68);
-    font-size:9px;
+  padding:5px 8px;
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:7px;
+  color:#9da8bf;
+  background:rgba(255,255,255,.04);
+  font-size:8px;
 }
 
-/* ================================
-   PROFILE
-================================ */
-
-.profile-box{
-    padding:25px;
-    border:1px solid var(--border);
-    border-radius:22px;
-    background:var(--panel);
-}
-
-.profile-top{
-    display:flex;
-    align-items:center;
-    gap:17px;
-}
-
-.profile-avatar{
-    width:72px;
-    height:72px;
-    border-radius:20px;
-    font-size:24px;
-}
-
-.profile-top h2{
-    font-size:22px;
-}
-
-.profile-top p{
-    margin-top:5px;
-    color:var(--muted);
-    font-size:12px;
-}
-
-.info-grid{
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:12px;
-    margin-top:22px;
-}
-
-.info{
-    padding:15px;
-    border-radius:13px;
-    background:rgba(255,255,255,.04);
-}
-
-.info label{
-    display:block;
-    color:rgba(255,255,255,.35);
-    font-size:9px;
-    text-transform:uppercase;
-    letter-spacing:1px;
-}
-
-.info span{
-    display:block;
-    margin-top:6px;
-    font-size:12px;
-    word-break:break-word;
-}
-
-/* ================================
-   SOCIALS
-================================ */
-
-.social-grid{
-    display:grid;
-    grid-template-columns:repeat(5,minmax(0,1fr));
-    gap:12px;
-}
-
-.social{
-    padding:20px 10px;
-    text-align:center;
-    border:1px solid var(--border);
-    border-radius:16px;
-    background:var(--panel);
-    transition:.25s;
-}
-
-.social:hover{
-    transform:translateY(-4px);
-    background:rgba(255,255,255,.07);
-    border-color:rgba(124,58,237,.35);
-}
-
-.social-icon{
-    font-size:25px;
-}
-
-.social span{
-    display:block;
-    margin-top:9px;
-    color:rgba(255,255,255,.68);
-    font-size:10px;
-}
-
-/* ================================
-   PROJECTS
-================================ */
+/* PROJECT */
 
 .project-grid{
-    display:grid;
-    grid-template-columns:repeat(3,minmax(0,1fr));
-    gap:14px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:13px;
 }
 
 .project{
-    padding:20px;
-    border:1px solid var(--border);
-    border-radius:18px;
-    background:var(--panel);
-    transition:.25s;
+  padding:19px;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:var(--panel);
 }
 
-.project:hover{
-    transform:translateY(-4px);
-}
-
-.project h3{
-    font-size:14px;
-}
+.project h3{font-size:13px}
 
 .project p{
-    margin-top:8px;
-    color:var(--muted);
-    font-size:11px;
-    line-height:1.6;
+  margin-top:8px;
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.6;
 }
 
-/* ================================
-   BUTTON
-================================ */
+/* SOCIAL */
 
-.primary-btn{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-    margin-top:20px;
-    padding:12px 17px;
-    border:0;
-    border-radius:11px;
-    color:#fff;
-    background:linear-gradient(135deg,var(--purple),var(--blue));
-    font-size:12px;
-    font-weight:700;
-    transition:.25s;
+.social-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:12px;
 }
 
-.primary-btn:hover{
-    transform:translateY(-2px);
+.social{
+  padding:20px 10px;
+  text-align:center;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:var(--panel);
+  transition:.2s;
 }
 
-/* ================================
-   SEARCH
-================================ */
-
-.no-results{
-    display:none;
-    padding:35px;
-    margin-top:20px;
-    text-align:center;
-    color:var(--muted);
-    border:1px dashed var(--border);
-    border-radius:18px;
+.social:hover{
+  transform:translateY(-4px);
+  border-color:rgba(124,58,237,.4);
 }
 
-/* ================================
-   OVERLAY
-================================ */
+.social-icon{font-size:25px}
+
+.social span{
+  display:block;
+  margin-top:8px;
+  color:#a1abc0;
+  font-size:9px;
+}
+
+/* PROFILE */
+
+.profile{
+  padding:24px;
+  border:1px solid var(--border);
+  border-radius:20px;
+  background:var(--panel);
+}
+
+.profile-top{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.profile-avatar{
+  width:68px;
+  height:68px;
+  display:grid;
+  place-items:center;
+  border-radius:19px;
+  font-size:22px;
+  font-weight:900;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+}
+
+.profile h2{font-size:21px}
+
+.profile-top p{
+  margin-top:5px;
+  color:var(--muted);
+  font-size:10px;
+}
+
+.info-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-top:20px;
+}
+
+.info{
+  padding:13px;
+  border-radius:12px;
+  background:rgba(255,255,255,.035);
+}
+
+.info label{
+  display:block;
+  color:#58647d;
+  font-size:8px;
+  text-transform:uppercase;
+}
+
+.info span{
+  display:block;
+  margin-top:5px;
+  font-size:10px;
+}
+
+/* NO RESULT */
+
+.no-result{
+  display:none;
+  padding:30px;
+  text-align:center;
+  color:var(--muted);
+}
+
+/* OVERLAY */
 
 .overlay{
-    display:none;
-    position:fixed;
-    inset:0;
-    z-index:90;
-    background:rgba(0,0,0,.60);
+  display:none;
 }
 
-/* ================================
-   TOAST
-================================ */
-
-.toast{
-    position:fixed;
-    right:22px;
-    bottom:22px;
-    z-index:200;
-    max-width:330px;
-    padding:15px 17px;
-    border:1px solid var(--border);
-    border-radius:14px;
-    background:#111526;
-    box-shadow:0 20px 50px rgba(0,0,0,.4);
-    transform:translateY(30px);
-    opacity:0;
-    pointer-events:none;
-    transition:.3s;
-}
-
-.toast.show{
-    transform:translateY(0);
-    opacity:1;
-}
-
-.toast strong{
-    display:block;
-    font-size:12px;
-}
-
-.toast p{
-    margin-top:5px;
-    color:var(--muted);
-    font-size:11px;
-}
-
-/* ================================
-   RESPONSIVE
-================================ */
+/* RESPONSIVE */
 
 @media(max-width:1150px){
-
-    .course-grid{
-        grid-template-columns:repeat(3,minmax(0,1fr));
-    }
-
-    .stats{
-        grid-template-columns:repeat(2,minmax(0,1fr));
-    }
-
-    .social-grid{
-        grid-template-columns:repeat(3,minmax(0,1fr));
-    }
+  .course-grid{grid-template-columns:repeat(3,1fr)}
+  .social-grid{grid-template-columns:repeat(3,1fr)}
 }
 
 @media(max-width:850px){
 
-    .sidebar{
-        transform:translateX(-100%);
-    }
+  .sidebar{
+    transform:translateX(-105%);
+  }
 
-    .sidebar.open{
-        transform:translateX(0);
-    }
+  .sidebar.open{
+    transform:translateX(0);
+  }
 
-    .overlay.show{
-        display:block;
-    }
+  .main{
+    margin-left:0;
+    padding:14px;
+  }
 
-    .main{
-        width:100%;
-        margin-left:0;
-        padding:15px;
-    }
+  .mobile-menu{
+    display:block;
+  }
 
-    .mobile-menu{
-        display:block;
-    }
+  .course-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
 
-    .topbar{
-        flex-wrap:wrap;
-    }
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+  }
 
-    .search{
-        order:3;
-        flex-basis:100%;
-        max-width:none;
-    }
+  .project-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
 
-    .course-grid{
-        grid-template-columns:repeat(2,minmax(0,1fr));
-    }
-
-    .category-grid{
-        grid-template-columns:repeat(2,minmax(0,1fr));
-    }
-
-    .project-grid{
-        grid-template-columns:repeat(2,minmax(0,1fr));
-    }
+  .overlay.show{
+    display:block;
+    position:fixed;
+    inset:0;
+    z-index:90;
+    background:rgba(0,0,0,.6);
+  }
 }
 
 @media(max-width:550px){
 
-    .hero{
-        padding:22px;
-    }
+  .course-grid,
+  .grid,
+  .project-grid{
+    grid-template-columns:1fr;
+  }
 
-    .course-grid,
-    .category-grid,
-    .project-grid{
-        grid-template-columns:1fr;
-    }
+  .stats{
+    grid-template-columns:1fr 1fr;
+  }
 
-    .info-grid{
-        grid-template-columns:1fr;
-    }
+  .social-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
 
-    .social-grid{
-        grid-template-columns:repeat(2,minmax(0,1fr));
-    }
+  .info-grid{
+    grid-template-columns:1fr;
+  }
 
-    .user-mini span{
-        display:none;
-    }
+  .user span{
+    display:none;
+  }
 
-    .stats{
-        grid-template-columns:1fr 1fr;
-    }
+  .hero{
+    padding:21px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<div class="app">
-
-<!-- =========================================================
+<!-- =====================================================
      SIDEBAR
-========================================================= -->
+===================================================== -->
 
 <aside class="sidebar" id="sidebar">
 
-    <div class="brand">
+  <div class="brand">
 
-        <div class="brand-logo">
-            PK
-        </div>
+    <div class="logo">PK</div>
 
-        <div class="brand-text">
-            <strong>PRIYANSHU HUB</strong>
-            <span>STUDY • CODE • BUILD</span>
-        </div>
-
+    <div>
+      <strong>PRIYANSHU HUB</strong>
+      <small>STUDY • CODE • BUILD</small>
     </div>
 
-    <nav class="nav">
-
-        <div class="nav-section">
-            Main
-        </div>
-
-        <button class="nav-btn active" data-page="home">
-            <span class="nav-icon">🏠</span>
-            Dashboard
-        </button>
-
-        <button class="nav-btn" data-page="study">
-            <span class="nav-icon">📚</span>
-            Study Hub
-        </button>
+  </div>
 
 
-        <div class="nav-section">
-            Learn
-        </div>
+  <nav class="nav">
 
-        <button class="nav-btn" data-page="languages">
-            <span class="nav-icon">💻</span>
-            Programming
-        </button>
+    <div class="nav-title">Main</div>
 
-        <button class="nav-btn" data-page="dsa">
-            <span class="nav-icon">🧠</span>
-            DSA
-        </button>
+    <button class="nav-btn active" data-page="home">
+      <span class="nav-icon">🏠</span>
+      Dashboard
+    </button>
 
-        <button class="nav-btn" data-page="database">
-            <span class="nav-icon">🗄️</span>
-            DBMS & SQL
-        </button>
-
-        <button class="nav-btn" data-page="web">
-            <span class="nav-icon">🌐</span>
-            Web Development
-        </button>
-
-        <button class="nav-btn" data-page="ai">
-            <span class="nav-icon">🤖</span>
-            AI / ML
-        </button>
-
-        <button class="nav-btn" data-page="cloud">
-            <span class="nav-icon">☁️</span>
-            Cloud & DevOps
-        </button>
-
-        <button class="nav-btn" data-page="security">
-            <span class="nav-icon">🔐</span>
-            Cybersecurity
-        </button>
+    <button class="nav-btn" data-page="study">
+      <span class="nav-icon">📚</span>
+      Study Hub
+    </button>
 
 
-        <div class="nav-section">
-            Developer
-        </div>
+    <div class="nav-title">Programming</div>
 
-        <button class="nav-btn" data-page="projects">
-            <span class="nav-icon">🚀</span>
-            My Projects
-        </button>
+    <button class="nav-btn" data-page="programming">
+      <span class="nav-icon">💻</span>
+      All Languages
+    </button>
 
-        <button class="nav-btn" data-page="certificates">
-            <span class="nav-icon">🏆</span>
-            Certifications
-        </button>
+    <button class="nav-btn" data-page="dsa">
+      <span class="nav-icon">🧠</span>
+      DSA
+    </button>
 
-        <button class="nav-btn" data-page="profile">
-            <span class="nav-icon">👤</span>
-            My Profile
-        </button>
+    <button class="nav-btn" data-page="dbms">
+      <span class="nav-icon">🗄️</span>
+      DBMS & SQL
+    </button>
 
-        <button class="nav-btn" data-page="socials">
-            <span class="nav-icon">🔗</span>
-            My Socials
-        </button>
 
-    </nav>
+    <div class="nav-title">Development</div>
 
-    <div class="sidebar-bottom">
+    <button class="nav-btn" data-page="web">
+      <span class="nav-icon">🌐</span>
+      Web Development
+    </button>
 
-        <button class="nav-btn logout" id="logoutBtn">
-            <span class="nav-icon">🚪</span>
-            Logout
-        </button>
+    <button class="nav-btn" data-page="ai">
+      <span class="nav-icon">🤖</span>
+      AI / ML
+    </button>
 
-    </div>
+    <button class="nav-btn" data-page="cloud">
+      <span class="nav-icon">☁️</span>
+      Cloud & DevOps
+    </button>
+
+    <button class="nav-btn" data-page="security">
+      <span class="nav-icon">🔐</span>
+      Cybersecurity
+    </button>
+
+
+    <div class="nav-title">My Developer</div>
+
+    <button class="nav-btn" data-page="projects">
+      <span class="nav-icon">🚀</span>
+      My Projects
+    </button>
+
+    <button class="nav-btn" data-page="certificates">
+      <span class="nav-icon">🏆</span>
+      Certifications
+    </button>
+
+    <button class="nav-btn" data-page="profile">
+      <span class="nav-icon">👤</span>
+      My Profile
+    </button>
+
+    <button class="nav-btn" data-page="socials">
+      <span class="nav-icon">🔗</span>
+      My Socials
+    </button>
+
+
+    <div class="nav-title">Career</div>
+
+    <button
+      class="nav-btn"
+      onclick="openCourse('interview')"
+    >
+      <span class="nav-icon">🎯</span>
+      Interview Prep
+    </button>
+
+  </nav>
 
 </aside>
 
@@ -960,2216 +731,1770 @@ a{
 <div class="overlay" id="overlay"></div>
 
 
-<!-- =========================================================
+<!-- =====================================================
      MAIN
-========================================================= -->
+===================================================== -->
 
 <main class="main">
 
 <header class="topbar">
 
-    <button
-        class="mobile-menu"
-        id="mobileMenu"
-        aria-label="Open menu"
+  <button
+    class="mobile-menu"
+    id="menuBtn"
+  >
+    ☰
+  </button>
+
+  <div class="search">
+
+    <span>🔎</span>
+
+    <input
+      id="searchInput"
+      type="search"
+      placeholder="Search Python, Java, SQL, DSA, React..."
     >
-        ☰
-    </button>
 
-    <div class="search">
+  </div>
 
-        <span class="search-icon">
-            🔎
-        </span>
 
-        <input
-            type="search"
-            id="courseSearch"
-            placeholder="Search Python, Java, SQL, DSA, React..."
-        >
+  <div class="user">
 
+    <div class="avatar" id="avatar">
+      PK
     </div>
 
-    <div class="user-mini">
+    <span id="userName">
+      Loading...
+    </span>
 
-        <div class="avatar" id="topAvatar">
-            PK
-        </div>
-
-        <span id="topUserName">
-            Loading...
-        </span>
-
-    </div>
+  </div>
 
 </header>
 
 
-<!-- =========================================================
-     DASHBOARD
-========================================================= -->
+<!-- =====================================================
+     HOME
+===================================================== -->
 
-<section class="page-section active" id="page-home">
+<section class="page active" id="page-home">
 
-    <div class="hero">
+  <div class="hero">
 
-        <h1>
-            Welcome back,
-            <span id="welcomeName">Developer</span> 👋
-        </h1>
+    <h1>
+      Welcome back,
+      <span id="welcomeName">Developer</span> 👋
+    </h1>
 
-        <p>
-            Learn programming, build projects, practice DSA,
-            explore AI and prepare for your software career —
-            all in one place.
-        </p>
+    <p>
+      Your complete learning and developer hub.
+      Learn programming, master DSA, build full-stack
+      applications, explore AI, cloud and cybersecurity,
+      and prepare for technical interviews.
+    </p>
 
-        <a
-            href="python-course.html"
-            class="primary-btn"
-        >
-            🐍 Continue Python Course →
-        </a>
+    <a
+      class="hero-btn"
+      href="course.html?course=python"
+    >
+      🐍 Start Python Course →
+    </a>
 
+  </div>
+
+
+  <div class="stats">
+
+    <div class="stat">
+      <div class="stat-icon">📚</div>
+      <strong>100+</strong>
+      <small>Learning Topics</small>
     </div>
 
-
-    <div class="stats">
-
-        <div class="stat">
-            <div class="stat-icon">📚</div>
-            <strong>30+</strong>
-            <span>Learning Tracks</span>
-        </div>
-
-        <div class="stat">
-            <div class="stat-icon">💻</div>
-            <strong>8+</strong>
-            <span>Core Languages</span>
-        </div>
-
-        <div class="stat">
-            <div class="stat-icon">🧠</div>
-            <strong>100+</strong>
-            <span>Practice Topics</span>
-        </div>
-
-        <div class="stat">
-            <div class="stat-icon">🚀</div>
-            <strong>15+</strong>
-            <span>Project Ideas</span>
-        </div>
-
+    <div class="stat">
+      <div class="stat-icon">💻</div>
+      <strong>8+</strong>
+      <small>Programming Languages</small>
     </div>
 
-
-    <div class="section-head">
-        <div>
-            <h2>Continue Learning</h2>
-            <p>Start with the core technologies.</p>
-        </div>
+    <div class="stat">
+      <div class="stat-icon">🧠</div>
+      <strong>50+</strong>
+      <small>Practice Areas</small>
     </div>
 
-
-    <div class="course-grid">
-
-        <!-- PYTHON -->
-        <a
-            href="python-course.html"
-            class="course-card searchable clickable"
-            data-search="python programming ai machine learning"
-        >
-
-            <div class="course-icon">
-                🐍
-            </div>
-
-            <h3>Python</h3>
-
-            <p>
-                Complete Python course from fundamentals
-                to OOP, APIs, data and AI.
-            </p>
-
-            <div class="course-meta">
-                <span>20 Modules</span>
-                <span id="pythonProgressText">0%</span>
-            </div>
-
-            <div class="progress">
-                <span id="pythonProgressBar" style="width:0%"></span>
-            </div>
-
-        </a>
-
-
-        <!-- JAVA -->
-        <div
-            class="course-card searchable clickable"
-            data-search="java oop collections jdbc"
-            onclick="comingSoon('Java Course')"
-        >
-
-            <div class="course-icon">☕</div>
-
-            <h3>Java</h3>
-
-            <p>
-                Core Java, OOP, Collections,
-                Exceptions and JDBC.
-            </p>
-
-            <div class="course-meta">
-                <span>18 Modules</span>
-                <span>Coming Soon</span>
-            </div>
-
-            <div class="progress">
-                <span style="width:0%"></span>
-            </div>
-
-        </div>
-
-
-        <!-- C++ -->
-        <div
-            class="course-card searchable clickable"
-            data-search="c++ cpp stl dsa"
-            onclick="comingSoon('C++ Course')"
-        >
-
-            <div class="course-icon">🔷</div>
-
-            <h3>C++</h3>
-
-            <p>
-                Modern C++, OOP, STL and
-                DSA foundations.
-            </p>
-
-            <div class="course-meta">
-                <span>18 Modules</span>
-                <span>Coming Soon</span>
-            </div>
-
-            <div class="progress">
-                <span style="width:0%"></span>
-            </div>
-
-        </div>
-
-
-        <!-- JAVASCRIPT -->
-        <div
-            class="course-card searchable clickable"
-            data-search="javascript js es6 dom api async"
-            onclick="comingSoon('JavaScript Course')"
-        >
-
-            <div class="course-icon">🟨</div>
-
-            <h3>JavaScript</h3>
-
-            <p>
-                ES6, DOM, Async Programming,
-                APIs and modern JavaScript.
-            </p>
-
-            <div class="course-meta">
-                <span>20 Modules</span>
-                <span>Coming Soon</span>
-            </div>
-
-            <div class="progress">
-                <span style="width:0%"></span>
-            </div>
-
-        </div>
-
+    <div class="stat">
+      <div class="stat-icon">🚀</div>
+      <strong>15+</strong>
+      <small>Project Ideas</small>
     </div>
+
+  </div>
+
+
+  <div class="section-head">
+    <h2>🔥 Start Learning</h2>
+    <p>Every course is open — select any topic.</p>
+  </div>
+
+
+  <div class="course-grid">
+
+    <a class="course searchable"
+       data-search="python programming ai data"
+       href="course.html?course=python">
+
+      <div class="course-icon">🐍</div>
+      <h3>Python</h3>
+      <p>Programming, OOP, APIs, data and projects.</p>
+
+      <div class="course-meta">
+        <span>11 Modules</span>
+        <b>OPEN →</b>
+      </div>
+
+    </a>
+
+
+    <a class="course searchable"
+       data-search="java oop"
+       href="course.html?course=java">
+
+      <div class="course-icon">☕</div>
+      <h3>Java</h3>
+      <p>Core Java, OOP, Collections and JDBC.</p>
+
+      <div class="course-meta">
+        <span>10 Modules</span>
+        <b>OPEN →</b>
+      </div>
+
+    </a>
+
+
+    <a class="course searchable"
+       data-search="c++ cpp stl dsa"
+       href="course.html?course=cpp">
+
+      <div class="course-icon">🔷</div>
+      <h3>C++</h3>
+      <p>C++, OOP, STL and algorithmic thinking.</p>
+
+      <div class="course-meta">
+        <span>10 Modules</span>
+        <b>OPEN →</b>
+      </div>
+
+    </a>
+
+
+    <a class="course searchable"
+       data-search="c programming pointer"
+       href="course.html?course=c">
+
+      <div class="course-icon">🟦</div>
+      <h3>C</h3>
+      <p>Fundamentals, pointers, structures and files.</p>
+
+      <div class="course-meta">
+        <span>10 Modules</span>
+        <b>OPEN →</b>
+      </div>
+
+    </a>
+
+
+    <a class="course searchable"
+       data-search="javascript js dom api"
+       href="course.html?course=javascript">
+
+      <div class="course-icon">🟨</div>
+      <h3>JavaScript</h3>
+      <p>ES6, DOM, events, async and APIs.</p>
+
+      <div class="course-meta">
+        <span>10 Modules</span>
+        <b>OPEN →</b>
+      </div>
+
+    </a>
+
+
+    <a class="course searchable"
+       data-search="html html5 web"
+       href="course.html?course=html">
+
+      <div class="course-icon">🌐</div>
+      <h3>HTML5</h3>
+      <p>Semantic HTML, forms, media and accessibility.</p>
+
+      <div class="course-meta">
+        <span>10 Modules</span>
+        <b>OPEN →</b>
+      </div>
+
+    </a>
+
+
+    <a class="course searchable"
+       data-search="css css3 design animation"
+       href="course.html?course=css">
+
+      <div class="course-icon">🎨</div>
+      <h3>CSS3</h3>
+      <p>Flexbox, Grid, responsive design and animation.</p>
+
+      <div class="course-meta">
+        <span>10 Modules</span>
+        <b>OPEN →</b>
+      </div>
+
+    </a>
+
+
+    <a class="course searchable"
+       data-search="sql database mysql"
+       href="course.html?course=sql">
+
+      <div class="course-icon">🗄️</div>
+      <h3>SQL</h3>
+      <p>Queries, joins, CTEs and window functions.</p>
+
+      <div class="course-meta">
+        <span>10 Modules</span>
+        <b>OPEN →</b>
+      </div>
+
+    </a>
+
+
+    <a class="course searchable"
+       data-search="dsa algorithms"
+       href="course.html?course=dsa">
+
+      <div class="course-icon">🧠</div>
+      <h3>DSA</h3>
+      <p>Arrays, trees, graphs, sorting and DP.</p>
+
+      <div class="course-meta">
+        <span>11 Modules</span>
+        <b>OPEN →</b>
+      </div>
+
+    </a>
+
+
+    <a class="course searchable"
+       data-search="dbms database normalization"
+       href="course.html?course=dbms">
+
+      <div class="course-icon">🗃️</div>
+      <h3>DBMS</h3>
+      <p>Normalization, transactions, indexing and recovery.</p>
+
+      <div class="course-meta">
+        <span>10 Modules</span>
+        <b>OPEN →</b>
+      </div>
+
+    </a>
+
+
+    <a class="course searchable"
+       data-search="react frontend"
+       href="course.html?course=react">
+
+      <div class="course-icon">⚛️</div>
+      <h3>React</h3>
+      <p>Components, props, state, hooks and APIs.</p>
+
+      <div class="course-meta">
+        <span>10 Modules</span>
+        <b>OPEN →</b>
+      </div>
+
+    </a>
+
+
+    <a class="course searchable"
+       data-search="node nodejs express backend"
+       href="course.html?course=node">
+
+      <div class="course-icon">🟢</div>
+      <h3>Node.js</h3>
+      <p>Backend, Express, REST APIs and authentication.</p>
+
+      <div class="course-meta">
+        <span>10 Modules</span>
+        <b>OPEN →</b>
+      </div>
+
+    </a>
+
+
+    <a class="course searchable"
+       data-search="ai ml machine learning"
+       href="course.html?course=aiml">
+
+      <div class="course-icon">🤖</div>
+      <h3>AI / ML</h3>
+      <p>Data preparation, ML, evaluation and deep learning.</p>
+
+      <div class="course-meta">
+        <span>10 Modules</span>
+        <b>OPEN →</b>
+      </div>
+
+    </a>
+
+
+    <a class="course searchable"
+       data-search="data analytics power bi excel pandas"
+       href="course.html?course=analytics">
+
+      <div class="course-icon">📊</div>
+      <h3>Data Analytics</h3>
+      <p>Excel, SQL, Python, Pandas, Power BI and DAX.</p>
+
+      <div class="course-meta">
+        <span>10 Modules</span>
+        <b>OPEN →</b>
+      </div>
+
+    </a>
+
+
+    <a class="course searchable"
+       data-search="cloud aws devops docker linux"
+       href="course.html?course=cloud">
+
+      <div class="course-icon">☁️</div>
+      <h3>Cloud & DevOps</h3>
+      <p>AWS, Linux, Docker, Git, CI/CD and deployment.</p>
+
+      <div class="course-meta">
+        <span>10 Modules</span>
+        <b>OPEN →</b>
+      </div>
+
+    </a>
+
+
+    <a class="course searchable"
+       data-search="cybersecurity security owasp"
+       href="course.html?course=cybersecurity">
+
+      <div class="course-icon">🔐</div>
+      <h3>Cybersecurity</h3>
+      <p>Security, authentication, APIs and cryptography.</p>
+
+      <div class="course-meta">
+        <span>10 Modules</span>
+        <b>OPEN →</b>
+      </div>
+
+    </a>
+
+
+    <a class="course searchable"
+       data-search="interview placement hr coding"
+       href="course.html?course=interview">
+
+      <div class="course-icon">🎯</div>
+      <h3>Interview Prep</h3>
+      <p>Technical, coding, CS fundamentals and HR.</p>
+
+      <div class="course-meta">
+        <span>10 Modules</span>
+        <b>OPEN →</b>
+      </div>
+
+    </a>
+
+  </div>
 
 </section>
 
 
-<!-- =========================================================
+<!-- =====================================================
      STUDY HUB
-========================================================= -->
+===================================================== -->
 
-<section class="page-section" id="page-study">
+<section class="page" id="page-study">
 
-    <div class="hero">
+  <div class="hero">
 
-        <h1>📚 Study Hub</h1>
+    <h1>📚 Complete Study Hub</h1>
 
-        <p>
-            A complete Computer Science learning environment
-            covering programming, development, databases,
-            AI, cloud, cybersecurity and placement preparation.
-        </p>
+    <p>
+      Programming, DSA, DBMS, web development, AI,
+      analytics, cloud, cybersecurity and placement.
+    </p>
+
+  </div>
+
+
+  <div class="grid">
+
+    <div class="card searchable"
+         data-search="programming c cpp java python javascript">
+
+      <div class="card-title">
+        <span>💻</span>
+        <strong>Programming</strong>
+      </div>
+
+      <p>Build strong programming fundamentals.</p>
+
+      <div class="tags">
+        <span class="tag">C</span>
+        <span class="tag">C++</span>
+        <span class="tag">Java</span>
+        <span class="tag">Python</span>
+        <span class="tag">JavaScript</span>
+      </div>
+
+    </div>
+
+
+    <div class="card searchable"
+         data-search="dsa arrays tree graph dp">
+
+      <div class="card-title">
+        <span>🧠</span>
+        <strong>DSA</strong>
+      </div>
+
+      <p>Problem solving and interview algorithms.</p>
+
+      <div class="tags">
+        <span class="tag">Arrays</span>
+        <span class="tag">Trees</span>
+        <span class="tag">Graphs</span>
+        <span class="tag">DP</span>
+      </div>
 
     </div>
 
 
-    <div class="category-grid">
+    <div class="card searchable"
+         data-search="dbms sql mysql postgres mongodb">
 
-        <article class="category searchable"
-            data-search="programming c cpp java python javascript">
+      <div class="card-title">
+        <span>🗄️</span>
+        <strong>Databases</strong>
+      </div>
 
-            <div class="category-title">
-                <span>💻</span>
-                <strong>Programming</strong>
-            </div>
+      <p>SQL and database management concepts.</p>
 
-            <p>
-                Build strong programming fundamentals.
-            </p>
-
-            <div class="tag-list">
-                <span class="tag">C</span>
-                <span class="tag">C++</span>
-                <span class="tag">Java</span>
-                <span class="tag">Python</span>
-                <span class="tag">JavaScript</span>
-            </div>
-
-        </article>
-
-
-        <article class="category searchable"
-            data-search="dsa algorithms arrays trees graphs dp">
-
-            <div class="category-title">
-                <span>🧠</span>
-                <strong>DSA</strong>
-            </div>
-
-            <p>
-                Data structures and algorithmic problem solving.
-            </p>
-
-            <div class="tag-list">
-                <span class="tag">Arrays</span>
-                <span class="tag">Strings</span>
-                <span class="tag">Trees</span>
-                <span class="tag">Graphs</span>
-                <span class="tag">DP</span>
-            </div>
-
-        </article>
-
-
-        <article class="category searchable"
-            data-search="sql dbms mysql postgresql mongodb database">
-
-            <div class="category-title">
-                <span>🗄️</span>
-                <strong>Database</strong>
-            </div>
-
-            <p>
-                SQL, DBMS and database architecture.
-            </p>
-
-            <div class="tag-list">
-                <span class="tag">SQL</span>
-                <span class="tag">MySQL</span>
-                <span class="tag">PostgreSQL</span>
-                <span class="tag">MongoDB</span>
-            </div>
-
-        </article>
-
-
-        <article class="category searchable"
-            data-search="html css react node express web">
-
-            <div class="category-title">
-                <span>🌐</span>
-                <strong>Web Development</strong>
-            </div>
-
-            <p>
-                Frontend and backend development.
-            </p>
-
-            <div class="tag-list">
-                <span class="tag">HTML</span>
-                <span class="tag">CSS</span>
-                <span class="tag">JavaScript</span>
-                <span class="tag">React</span>
-                <span class="tag">Node.js</span>
-            </div>
-
-        </article>
-
-
-        <article class="category searchable"
-            data-search="ai ml machine learning deep learning tensorflow">
-
-            <div class="category-title">
-                <span>🤖</span>
-                <strong>AI & Machine Learning</strong>
-            </div>
-
-            <p>
-                Data science, ML and deep learning.
-            </p>
-
-            <div class="tag-list">
-                <span class="tag">NumPy</span>
-                <span class="tag">Pandas</span>
-                <span class="tag">Scikit-learn</span>
-                <span class="tag">TensorFlow</span>
-            </div>
-
-        </article>
-
-
-        <article class="category searchable"
-            data-search="data analytics excel power bi dax sql">
-
-            <div class="category-title">
-                <span>📊</span>
-                <strong>Data Analytics</strong>
-            </div>
-
-            <p>
-                Turn raw data into useful insights.
-            </p>
-
-            <div class="tag-list">
-                <span class="tag">Excel</span>
-                <span class="tag">Power BI</span>
-                <span class="tag">SQL</span>
-                <span class="tag">DAX</span>
-            </div>
-
-        </article>
-
-
-        <article class="category searchable"
-            data-search="cloud aws docker devops linux cicd">
-
-            <div class="category-title">
-                <span>☁️</span>
-                <strong>Cloud & DevOps</strong>
-            </div>
-
-            <p>
-                Cloud platforms, containers and deployment.
-            </p>
-
-            <div class="tag-list">
-                <span class="tag">AWS</span>
-                <span class="tag">Docker</span>
-                <span class="tag">CI/CD</span>
-                <span class="tag">Linux</span>
-            </div>
-
-        </article>
-
-
-        <article class="category searchable"
-            data-search="cybersecurity security owasp authentication">
-
-            <div class="category-title">
-                <span>🔐</span>
-                <strong>Cybersecurity</strong>
-            </div>
-
-            <p>
-                Defensive security and secure development.
-            </p>
-
-            <div class="tag-list">
-                <span class="tag">OWASP</span>
-                <span class="tag">Authentication</span>
-                <span class="tag">Authorization</span>
-                <span class="tag">HTTPS</span>
-            </div>
-
-        </article>
-
-
-        <article class="category searchable"
-            data-search="placement interview aptitude coding resume ats">
-
-            <div class="category-title">
-                <span>🎯</span>
-                <strong>Placement</strong>
-            </div>
-
-            <p>
-                Coding, aptitude, interviews and resume preparation.
-            </p>
-
-            <div class="tag-list">
-                <span class="tag">Aptitude</span>
-                <span class="tag">Coding</span>
-                <span class="tag">Interview</span>
-                <span class="tag">Resume</span>
-                <span class="tag">ATS</span>
-            </div>
-
-        </article>
+      <div class="tags">
+        <span class="tag">SQL</span>
+        <span class="tag">MySQL</span>
+        <span class="tag">PostgreSQL</span>
+        <span class="tag">MongoDB</span>
+      </div>
 
     </div>
+
+
+    <div class="card searchable"
+         data-search="web html css javascript react node">
+
+      <div class="card-title">
+        <span>🌐</span>
+        <strong>Web Development</strong>
+      </div>
+
+      <p>Frontend, backend and full-stack development.</p>
+
+      <div class="tags">
+        <span class="tag">HTML</span>
+        <span class="tag">CSS</span>
+        <span class="tag">JS</span>
+        <span class="tag">React</span>
+        <span class="tag">Node</span>
+      </div>
+
+    </div>
+
+
+    <div class="card searchable"
+         data-search="ai ml deep learning">
+
+      <div class="card-title">
+        <span>🤖</span>
+        <strong>AI / ML</strong>
+      </div>
+
+      <p>Machine learning and deep learning fundamentals.</p>
+
+      <div class="tags">
+        <span class="tag">NumPy</span>
+        <span class="tag">Pandas</span>
+        <span class="tag">ML</span>
+        <span class="tag">Deep Learning</span>
+      </div>
+
+    </div>
+
+
+    <div class="card searchable"
+         data-search="analytics excel power bi sql">
+
+      <div class="card-title">
+        <span>📊</span>
+        <strong>Data Analytics</strong>
+      </div>
+
+      <p>Data analysis and business intelligence.</p>
+
+      <div class="tags">
+        <span class="tag">Excel</span>
+        <span class="tag">SQL</span>
+        <span class="tag">Power BI</span>
+        <span class="tag">DAX</span>
+      </div>
+
+    </div>
+
+  </div>
 
 </section>
 
 
-<!-- =========================================================
+<!-- =====================================================
      PROGRAMMING
-========================================================= -->
+===================================================== -->
 
-<section class="page-section" id="page-languages">
+<section class="page" id="page-programming">
 
-    <div class="hero">
+  <div class="hero">
 
-        <h1>💻 Programming Languages</h1>
+    <h1>💻 Programming Languages</h1>
 
-        <p>
-            Master programming languages from beginner level
-            to project development.
-        </p>
+    <p>
+      Choose any language and start learning immediately.
+      There is no Coming Soon section.
+    </p>
 
-    </div>
-
-
-    <div class="course-grid">
-
-        <a
-            href="python-course.html"
-            class="course-card searchable clickable"
-            data-search="python"
-        >
-
-            <div class="course-icon">🐍</div>
-
-            <h3>Python</h3>
-
-            <p>
-                Basics → OOP → APIs → NumPy → Pandas → Projects
-            </p>
-
-            <div class="course-meta">
-                <span>20 Modules</span>
-                <span>START NOW</span>
-            </div>
-
-        </a>
+  </div>
 
 
-        <div class="course-card searchable clickable"
-            data-search="java"
-            onclick="comingSoon('Java Course')">
+  <div class="course-grid">
 
-            <div class="course-icon">☕</div>
+    <a class="course searchable" data-search="python"
+       href="course.html?course=python">
+      <div class="course-icon">🐍</div>
+      <h3>Python</h3>
+      <p>Beginner → OOP → APIs → Data → Projects</p>
+      <div class="course-meta"><span>11 Modules</span><b>OPEN →</b></div>
+    </a>
 
-            <h3>Java</h3>
+    <a class="course searchable" data-search="java"
+       href="course.html?course=java">
+      <div class="course-icon">☕</div>
+      <h3>Java</h3>
+      <p>Core Java → OOP → Collections → JDBC</p>
+      <div class="course-meta"><span>10 Modules</span><b>OPEN →</b></div>
+    </a>
 
-            <p>
-                Core Java → OOP → Collections → JDBC
-            </p>
+    <a class="course searchable" data-search="cpp c++"
+       href="course.html?course=cpp">
+      <div class="course-icon">🔷</div>
+      <h3>C++</h3>
+      <p>C++ → OOP → STL → Algorithms</p>
+      <div class="course-meta"><span>10 Modules</span><b>OPEN →</b></div>
+    </a>
 
-            <div class="course-meta">
-                <span>18 Modules</span>
-                <span>Coming Soon</span>
-            </div>
+    <a class="course searchable" data-search="c"
+       href="course.html?course=c">
+      <div class="course-icon">🟦</div>
+      <h3>C</h3>
+      <p>Basics → Pointers → Structures → Files</p>
+      <div class="course-meta"><span>10 Modules</span><b>OPEN →</b></div>
+    </a>
 
-        </div>
+    <a class="course searchable" data-search="javascript js"
+       href="course.html?course=javascript">
+      <div class="course-icon">🟨</div>
+      <h3>JavaScript</h3>
+      <p>ES6 → DOM → Async → APIs</p>
+      <div class="course-meta"><span>10 Modules</span><b>OPEN →</b></div>
+    </a>
 
+    <a class="course searchable" data-search="html"
+       href="course.html?course=html">
+      <div class="course-icon">🌐</div>
+      <h3>HTML5</h3>
+      <p>Structure → Forms → Semantics → Accessibility</p>
+      <div class="course-meta"><span>10 Modules</span><b>OPEN →</b></div>
+    </a>
 
-        <div class="course-card searchable clickable"
-            data-search="c++ cpp"
-            onclick="comingSoon('C++ Course')">
+    <a class="course searchable" data-search="css"
+       href="course.html?course=css">
+      <div class="course-icon">🎨</div>
+      <h3>CSS3</h3>
+      <p>Flexbox → Grid → Responsive → Animation</p>
+      <div class="course-meta"><span>10 Modules</span><b>OPEN →</b></div>
+    </a>
 
-            <div class="course-icon">🔷</div>
+    <a class="course searchable" data-search="sql"
+       href="course.html?course=sql">
+      <div class="course-icon">🗄️</div>
+      <h3>SQL</h3>
+      <p>Queries → Joins → CTE → Window Functions</p>
+      <div class="course-meta"><span>10 Modules</span><b>OPEN →</b></div>
+    </a>
 
-            <h3>C++</h3>
-
-            <p>
-                C++ → OOP → STL → DSA
-            </p>
-
-            <div class="course-meta">
-                <span>18 Modules</span>
-                <span>Coming Soon</span>
-            </div>
-
-        </div>
-
-
-        <div class="course-card searchable clickable"
-            data-search="c programming"
-            onclick="comingSoon('C Course')">
-
-            <div class="course-icon">🟦</div>
-
-            <h3>C</h3>
-
-            <p>
-                Fundamentals → Pointers → Structures
-            </p>
-
-            <div class="course-meta">
-                <span>16 Modules</span>
-                <span>Coming Soon</span>
-            </div>
-
-        </div>
-
-
-        <div class="course-card searchable clickable"
-            data-search="javascript js"
-            onclick="comingSoon('JavaScript Course')">
-
-            <div class="course-icon">🟨</div>
-
-            <h3>JavaScript</h3>
-
-            <p>
-                ES6 → DOM → Async → APIs
-            </p>
-
-            <div class="course-meta">
-                <span>20 Modules</span>
-                <span>Coming Soon</span>
-            </div>
-
-        </div>
-
-
-        <div class="course-card searchable clickable"
-            data-search="html html5"
-            onclick="comingSoon('HTML Course')">
-
-            <div class="course-icon">🌐</div>
-
-            <h3>HTML5</h3>
-
-            <p>
-                Structure → Forms → Semantic HTML → Accessibility
-            </p>
-
-            <div class="course-meta">
-                <span>12 Modules</span>
-                <span>Coming Soon</span>
-            </div>
-
-        </div>
-
-
-        <div class="course-card searchable clickable"
-            data-search="css css3"
-            onclick="comingSoon('CSS Course')">
-
-            <div class="course-icon">🎨</div>
-
-            <h3>CSS3</h3>
-
-            <p>
-                Flexbox → Grid → Responsive UI → Animation
-            </p>
-
-            <div class="course-meta">
-                <span>15 Modules</span>
-                <span>Coming Soon</span>
-            </div>
-
-        </div>
-
-
-        <div class="course-card searchable clickable"
-            data-search="sql database"
-            onclick="comingSoon('SQL Course')">
-
-            <div class="course-icon">🗄️</div>
-
-            <h3>SQL</h3>
-
-            <p>
-                Queries → Joins → CTE → Window Functions
-            </p>
-
-            <div class="course-meta">
-                <span>18 Modules</span>
-                <span>Coming Soon</span>
-            </div>
-
-        </div>
-
-    </div>
+  </div>
 
 </section>
 
 
-<!-- =========================================================
+<!-- =====================================================
      DSA
-========================================================= -->
+===================================================== -->
 
-<section class="page-section" id="page-dsa">
+<section class="page" id="page-dsa">
 
-    <div class="hero">
+  <div class="hero">
+    <h1>🧠 DSA</h1>
+    <p>Data structures and algorithms for problem solving.</p>
 
-        <h1>🧠 DSA & Problem Solving</h1>
+    <a class="hero-btn" href="course.html?course=dsa">
+      🧠 Open Complete DSA Course →
+    </a>
+  </div>
 
-        <p>
-            Build the algorithmic thinking required for
-            coding interviews and software development.
-        </p>
+  <div class="grid">
 
+    <div class="card">
+      <div class="card-title">
+        <span>📦</span>
+        <strong>Arrays & Strings</strong>
+      </div>
+      <p>Traversal, searching, manipulation and patterns.</p>
+      <div class="tags">
+        <span class="tag">Arrays</span>
+        <span class="tag">Strings</span>
+        <span class="tag">Two Pointer</span>
+        <span class="tag">Sliding Window</span>
+      </div>
     </div>
 
-
-    <div class="category-grid">
-
-        <article class="category searchable"
-            data-search="arrays strings linked list stack queue">
-
-            <div class="category-title">
-                <span>📦</span>
-                <strong>Linear Structures</strong>
-            </div>
-
-            <div class="tag-list">
-                <span class="tag">Arrays</span>
-                <span class="tag">Strings</span>
-                <span class="tag">Linked List</span>
-                <span class="tag">Stack</span>
-                <span class="tag">Queue</span>
-            </div>
-
-        </article>
-
-
-        <article class="category searchable"
-            data-search="tree bst heap trie">
-
-            <div class="category-title">
-                <span>🌳</span>
-                <strong>Trees</strong>
-            </div>
-
-            <div class="tag-list">
-                <span class="tag">Binary Tree</span>
-                <span class="tag">BST</span>
-                <span class="tag">Heap</span>
-                <span class="tag">Trie</span>
-            </div>
-
-        </article>
-
-
-        <article class="category searchable"
-            data-search="graphs bfs dfs shortest path mst">
-
-            <div class="category-title">
-                <span>🕸️</span>
-                <strong>Graphs</strong>
-            </div>
-
-            <div class="tag-list">
-                <span class="tag">BFS</span>
-                <span class="tag">DFS</span>
-                <span class="tag">Shortest Path</span>
-                <span class="tag">MST</span>
-            </div>
-
-        </article>
-
-
-        <article class="category searchable"
-            data-search="sorting searching greedy backtracking dp">
-
-            <div class="category-title">
-                <span>⚡</span>
-                <strong>Algorithms</strong>
-            </div>
-
-            <div class="tag-list">
-                <span class="tag">Sorting</span>
-                <span class="tag">Searching</span>
-                <span class="tag">Greedy</span>
-                <span class="tag">Backtracking</span>
-                <span class="tag">DP</span>
-            </div>
-
-        </article>
-
+    <div class="card">
+      <div class="card-title">
+        <span>🌳</span>
+        <strong>Trees</strong>
+      </div>
+      <p>Binary trees, BST and tree traversal.</p>
+      <div class="tags">
+        <span class="tag">Binary Tree</span>
+        <span class="tag">BST</span>
+        <span class="tag">Heap</span>
+        <span class="tag">Trie</span>
+      </div>
     </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>🕸️</span>
+        <strong>Graphs</strong>
+      </div>
+      <p>Graph representation and traversal algorithms.</p>
+      <div class="tags">
+        <span class="tag">BFS</span>
+        <span class="tag">DFS</span>
+        <span class="tag">Shortest Path</span>
+        <span class="tag">MST</span>
+      </div>
+    </div>
+
+  </div>
 
 </section>
 
 
-<!-- =========================================================
-     DATABASE
-========================================================= -->
+<!-- =====================================================
+     DBMS
+===================================================== -->
 
-<section class="page-section" id="page-database">
+<section class="page" id="page-dbms">
 
-    <div class="hero">
+  <div class="hero">
 
-        <h1>🗄️ DBMS & SQL</h1>
+    <h1>🗄️ DBMS & SQL</h1>
 
-        <p>
-            Learn relational databases, SQL queries,
-            normalization, transactions and database design.
-        </p>
+    <p>
+      Database fundamentals, SQL, normalization,
+      transactions and performance.
+    </p>
 
+    <a class="hero-btn" href="course.html?course=dbms">
+      🗃️ Open DBMS Course →
+    </a>
+
+    <a class="hero-btn" href="course.html?course=sql">
+      🗄️ Open SQL Course →
+    </a>
+
+  </div>
+
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-title">
+        <span>🔎</span>
+        <strong>SQL</strong>
+      </div>
+      <p>Query and analyze relational data.</p>
+      <div class="tags">
+        <span class="tag">SELECT</span>
+        <span class="tag">JOIN</span>
+        <span class="tag">GROUP BY</span>
+        <span class="tag">CTE</span>
+      </div>
     </div>
 
-
-    <div class="category-grid">
-
-        <article class="category searchable"
-            data-search="select where order group having">
-
-            <div class="category-title">
-                <span>🔎</span>
-                <strong>SQL Fundamentals</strong>
-            </div>
-
-            <div class="tag-list">
-                <span class="tag">SELECT</span>
-                <span class="tag">WHERE</span>
-                <span class="tag">ORDER BY</span>
-                <span class="tag">GROUP BY</span>
-                <span class="tag">HAVING</span>
-            </div>
-
-        </article>
-
-
-        <article class="category searchable"
-            data-search="join subquery cte window">
-
-            <div class="category-title">
-                <span>🔗</span>
-                <strong>Advanced SQL</strong>
-            </div>
-
-            <div class="tag-list">
-                <span class="tag">JOIN</span>
-                <span class="tag">Subquery</span>
-                <span class="tag">CTE</span>
-                <span class="tag">Window Functions</span>
-            </div>
-
-        </article>
-
-
-        <article class="category searchable"
-            data-search="normalization transactions indexes acid">
-
-            <div class="category-title">
-                <span>🏗️</span>
-                <strong>DBMS Concepts</strong>
-            </div>
-
-            <div class="tag-list">
-                <span class="tag">Normalization</span>
-                <span class="tag">Transactions</span>
-                <span class="tag">Indexes</span>
-                <span class="tag">ACID</span>
-            </div>
-
-        </article>
-
+    <div class="card">
+      <div class="card-title">
+        <span>🏗️</span>
+        <strong>DBMS</strong>
+      </div>
+      <p>Understand how database systems work.</p>
+      <div class="tags">
+        <span class="tag">Keys</span>
+        <span class="tag">Normalization</span>
+        <span class="tag">Transactions</span>
+        <span class="tag">ACID</span>
+      </div>
     </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>⚡</span>
+        <strong>Performance</strong>
+      </div>
+      <p>Understand indexing and query performance.</p>
+      <div class="tags">
+        <span class="tag">Indexes</span>
+        <span class="tag">Execution</span>
+        <span class="tag">Optimization</span>
+      </div>
+    </div>
+
+  </div>
 
 </section>
 
 
-<!-- =========================================================
-     WEB DEVELOPMENT
-========================================================= -->
+<!-- =====================================================
+     WEB
+===================================================== -->
 
-<section class="page-section" id="page-web">
+<section class="page" id="page-web">
 
-    <div class="hero">
+  <div class="hero">
+    <h1>🌐 Web Development</h1>
+    <p>Build modern frontend and backend applications.</p>
+  </div>
 
-        <h1>🌐 Web Development</h1>
+  <div class="course-grid">
 
-        <p>
-            Learn how modern websites and full-stack
-            applications are built.
-        </p>
+    <a class="course" href="course.html?course=html">
+      <div class="course-icon">🌐</div>
+      <h3>HTML5</h3>
+      <p>Build structured webpages.</p>
+      <div class="course-meta"><span>10 Modules</span><b>OPEN →</b></div>
+    </a>
 
-    </div>
+    <a class="course" href="course.html?course=css">
+      <div class="course-icon">🎨</div>
+      <h3>CSS3</h3>
+      <p>Create responsive interfaces.</p>
+      <div class="course-meta"><span>10 Modules</span><b>OPEN →</b></div>
+    </a>
 
+    <a class="course" href="course.html?course=javascript">
+      <div class="course-icon">🟨</div>
+      <h3>JavaScript</h3>
+      <p>Add logic and interaction.</p>
+      <div class="course-meta"><span>10 Modules</span><b>OPEN →</b></div>
+    </a>
 
-    <div class="course-grid">
+    <a class="course" href="course.html?course=react">
+      <div class="course-icon">⚛️</div>
+      <h3>React</h3>
+      <p>Build component-based applications.</p>
+      <div class="course-meta"><span>10 Modules</span><b>OPEN →</b></div>
+    </a>
 
-        <div class="course-card searchable"
-            data-search="html html5">
-            <div class="course-icon">🌐</div>
-            <h3>HTML5</h3>
-            <p>Structure, forms, semantics and accessibility.</p>
-        </div>
+    <a class="course" href="course.html?course=node">
+      <div class="course-icon">🟢</div>
+      <h3>Node.js</h3>
+      <p>Build backend applications and APIs.</p>
+      <div class="course-meta"><span>10 Modules</span><b>OPEN →</b></div>
+    </a>
 
-        <div class="course-card searchable"
-            data-search="css css3">
-            <div class="course-icon">🎨</div>
-            <h3>CSS3</h3>
-            <p>Responsive layouts, Flexbox, Grid and animation.</p>
-        </div>
-
-        <div class="course-card searchable"
-            data-search="javascript">
-            <div class="course-icon">🟨</div>
-            <h3>JavaScript</h3>
-            <p>DOM, events, APIs, promises and modern JS.</p>
-        </div>
-
-        <div class="course-card searchable"
-            data-search="react">
-            <div class="course-icon">⚛️</div>
-            <h3>React</h3>
-            <p>Components, state, props, hooks and APIs.</p>
-        </div>
-
-        <div class="course-card searchable"
-            data-search="node nodejs">
-            <div class="course-icon">🟢</div>
-            <h3>Node.js</h3>
-            <p>Server-side JavaScript and backend development.</p>
-        </div>
-
-        <div class="course-card searchable"
-            data-search="express backend rest api">
-            <div class="course-icon">🚂</div>
-            <h3>Express.js</h3>
-            <p>REST APIs, middleware and backend architecture.</p>
-        </div>
-
-    </div>
+  </div>
 
 </section>
 
 
-<!-- =========================================================
-     AI / ML
-========================================================= -->
+<!-- =====================================================
+     AI
+===================================================== -->
 
-<section class="page-section" id="page-ai">
+<section class="page" id="page-ai">
 
-    <div class="hero">
+  <div class="hero">
+    <h1>🤖 AI / Machine Learning</h1>
+    <p>Learn data preparation, ML models, evaluation and deep learning.</p>
 
-        <h1>🤖 AI & Machine Learning</h1>
+    <a class="hero-btn" href="course.html?course=aiml">
+      🤖 Open AI/ML Course →
+    </a>
+  </div>
 
-        <p>
-            Learn the foundations of data science,
-            machine learning and deep learning.
-        </p>
+  <div class="grid">
 
+    <div class="card">
+      <div class="card-title">
+        <span>🐍</span>
+        <strong>Python for ML</strong>
+      </div>
+      <p>Use Python libraries for machine learning.</p>
+      <div class="tags">
+        <span class="tag">NumPy</span>
+        <span class="tag">Pandas</span>
+        <span class="tag">Matplotlib</span>
+      </div>
     </div>
 
-
-    <div class="category-grid">
-
-        <article class="category searchable"
-            data-search="numpy pandas matplotlib python data">
-
-            <div class="category-title">
-                <span>🐍</span>
-                <strong>Python for Data</strong>
-            </div>
-
-            <div class="tag-list">
-                <span class="tag">NumPy</span>
-                <span class="tag">Pandas</span>
-                <span class="tag">Matplotlib</span>
-            </div>
-
-        </article>
-
-
-        <article class="category searchable"
-            data-search="machine learning regression classification clustering">
-
-            <div class="category-title">
-                <span>📈</span>
-                <strong>Machine Learning</strong>
-            </div>
-
-            <div class="tag-list">
-                <span class="tag">Regression</span>
-                <span class="tag">Classification</span>
-                <span class="tag">Clustering</span>
-                <span class="tag">Evaluation</span>
-            </div>
-
-        </article>
-
-
-        <article class="category searchable"
-            data-search="deep learning neural network cnn tensorflow">
-
-            <div class="category-title">
-                <span>🧠</span>
-                <strong>Deep Learning</strong>
-            </div>
-
-            <div class="tag-list">
-                <span class="tag">Neural Networks</span>
-                <span class="tag">CNN</span>
-                <span class="tag">TensorFlow</span>
-            </div>
-
-        </article>
-
+    <div class="card">
+      <div class="card-title">
+        <span>📈</span>
+        <strong>Machine Learning</strong>
+      </div>
+      <p>Train and evaluate predictive models.</p>
+      <div class="tags">
+        <span class="tag">Regression</span>
+        <span class="tag">Classification</span>
+        <span class="tag">Clustering</span>
+      </div>
     </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>🧠</span>
+        <strong>Deep Learning</strong>
+      </div>
+      <p>Understand neural networks and deep learning.</p>
+      <div class="tags">
+        <span class="tag">Neural Networks</span>
+        <span class="tag">CNN</span>
+        <span class="tag">TensorFlow</span>
+      </div>
+    </div>
+
+  </div>
 
 </section>
 
 
-<!-- =========================================================
+<!-- =====================================================
      CLOUD
-========================================================= -->
+===================================================== -->
 
-<section class="page-section" id="page-cloud">
+<section class="page" id="page-cloud">
 
-    <div class="hero">
+  <div class="hero">
+    <h1>☁️ Cloud & DevOps</h1>
+    <p>Learn Linux, cloud computing, Docker, Git and deployment.</p>
 
-        <h1>☁️ Cloud & DevOps</h1>
+    <a class="hero-btn" href="course.html?course=cloud">
+      ☁️ Open Cloud & DevOps Course →
+    </a>
+  </div>
 
-        <p>
-            Learn cloud fundamentals, deployment,
-            containers and development workflows.
-        </p>
+  <div class="course-grid">
 
-    </div>
+    <a class="course" href="course.html?course=cloud">
+      <div class="course-icon">☁️</div>
+      <h3>AWS & Cloud</h3>
+      <p>Cloud fundamentals and services.</p>
+      <div class="course-meta"><span>10 Modules</span><b>OPEN →</b></div>
+    </a>
 
+    <a class="course" href="course.html?course=cloud">
+      <div class="course-icon">🐧</div>
+      <h3>Linux</h3>
+      <p>Commands, permissions and servers.</p>
+      <div class="course-meta"><span>Inside Course</span><b>OPEN →</b></div>
+    </a>
 
-    <div class="course-grid">
+    <a class="course" href="course.html?course=cloud">
+      <div class="course-icon">🐳</div>
+      <h3>Docker</h3>
+      <p>Containers and deployment fundamentals.</p>
+      <div class="course-meta"><span>Inside Course</span><b>OPEN →</b></div>
+    </a>
 
-        <div class="course-card searchable"
-            data-search="aws cloud ec2 s3 iam rds">
-            <div class="course-icon">☁️</div>
-            <h3>AWS</h3>
-            <p>EC2, S3, IAM, RDS and cloud fundamentals.</p>
-        </div>
+    <a class="course" href="course.html?course=cloud">
+      <div class="course-icon">🔄</div>
+      <h3>CI/CD</h3>
+      <p>Continuous integration and deployment.</p>
+      <div class="course-meta"><span>Inside Course</span><b>OPEN →</b></div>
+    </a>
 
-        <div class="course-card searchable"
-            data-search="docker container">
-            <div class="course-icon">🐳</div>
-            <h3>Docker</h3>
-            <p>Containers, images and deployment.</p>
-        </div>
-
-        <div class="course-card searchable"
-            data-search="cicd github actions deployment">
-            <div class="course-icon">🔄</div>
-            <h3>CI/CD</h3>
-            <p>Automation and continuous deployment concepts.</p>
-        </div>
-
-        <div class="course-card searchable"
-            data-search="linux commands server">
-            <div class="course-icon">🐧</div>
-            <h3>Linux</h3>
-            <p>Commands, permissions, processes and servers.</p>
-        </div>
-
-    </div>
+  </div>
 
 </section>
 
 
-<!-- =========================================================
+<!-- =====================================================
      SECURITY
-========================================================= -->
+===================================================== -->
 
-<section class="page-section" id="page-security">
+<section class="page" id="page-security">
 
-    <div class="hero">
+  <div class="hero">
+    <h1>🔐 Cybersecurity</h1>
+    <p>Learn defensive security and secure application development.</p>
 
-        <h1>🔐 Cybersecurity</h1>
+    <a class="hero-btn" href="course.html?course=cybersecurity">
+      🔐 Open Cybersecurity Course →
+    </a>
+  </div>
 
-        <p>
-            Learn defensive security and secure software
-            development fundamentals.
-        </p>
+  <div class="grid">
 
+    <div class="card">
+      <div class="card-title">
+        <span>🌐</span>
+        <strong>Network Security</strong>
+      </div>
+      <p>Networking and secure communication fundamentals.</p>
+      <div class="tags">
+        <span class="tag">TCP/IP</span>
+        <span class="tag">HTTPS</span>
+        <span class="tag">DNS</span>
+      </div>
     </div>
 
-
-    <div class="category-grid">
-
-        <article class="category searchable"
-            data-search="network security tcp ip https dns firewall">
-
-            <div class="category-title">
-                <span>🌐</span>
-                <strong>Network Security</strong>
-            </div>
-
-            <div class="tag-list">
-                <span class="tag">TCP/IP</span>
-                <span class="tag">HTTPS</span>
-                <span class="tag">DNS</span>
-                <span class="tag">Firewalls</span>
-            </div>
-
-        </article>
-
-
-        <article class="category searchable"
-            data-search="web security owasp authentication authorization">
-
-            <div class="category-title">
-                <span>🛡️</span>
-                <strong>Web Security</strong>
-            </div>
-
-            <div class="tag-list">
-                <span class="tag">OWASP</span>
-                <span class="tag">Authentication</span>
-                <span class="tag">Authorization</span>
-                <span class="tag">Secure APIs</span>
-            </div>
-
-        </article>
-
-
-        <article class="category searchable"
-            data-search="cryptography hashing encryption signature">
-
-            <div class="category-title">
-                <span>🔑</span>
-                <strong>Cryptography</strong>
-            </div>
-
-            <div class="tag-list">
-                <span class="tag">Hashing</span>
-                <span class="tag">Encryption</span>
-                <span class="tag">Digital Signatures</span>
-            </div>
-
-        </article>
-
+    <div class="card">
+      <div class="card-title">
+        <span>🛡️</span>
+        <strong>Application Security</strong>
+      </div>
+      <p>Secure authentication and application practices.</p>
+      <div class="tags">
+        <span class="tag">OWASP</span>
+        <span class="tag">Auth</span>
+        <span class="tag">APIs</span>
+      </div>
     </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>🔑</span>
+        <strong>Cryptography</strong>
+      </div>
+      <p>Understand hashing, encryption and signatures.</p>
+      <div class="tags">
+        <span class="tag">Hashing</span>
+        <span class="tag">Encryption</span>
+        <span class="tag">HTTPS</span>
+      </div>
+    </div>
+
+  </div>
 
 </section>
 
 
-<!-- =========================================================
+<!-- =====================================================
      PROJECTS
-========================================================= -->
+===================================================== -->
 
-<section class="page-section" id="page-projects">
+<section class="page" id="page-projects">
 
-    <div class="hero">
+  <div class="hero">
+    <h1>🚀 My Projects</h1>
+    <p>Your real-world development and portfolio projects.</p>
+  </div>
 
-        <h1>🚀 My Projects</h1>
+  <div class="project-grid">
 
-        <p>
-            Your developer portfolio area for real-world
-            applications, experiments and GitHub projects.
-        </p>
-
+    <div class="project">
+      <h3>🔐 Secure Auth Portal</h3>
+      <p>Authentication portal using Express, PostgreSQL and JWT.</p>
+      <div class="tags">
+        <span class="tag">Node.js</span>
+        <span class="tag">PostgreSQL</span>
+        <span class="tag">JWT</span>
+      </div>
     </div>
 
-
-    <div class="project-grid">
-
-        <article class="project searchable"
-            data-search="secure auth portal node express postgres jwt">
-
-            <h3>🔐 Secure Auth Portal</h3>
-
-            <p>
-                Full-stack authentication platform using
-                Express, PostgreSQL, JWT and password reset.
-            </p>
-
-            <div class="tag-list">
-                <span class="tag">Node.js</span>
-                <span class="tag">Express</span>
-                <span class="tag">PostgreSQL</span>
-                <span class="tag">JWT</span>
-            </div>
-
-        </article>
-
-
-        <article class="project searchable"
-            data-search="enterprise sales analytics sql python power bi">
-
-            <h3>📊 Enterprise Sales Analytics</h3>
-
-            <p>
-                Sales intelligence and customer analytics
-                using SQL, Python and Power BI.
-            </p>
-
-            <div class="tag-list">
-                <span class="tag">Python</span>
-                <span class="tag">SQL</span>
-                <span class="tag">Power BI</span>
-                <span class="tag">DAX</span>
-            </div>
-
-        </article>
-
-
-        <article class="project searchable"
-            data-search="brain tumor mri deep learning cnn">
-
-            <h3>🧠 Brain Tumor Detection</h3>
-
-            <p>
-                MRI image classification using deep learning
-                and CNN techniques.
-            </p>
-
-            <div class="tag-list">
-                <span class="tag">Python</span>
-                <span class="tag">CNN</span>
-                <span class="tag">TensorFlow</span>
-            </div>
-
-        </article>
-
-
-        <article class="project searchable"
-            data-search="ecosentinel iot wildlife mern socket">
-
-            <h3>🌿 EcoSentinel</h3>
-
-            <p>
-                IoT wildlife conservation platform with
-                real-time alerts and REST APIs.
-            </p>
-
-            <div class="tag-list">
-                <span class="tag">MERN</span>
-                <span class="tag">IoT</span>
-                <span class="tag">Socket.io</span>
-                <span class="tag">JWT</span>
-            </div>
-
-        </article>
-
-
-        <article class="project searchable"
-            data-search="cricket score predictor machine learning">
-
-            <h3>🏏 Cricket Score Predictor</h3>
-
-            <p>
-                Machine-learning project for cricket score
-                prediction using historical data.
-            </p>
-
-            <div class="tag-list">
-                <span class="tag">Python</span>
-                <span class="tag">XGBoost</span>
-                <span class="tag">Scikit-learn</span>
-            </div>
-
-        </article>
-
-
-        <article class="project searchable"
-            data-search="careerpilot ai resume ats fastapi">
-
-            <h3>🤖 CareerPilot AI</h3>
-
-            <p>
-                AI-powered career intelligence platform
-                for resume analysis and career guidance.
-            </p>
-
-            <div class="tag-list">
-                <span class="tag">AI</span>
-                <span class="tag">FastAPI</span>
-                <span class="tag">Python</span>
-            </div>
-
-        </article>
-
+    <div class="project">
+      <h3>🤖 CareerPilot AI</h3>
+      <p>AI-powered resume analysis and career intelligence platform.</p>
+      <div class="tags">
+        <span class="tag">Python</span>
+        <span class="tag">FastAPI</span>
+        <span class="tag">AI</span>
+      </div>
     </div>
+
+    <div class="project">
+      <h3>📊 Enterprise Sales Analytics</h3>
+      <p>Sales and customer analytics using SQL, Python and Power BI.</p>
+      <div class="tags">
+        <span class="tag">SQL</span>
+        <span class="tag">Python</span>
+        <span class="tag">Power BI</span>
+      </div>
+    </div>
+
+    <div class="project">
+      <h3>🧠 Brain Tumor Detection</h3>
+      <p>MRI image classification using deep learning.</p>
+      <div class="tags">
+        <span class="tag">Python</span>
+        <span class="tag">CNN</span>
+        <span class="tag">ML</span>
+      </div>
+    </div>
+
+    <div class="project">
+      <h3>🌿 EcoSentinel</h3>
+      <p>IoT-focused environmental and wildlife monitoring platform.</p>
+      <div class="tags">
+        <span class="tag">IoT</span>
+        <span class="tag">MERN</span>
+        <span class="tag">Socket.io</span>
+      </div>
+    </div>
+
+    <div class="project">
+      <h3>🏏 Cricket Score Predictor</h3>
+      <p>Machine-learning project for cricket score prediction.</p>
+      <div class="tags">
+        <span class="tag">Python</span>
+        <span class="tag">ML</span>
+        <span class="tag">Data</span>
+      </div>
+    </div>
+
+  </div>
 
 </section>
 
 
-<!-- =========================================================
-     CERTIFICATIONS
-========================================================= -->
+<!-- =====================================================
+     CERTIFICATES
+===================================================== -->
 
-<section class="page-section" id="page-certificates">
+<section class="page" id="page-certificates">
 
-    <div class="hero">
+  <div class="hero">
+    <h1>🏆 Certifications</h1>
+    <p>Your professional learning and simulation achievements.</p>
+  </div>
 
-        <h1>🏆 Certifications</h1>
+  <div class="grid">
 
-        <p>
-            Your learning credentials and professional
-            development achievements.
-        </p>
-
+    <div class="card">
+      <div class="card-title">
+        <span>☁️</span>
+        <strong>AWS Data Engineering</strong>
+      </div>
+      <p>Data Engineering Foundations.</p>
     </div>
 
-
-    <div class="category-grid">
-
-        <article class="category searchable"
-            data-search="aws data engineering">
-            <div class="category-title">
-                <span>☁️</span>
-                <strong>AWS Data Engineering</strong>
-            </div>
-            <p>Foundations</p>
-        </article>
-
-
-        <article class="category searchable"
-            data-search="cisco data analytics">
-            <div class="category-title">
-                <span>📊</span>
-                <strong>Cisco Data Analytics</strong>
-            </div>
-            <p>Data analytics fundamentals.</p>
-        </article>
-
-
-        <article class="category searchable"
-            data-search="cisco data science python">
-            <div class="category-title">
-                <span>🐍</span>
-                <strong>Cisco Data Science</strong>
-            </div>
-            <p>Data Science with Python.</p>
-        </article>
-
-
-        <article class="category searchable"
-            data-search="jpmorgan software engineering">
-            <div class="category-title">
-                <span>💻</span>
-                <strong>JPMorgan Chase</strong>
-            </div>
-            <p>Software Engineering Job Simulation.</p>
-        </article>
-
-
-        <article class="category searchable"
-            data-search="deloitte data analytics">
-            <div class="category-title">
-                <span>📈</span>
-                <strong>Deloitte</strong>
-            </div>
-            <p>Data Analytics Job Simulation.</p>
-        </article>
-
-
-        <article class="category searchable"
-            data-search="mastercard cybersecurity">
-            <div class="category-title">
-                <span>🔐</span>
-                <strong>Mastercard</strong>
-            </div>
-            <p>Cybersecurity Job Simulation.</p>
-        </article>
-
-
-        <article class="category searchable"
-            data-search="nptel iit kharagpur iot">
-            <div class="category-title">
-                <span>🌐</span>
-                <strong>NPTEL — IIT Kharagpur</strong>
-            </div>
-            <p>Introduction to IoT.</p>
-        </article>
-
-
-        <article class="category searchable"
-            data-search="sap analytics cloud">
-            <div class="category-title">
-                <span>📊</span>
-                <strong>SAP Analytics Cloud</strong>
-            </div>
-            <p>Planning — Advanced.</p>
-        </article>
-
+    <div class="card">
+      <div class="card-title">
+        <span>📊</span>
+        <strong>Cisco Data Analytics</strong>
+      </div>
+      <p>Data analytics fundamentals.</p>
     </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>🐍</span>
+        <strong>Cisco Data Science</strong>
+      </div>
+      <p>Data Science Essentials with Python.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>💻</span>
+        <strong>JPMorgan Chase</strong>
+      </div>
+      <p>Software Engineering Job Simulation.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>📈</span>
+        <strong>Deloitte</strong>
+      </div>
+      <p>Data Analytics Job Simulation.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>🔐</span>
+        <strong>Mastercard</strong>
+      </div>
+      <p>Cybersecurity Job Simulation.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>🌐</span>
+        <strong>NPTEL — IIT Kharagpur</strong>
+      </div>
+      <p>Introduction to IoT.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>📊</span>
+        <strong>SAP Analytics Cloud</strong>
+      </div>
+      <p>Planning — Advanced.</p>
+    </div>
+
+  </div>
 
 </section>
 
 
-<!-- =========================================================
+<!-- =====================================================
      PROFILE
-========================================================= -->
+===================================================== -->
 
-<section class="page-section" id="page-profile">
+<section class="page" id="page-profile">
 
-    <div class="hero">
+  <div class="hero">
+    <h1>👤 My Profile</h1>
+    <p>Your developer identity and portal account.</p>
+  </div>
 
-        <h1>👤 My Profile</h1>
 
-        <p>
-            Your developer identity and account information.
-        </p>
+  <div class="profile">
+
+    <div class="profile-top">
+
+      <div class="profile-avatar" id="profileAvatar">
+        PK
+      </div>
+
+      <div>
+        <h2 id="profileName">Priyanshu Kumar</h2>
+        <p id="profileEmail">Loading...</p>
+      </div>
+
+    </div>
+
+
+    <div class="info-grid">
+
+      <div class="info">
+        <label>Name</label>
+        <span id="infoName">—</span>
+      </div>
+
+      <div class="info">
+        <label>Email</label>
+        <span id="infoEmail">—</span>
+      </div>
+
+      <div class="info">
+        <label>Account ID</label>
+        <span id="infoId">—</span>
+      </div>
+
+      <div class="info">
+        <label>Created</label>
+        <span id="infoCreated">—</span>
+      </div>
+
+      <div class="info">
+        <label>Education</label>
+        <span>B.Tech — Computer Science & Engineering</span>
+      </div>
+
+      <div class="info">
+        <label>Focus</label>
+        <span>Software Engineering • Python • Data • AI</span>
+      </div>
 
     </div>
 
-
-    <div class="profile-box">
-
-        <div class="profile-top">
-
-            <div class="profile-avatar" id="profileAvatar">
-                PK
-            </div>
-
-            <div>
-
-                <h2 id="profileName">
-                    Priyanshu Kumar
-                </h2>
-
-                <p id="profileEmail">
-                    Loading...
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="info-grid">
-
-            <div class="info">
-                <label>Full Name</label>
-                <span id="infoName">—</span>
-            </div>
-
-            <div class="info">
-                <label>Email</label>
-                <span id="infoEmail">—</span>
-            </div>
-
-            <div class="info">
-                <label>Account ID</label>
-                <span id="infoId">—</span>
-            </div>
-
-            <div class="info">
-                <label>Account Created</label>
-                <span id="infoCreated">—</span>
-            </div>
-
-            <div class="info">
-                <label>Education</label>
-                <span>B.Tech — Computer Science & Engineering</span>
-            </div>
-
-            <div class="info">
-                <label>Developer Focus</label>
-                <span>Software Engineering • Python • Data • AI</span>
-            </div>
-
-            <div class="info">
-                <label>Location</label>
-                <span>India</span>
-            </div>
-
-            <div class="info">
-                <label>Portal</label>
-                <span>Priyanshu Study & Developer Hub</span>
-            </div>
-
-        </div>
-
-    </div>
+  </div>
 
 </section>
 
 
-<!-- =========================================================
+<!-- =====================================================
      SOCIALS
-========================================================= -->
+===================================================== -->
 
-<section class="page-section" id="page-socials">
+<section class="page" id="page-socials">
 
-    <div class="hero">
+  <div class="hero">
 
-        <h1>🔗 My Socials</h1>
+    <h1>🔗 My Socials</h1>
 
-        <p>
-            Connect with Priyanshu across professional
-            and social platforms.
-        </p>
+    <p>
+      Connect with Priyanshu across professional,
+      developer and social platforms.
+    </p>
 
-    </div>
-
-
-    <div class="social-grid">
-
-        <a
-            class="social"
-            href="https://github.com/priyanshu18611"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
-            <div class="social-icon">💻</div>
-            <span>GitHub</span>
-        </a>
+  </div>
 
 
-        <a
-            class="social"
-            href="https://linkedin.com/in/priyanshuroy18"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
-            <div class="social-icon">💼</div>
-            <span>LinkedIn</span>
-        </a>
+  <div class="social-grid">
+
+    <a
+      class="social"
+      href="https://github.com/priyanshu18611"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <div class="social-icon">💻</div>
+      <span>GitHub</span>
+    </a>
 
 
-        <a
-            class="social"
-            href="https://www.instagram.com/thepriyanshuroy.ofc?stkn=eXR2YTh4djNicDhj"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
-            <div class="social-icon">📸</div>
-            <span>Instagram</span>
-        </a>
+    <a
+      class="social"
+      href="https://linkedin.com/in/priyanshuroy18"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <div class="social-icon">💼</div>
+      <span>LinkedIn</span>
+    </a>
 
 
-        <a
-            class="social"
-            href="https://www.facebook.com/share/1GmyKmd8PL/"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
-            <div class="social-icon">📘</div>
-            <span>Facebook</span>
-        </a>
+    <a
+      class="social"
+      href="https://www.instagram.com/thepriyanshuroy.ofc?stkn=eXR2YTh4djNicDhj"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <div class="social-icon">📸</div>
+      <span>Instagram</span>
+    </a>
 
 
-        <a
-            class="social"
-            href="https://priyanshu18611.github.io/portfolio/"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
-            <div class="social-icon">🌐</div>
-            <span>Portfolio</span>
-        </a>
+    <a
+      class="social"
+      href="https://www.facebook.com/share/1GmyKmd8PL/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <div class="social-icon">📘</div>
+      <span>Facebook</span>
+    </a>
 
-    </div>
+
+    <a
+      class="social"
+      href="https://priyanshu18611.github.io/portfolio/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <div class="social-icon">🌐</div>
+      <span>Portfolio</span>
+    </a>
+
+  </div>
 
 </section>
 
 
-<div class="no-results" id="noResults">
-    🔎 No matching course or topic found.
+<div
+  class="no-result"
+  id="noResult"
+>
+  🔎 No matching topic found.
 </div>
 
 </main>
-
-</div>
-
-
-<!-- TOAST -->
-
-<div class="toast" id="toast">
-    <strong id="toastTitle">Notice</strong>
-    <p id="toastMessage"></p>
-</div>
 
 
 <script>
 "use strict";
 
-/* =========================================================
-   AUTH
-========================================================= */
+/* =====================================================
+   CONFIG
+===================================================== */
 
-const API_URL =
-    "https://priyanshu-secure-auth.onrender.com";
+const API =
+  "https://priyanshu-secure-auth.onrender.com";
 
 const TOKEN_KEY =
-    "priynashu_access_token";
+  "priynashu_access_token";
 
 const USER_KEY =
-    "priynashu_user";
+  "priynashu_user";
 
 
-/* =========================================================
+/* =====================================================
    ELEMENTS
-========================================================= */
+===================================================== */
 
 const sidebar =
-    document.getElementById("sidebar");
+  document.getElementById("sidebar");
 
 const overlay =
-    document.getElementById("overlay");
+  document.getElementById("overlay");
 
-const mobileMenu =
-    document.getElementById("mobileMenu");
-
-const logoutBtn =
-    document.getElementById("logoutBtn");
+const menuBtn =
+  document.getElementById("menuBtn");
 
 const searchInput =
-    document.getElementById("courseSearch");
+  document.getElementById("searchInput");
 
-const noResults =
-    document.getElementById("noResults");
+const noResult =
+  document.getElementById("noResult");
+
+const pages =
+  document.querySelectorAll(".page");
 
 const navButtons =
-    document.querySelectorAll(
-        ".nav-btn[data-page]"
-    );
-
-const sections =
-    document.querySelectorAll(
-        ".page-section"
-    );
+  document.querySelectorAll(
+    ".nav-btn[data-page]"
+  );
 
 
-/* =========================================================
-   AUTHENTICATION
-========================================================= */
+/* =====================================================
+   OPEN COURSE
+===================================================== */
 
-async function loadCurrentUser(){
+function openCourse(course){
 
-    const token =
-        sessionStorage.getItem(
-            TOKEN_KEY
-        );
-
-    if(!token){
-
-        window.location.replace(
-            "index.html"
-        );
-
-        return;
-
-    }
-
-
-    try{
-
-        const response =
-            await fetch(
-                `${API_URL}/api/me`,
-                {
-                    method:"GET",
-                    headers:{
-                        Authorization:
-                            `Bearer ${token}`
-                    }
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if(
-            !response.ok ||
-            !data.success ||
-            !data.user
-        ){
-
-            sessionStorage.removeItem(
-                TOKEN_KEY
-            );
-
-            sessionStorage.removeItem(
-                USER_KEY
-            );
-
-            window.location.replace(
-                "index.html"
-            );
-
-            return;
-
-        }
-
-
-        sessionStorage.setItem(
-            USER_KEY,
-            JSON.stringify(data.user)
-        );
-
-
-        renderUser(
-            data.user
-        );
-
-
-    }catch(error){
-
-        console.error(
-            "Authentication error:",
-            error
-        );
-
-
-        const cached =
-            sessionStorage.getItem(
-                USER_KEY
-            );
-
-
-        if(cached){
-
-            try{
-
-                renderUser(
-                    JSON.parse(cached)
-                );
-
-            }catch{
-
-                window.location.replace(
-                    "index.html"
-                );
-
-            }
-
-        }else{
-
-            window.location.replace(
-                "index.html"
-            );
-
-        }
-
-    }
+  window.location.href =
+    `course.html?course=${encodeURIComponent(course)}`;
 
 }
 
 
-/* =========================================================
-   USER
-========================================================= */
-
-function renderUser(user){
-
-    const name =
-        user.name ||
-        "Developer";
-
-    const email =
-        user.email ||
-        "—";
-
-    const id =
-        user.id ||
-        "—";
-
-
-    document.getElementById(
-        "welcomeName"
-    ).textContent = name;
-
-
-    document.getElementById(
-        "topUserName"
-    ).textContent = name;
-
-
-    document.getElementById(
-        "profileName"
-    ).textContent = name;
-
-
-    document.getElementById(
-        "profileEmail"
-    ).textContent = email;
-
-
-    document.getElementById(
-        "infoName"
-    ).textContent = name;
-
-
-    document.getElementById(
-        "infoEmail"
-    ).textContent = email;
-
-
-    document.getElementById(
-        "infoId"
-    ).textContent = `#${id}`;
-
-
-    if(user.created_at){
-
-        const date =
-            new Date(
-                user.created_at
-            );
-
-        document.getElementById(
-            "infoCreated"
-        ).textContent =
-            Number.isNaN(
-                date.getTime()
-            )
-            ? "—"
-            : date.toLocaleDateString(
-                "en-IN",
-                {
-                    day:"numeric",
-                    month:"long",
-                    year:"numeric"
-                }
-            );
-
-    }
-
-
-    const initials =
-        name
-            .trim()
-            .split(/\s+/)
-            .slice(0,2)
-            .map(
-                part =>
-                    part
-                        .charAt(0)
-                        .toUpperCase()
-            )
-            .join("") ||
-        "PK";
-
-
-    document.getElementById(
-        "topAvatar"
-    ).textContent =
-        initials;
-
-
-    document.getElementById(
-        "profileAvatar"
-    ).textContent =
-        initials;
-
-}
-
-
-/* =========================================================
+/* =====================================================
    NAVIGATION
-========================================================= */
+===================================================== */
 
-function openPage(page){
+navButtons.forEach(button => {
 
-    sections.forEach(
-        section => {
+  button.addEventListener("click", () => {
 
-            section.classList.toggle(
-                "active",
-                section.id ===
-                `page-${page}`
-            );
+    const page =
+      button.dataset.page;
 
-        }
-    );
+    pages.forEach(section => {
 
+      section.classList.toggle(
+        "active",
+        section.id === `page-${page}`
+      );
 
-    navButtons.forEach(
-        button => {
-
-            button.classList.toggle(
-                "active",
-                button.dataset.page === page
-            );
-
-        }
-    );
+    });
 
 
-    closeMobileMenu();
+    navButtons.forEach(item => {
+
+      item.classList.toggle(
+        "active",
+        item === button
+      );
+
+    });
 
 
-    if(searchInput){
-
-        searchInput.value = "";
-
-    }
-
+    searchInput.value = "";
 
     resetSearch();
 
+    closeMenu();
 
     window.scrollTo({
-        top:0,
-        behavior:"smooth"
+      top:0,
+      behavior:"smooth"
     });
 
-}
+  });
+
+});
 
 
-navButtons.forEach(
-    button => {
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                openPage(
-                    button.dataset.page
-                );
-
-            }
-        );
-
-    }
-);
-
-
-/* =========================================================
-   MOBILE MENU
-========================================================= */
-
-function openMobileMenu(){
-
-    sidebar.classList.add(
-        "open"
-    );
-
-    overlay.classList.add(
-        "show"
-    );
-
-}
-
-
-function closeMobileMenu(){
-
-    sidebar.classList.remove(
-        "open"
-    );
-
-    overlay.classList.remove(
-        "show"
-    );
-
-}
-
-
-mobileMenu.addEventListener(
-    "click",
-    openMobileMenu
-);
-
-
-overlay.addEventListener(
-    "click",
-    closeMobileMenu
-);
-
-
-/* =========================================================
+/* =====================================================
    SEARCH
-========================================================= */
+===================================================== */
 
-function performSearch(){
+searchInput.addEventListener(
+  "input",
+  () => {
 
     const query =
-        searchInput.value
-            .trim()
-            .toLowerCase();
+      searchInput.value
+        .trim()
+        .toLowerCase();
 
 
-    const currentSection =
-        document.querySelector(
-            ".page-section.active"
-        );
+    const activePage =
+      document.querySelector(
+        ".page.active"
+      );
 
 
-    if(!currentSection)
-        return;
+    if(!activePage)
+      return;
 
 
     const items =
-        currentSection.querySelectorAll(
-            ".searchable"
-        );
+      activePage.querySelectorAll(
+        ".searchable"
+      );
 
 
-    let visible = 0;
+    let found = 0;
 
 
-    items.forEach(
-        item => {
+    items.forEach(item => {
 
-            const text =
-                (
-                    item.dataset.search ||
-                    item.textContent
-                ).toLowerCase();
-
-
-            const match =
-                !query ||
-                text.includes(query);
+      const text =
+        (
+          item.dataset.search ||
+          item.textContent
+        ).toLowerCase();
 
 
-            item.style.display =
-                match
-                    ? ""
-                    : "none";
+      const match =
+        !query ||
+        text.includes(query);
 
 
-            if(match)
-                visible++;
-
-        }
-    );
+      item.style.display =
+        match ? "" : "none";
 
 
-    if(noResults){
+      if(match)
+        found++;
 
-        noResults.style.display =
-            query &&
-            items.length > 0 &&
-            visible === 0
-                ? "block"
-                : "none";
+    });
 
-    }
 
-}
+    noResult.style.display =
+      query &&
+      items.length &&
+      found === 0
+        ? "block"
+        : "none";
+
+  }
+);
 
 
 function resetSearch(){
 
-    const currentSection =
-        document.querySelector(
-            ".page-section.active"
-        );
+  const activePage =
+    document.querySelector(
+      ".page.active"
+    );
 
 
-    if(!currentSection)
-        return;
+  if(!activePage)
+    return;
 
 
-    currentSection
-        .querySelectorAll(
-            ".searchable"
-        )
-        .forEach(
-            item => {
-                item.style.display = "";
-            }
-        );
+  activePage
+    .querySelectorAll(".searchable")
+    .forEach(item => {
+
+      item.style.display = "";
+
+    });
 
 
-    if(noResults)
-        noResults.style.display =
-            "none";
+  noResult.style.display =
+    "none";
 
 }
 
 
-searchInput.addEventListener(
-    "input",
-    performSearch
+/* =====================================================
+   MOBILE
+===================================================== */
+
+menuBtn.addEventListener(
+  "click",
+  () => {
+
+    sidebar.classList.toggle(
+      "open"
+    );
+
+    overlay.classList.toggle(
+      "show"
+    );
+
+  }
 );
 
 
-/* =========================================================
-   PYTHON PROGRESS
-========================================================= */
-
-function updatePythonProgress(){
-
-    try{
-
-        const completed =
-            JSON.parse(
-                localStorage.getItem(
-                    "pk_python_completed"
-                ) || "[]"
-            );
+overlay.addEventListener(
+  "click",
+  closeMenu
+);
 
 
-        const total = 20;
+function closeMenu(){
+
+  sidebar.classList.remove(
+    "open"
+  );
+
+  overlay.classList.remove(
+    "show"
+  );
+
+}
 
 
-        const validCompleted =
-            completed.filter(
-                id =>
-                    /^python-\d+$/.test(id)
-            ).length;
+/* =====================================================
+   USER
+===================================================== */
+
+function renderUser(user){
+
+  const name =
+    user.name || "Developer";
+
+  const email =
+    user.email || "—";
+
+  const id =
+    user.id || "—";
 
 
-        const percent =
-            Math.min(
-                100,
-                Math.round(
-                    (validCompleted / total) * 100
-                )
-            );
+  document.getElementById(
+    "welcomeName"
+  ).textContent = name;
 
 
-        const text =
-            document.getElementById(
-                "pythonProgressText"
-            );
-
-        const bar =
-            document.getElementById(
-                "pythonProgressBar"
-            );
+  document.getElementById(
+    "userName"
+  ).textContent = name;
 
 
-        if(text)
-            text.textContent =
-                `${percent}%`;
+  document.getElementById(
+    "profileName"
+  ).textContent = name;
 
 
-        if(bar)
-            bar.style.width =
-                `${percent}%`;
+  document.getElementById(
+    "profileEmail"
+  ).textContent = email;
 
 
-    }catch(error){
+  document.getElementById(
+    "infoName"
+  ).textContent = name;
 
-        console.error(
-            "Progress error:",
-            error
+
+  document.getElementById(
+    "infoEmail"
+  ).textContent = email;
+
+
+  document.getElementById(
+    "infoId"
+  ).textContent = `#${id}`;
+
+
+  if(user.created_at){
+
+    const date =
+      new Date(user.created_at);
+
+
+    if(!Number.isNaN(date.getTime())){
+
+      document.getElementById(
+        "infoCreated"
+      ).textContent =
+        date.toLocaleDateString(
+          "en-IN",
+          {
+            day:"numeric",
+            month:"long",
+            year:"numeric"
+          }
         );
 
     }
 
-}
+  }
 
 
-/* =========================================================
-   COMING SOON
-========================================================= */
-
-function comingSoon(course){
-
-    showToast(
-        "Course Coming Soon 🚀",
-        `${course} will be added as a complete interactive course.`
-    );
-
-}
+  const initials =
+    name
+      .trim()
+      .split(/\s+/)
+      .slice(0,2)
+      .map(
+        x =>
+          x.charAt(0).toUpperCase()
+      )
+      .join("") || "PK";
 
 
-/* =========================================================
-   TOAST
-========================================================= */
-
-let toastTimer = null;
-
-
-function showToast(title,message){
-
-    const toast =
-        document.getElementById(
-            "toast"
-        );
-
-    const toastTitle =
-        document.getElementById(
-            "toastTitle"
-        );
-
-    const toastMessage =
-        document.getElementById(
-            "toastMessage"
-        );
+  document.getElementById(
+    "avatar"
+  ).textContent =
+    initials;
 
 
-    toastTitle.textContent =
-        title;
-
-    toastMessage.textContent =
-        message;
-
-
-    toast.classList.add(
-        "show"
-    );
-
-
-    clearTimeout(
-        toastTimer
-    );
-
-
-    toastTimer =
-        setTimeout(
-            () => {
-
-                toast.classList.remove(
-                    "show"
-                );
-
-            },
-            3000
-        );
+  document.getElementById(
+    "profileAvatar"
+  ).textContent =
+    initials;
 
 }
 
 
-/* =========================================================
-   LOGOUT
-========================================================= */
+/* =====================================================
+   AUTH
+===================================================== */
 
-logoutBtn.addEventListener(
-    "click",
-    () => {
+async function authenticate(){
 
-        sessionStorage.removeItem(
-            TOKEN_KEY
+  const token =
+    sessionStorage.getItem(
+      TOKEN_KEY
+    );
+
+
+  if(!token){
+
+    window.location.replace(
+      "index.html"
+    );
+
+    return;
+
+  }
+
+
+  try{
+
+    const response =
+      await fetch(
+        `${API}/api/me`,
+        {
+          method:"GET",
+          headers:{
+            Authorization:
+              `Bearer ${token}`
+          }
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if(
+      !response.ok ||
+      !data.success ||
+      !data.user
+    ){
+
+      sessionStorage.removeItem(
+        TOKEN_KEY
+      );
+
+      sessionStorage.removeItem(
+        USER_KEY
+      );
+
+      window.location.replace(
+        "index.html"
+      );
+
+      return;
+
+    }
+
+
+    sessionStorage.setItem(
+      USER_KEY,
+      JSON.stringify(data.user)
+    );
+
+
+    renderUser(
+      data.user
+    );
+
+
+  }catch(error){
+
+    console.warn(
+      "Authentication request failed:",
+      error
+    );
+
+
+    const cached =
+      sessionStorage.getItem(
+        USER_KEY
+      );
+
+
+    if(cached){
+
+      try{
+
+        renderUser(
+          JSON.parse(cached)
         );
 
-        sessionStorage.removeItem(
-            USER_KEY
-        );
+      }catch{
 
         window.location.replace(
-            "index.html"
+          "index.html"
         );
 
-    }
-);
+      }
 
+    }else{
 
-/* =========================================================
-   INITIALIZE
-========================================================= */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-        loadCurrentUser();
-
-        updatePythonProgress();
+      window.location.replace(
+        "index.html"
+      );
 
     }
-);
+
+  }
+
+}
 
 
-/*
-   Update Python progress whenever this dashboard
-   becomes visible again.
-*/
+/* =====================================================
+   START
+===================================================== */
 
-window.addEventListener(
-    "focus",
-    updatePythonProgress
-);
+authenticate();
 
 </script>
 
